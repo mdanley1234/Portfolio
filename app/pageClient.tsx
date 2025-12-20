@@ -4,21 +4,47 @@ import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Menu, Github, Linkedin, Mail, Code, Briefcase, User, ChevronDown } from 'lucide-react';
 import { ReactTyped } from "react-typed";
-import { getProjects } from '@/lib/getProjects';
-
 import { Project } from '@/lib/getProjects';
+import DarkVeil from '@/lib/bits/DarkVeil';
+import EmblaCarousel from '@/lib/carousel/EmblaCarousel';
 
+// For project MDX file parsing
 interface PageClientProps {
   projects: Project[];
 }
 
 export default function PageClient({ projects }: PageClientProps) {
 
+
+
+  const slides = [
+    <div className="bg-blue-500 h-64 flex items-center justify-center rounded-lg">
+      <span className="text-white text-2xl font-bold">Card 1</span>
+    </div>,
+    <div className="bg-purple-500 h-64 flex items-center justify-center rounded-lg">
+      <span className="text-white text-2xl font-bold">Card 2</span>
+    </div>,
+    <div className="bg-pink-500 h-64 flex items-center justify-center rounded-lg">
+      <span className="text-white text-2xl font-bold">Card 3</span>
+    </div>,
+    <div className="bg-green-500 h-64 flex items-center justify-center rounded-lg">
+      <span className="text-white text-2xl font-bold">Card 4</span>
+    </div>,
+    <div className="bg-orange-500 h-64 flex items-center justify-center rounded-lg">
+      <span className="text-white text-2xl font-bold">Card 5</span>
+    </div>,
+    <div className="bg-red-500 h-64 flex items-center justify-center rounded-lg">
+      <span className="text-white text-2xl font-bold">Card 6</span>
+    </div>
+  ];
+
+
+
   // Scrolling constants
   const [scrolled, setScrolled] = useState(false);
   const { scrollYProgress } = useScroll();
 
-  // Optimized parallax with reduced range
+  // Hero parallax
   const heroY = useTransform(scrollYProgress, [0, 0.3], ['0%', '30%']);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
 
@@ -41,11 +67,16 @@ export default function PageClient({ projects }: PageClientProps) {
   // Build and return webpage
   return (
     <div className="min-h-screen background">
-      {/* Optimized Sticky Header */}
+
+      {/* Sticky Header */}
       <motion.header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-          ? 'bg-black/80 backdrop-blur-md border-b border-white/10 shadow-lg shadow-white/5'
-          : 'bg-transparent'
+        className={`fixed top-0 left-0 right-0 z-50
+          flex items-center justify-between
+          px-4 sm:px-6
+          py-3 md:py-5 lg:py-6          /* responsive vertical padding */
+          min-h-[56px] md:min-h-[72px]  /* ensure comfortable min heights */
+          transition-all duration-300
+          ${scrolled ? 'bg-black/80 backdrop-blur-md border-b border-white/10 shadow-lg' : 'bg-transparent'
           }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -63,17 +94,20 @@ export default function PageClient({ projects }: PageClientProps) {
           </motion.div>
 
           <div className="hidden md:flex items-center gap-8">
-            {['Work', 'Contact'].map((item, index) => (
+            {['Projects', 'Resume'].map((item, index) => (
               <motion.a
                 key={item}
                 href={`#${item.toLowerCase()}`}
-                className="text-gray-400 hover:text-white transition-colors relative group"
+                className="text-white-400 hover:text-white transition-colors relative group px-4 py-2 rounded-full"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 + 0.3 }}
               >
-                {item}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300" />
+                <div className="absolute inset-0 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 group-hover:bg-white/20 transition-all" />
+                <span className="relative z-10">
+                  {item}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300" />
+                </span>
               </motion.a>
             ))}
           </div>
@@ -87,30 +121,13 @@ export default function PageClient({ projects }: PageClientProps) {
         </nav>
       </motion.header>
 
-      {/* Hero Section - Optimized */}
+      {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 gradient-background">
-        {/* Optimized background gradients with longer, smoother animations */}
-        <div className="absolute inset-0 overflow-hidden">
-          <motion.div
-            className="absolute top-20 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl"
-            animate={{
-              scale: [1, 1.2, 1],
-              x: [0, 50, 0],
-              y: [0, 30, 0],
-            }}
-            transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
-            style={{ willChange: 'transform' }}
-          />
-          <motion.div
-            className="absolute bottom-20 right-10 w-96 h-96 bg-white/5 rounded-full blur-3xl"
-            animate={{
-              scale: [1, 1.3, 1],
-              x: [0, -30, 0],
-              y: [0, -50, 0],
-            }}
-            transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
-            style={{ willChange: 'transform' }}
-          />
+        {/* DarkVeil Background - Full Width Wrapper */}
+        <div className="absolute inset-0 w-full h-full" style={{ zIndex: 0 }}>
+          <div style={{ width: '100%', height: '600px', position: 'relative' }}>
+            <DarkVeil />
+          </div>
         </div>
 
         {/* Hero content with optimized parallax */}
@@ -118,6 +135,7 @@ export default function PageClient({ projects }: PageClientProps) {
           className="container mx-auto px-6 relative z-10"
           style={{ y: heroY, opacity: heroOpacity, willChange: 'transform, opacity' }}
         >
+
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Side */}
             <div className="flex flex-col items-start">
@@ -286,12 +304,11 @@ export default function PageClient({ projects }: PageClientProps) {
             transition={{ duration: 0.8 }}
           >
             <h2 className="text-4xl font-bold text-white mb-16 text-center">Featured Work</h2>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {projects.map((project, index) => (
+            <EmblaCarousel
+              slides={projects.map((project, index) => (
                 <motion.div
                   key={project.slug}
-                  className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/30"
+                  className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/30 h-[600px] flex flex-col"
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -299,7 +316,7 @@ export default function PageClient({ projects }: PageClientProps) {
                   whileHover={{ scale: 1.03, y: -10 }}
                   style={{ willChange: 'transform' }}
                 >
-                  <div className="aspect-video bg-white/5 relative overflow-hidden">
+                  <div className="h-80 bg-white/5 relative overflow-hidden flex-shrink-0">
                     <motion.div
                       className="absolute inset-0 bg-white/10"
                       initial={{ scale: 1 }}
@@ -314,9 +331,9 @@ export default function PageClient({ projects }: PageClientProps) {
                       )}
                     </div>
                   </div>
-                  <div className="p-6">
+                  <div className="p-6 flex-1 flex flex-col">
                     <h3 className="text-xl font-semibold text-white mb-2">{project.title}</h3>
-                    <p className="text-gray-400 mb-4">{project.summary}</p>
+                    <p className="text-gray-400 mb-4 flex-1">{project.summary}</p>
                     <div className="flex gap-2 flex-wrap">
                       {project.tags.map((tag, tagIndex) => (
                         <span key={tagIndex} className="px-3 py-1 text-sm bg-white/10 text-gray-300 rounded-full">
@@ -327,7 +344,9 @@ export default function PageClient({ projects }: PageClientProps) {
                   </div>
                 </motion.div>
               ))}
-            </div>
+              minCardWidth={400}
+              options={{ loop: true }}
+            />
           </motion.div>
         </div>
       </section>

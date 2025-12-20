@@ -4,6 +4,8 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const EmblaCarousel = ({ slides, options, minCardWidth = 300 }) => {
   const [slidesPerView, setSlidesPerView] = React.useState(1);
+  const [canScrollPrev, setCanScrollPrev] = React.useState(false);
+  const [canScrollNext, setCanScrollNext] = React.useState(false);
   const containerRef = React.useRef(null);
 
   React.useEffect(() => {
@@ -22,30 +24,54 @@ const EmblaCarousel = ({ slides, options, minCardWidth = 300 }) => {
 
   const slideWidth = `${100 / slidesPerView}%`;
 
-  const defaultOptions = { loop: true, align: 'start' };
+  const defaultOptions = { 
+    loop: false, 
+    align: 'start',
+    dragFree: false,
+    draggable: true,
+    watchDrag: true
+  };
+  
   const [emblaRef, emblaApi] = useEmblaCarousel({
     ...defaultOptions,
     ...options
   });
 
-  const scrollPrev = React.useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
+  const onSelect = React.useCallback(() => {
+    if (!emblaApi) return;
+    setCanScrollPrev(emblaApi.canScrollPrev());
+    setCanScrollNext(emblaApi.canScrollNext());
   }, [emblaApi]);
 
+  React.useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', onSelect);
+    return () => {
+      emblaApi.off('select', onSelect);
+      emblaApi.off('reInit', onSelect);
+    };
+  }, [emblaApi, onSelect]);
+
+  const scrollPrev = React.useCallback(() => {
+    if (emblaApi && canScrollPrev) emblaApi.scrollPrev();
+  }, [emblaApi, canScrollPrev]);
+
   const scrollNext = React.useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
-  }, [emblaApi]);
+    if (emblaApi && canScrollNext) emblaApi.scrollNext();
+  }, [emblaApi, canScrollNext]);
 
   if (!slides || slides.length === 0) return null;
 
   return (
-    <div ref={containerRef}>
-      <div className="overflow-hidden rounded-lg" ref={emblaRef}>
+    <div ref={containerRef} className="py-12 -my-12 overflow-hidden">
+      <div className="rounded-lg" ref={emblaRef}>
         <div className="flex">
           {slides.map((slide, index) => (
             <div 
               key={index} 
-              className="min-w-0 px-4"
+              className="min-w-0 px-4 py-12"
               style={{ flex: `0 0 ${slideWidth}` }}
             >
               {slide}
@@ -54,24 +80,31 @@ const EmblaCarousel = ({ slides, options, minCardWidth = 300 }) => {
         </div>
       </div>
 
-      {/* Navigation buttons below carousel on the right */}
-      <div className="flex gap-4 mt-10 ml-4">
+      {/* Navigation buttons on the left */}
+      <div className="flex gap-4 mt-12 ml-4">
         <button
-          className="bg-white p-3 rounded-full hover:bg-white/10 transition-all"
+          className={`p-3 rounded-full transition-all ${
+            canScrollPrev 
+              ? 'bg-white hover:bg-white/80' 
+              : 'bg-gray-500 cursor-not-allowed'
+          }`}
           onClick={scrollPrev}
           aria-label="Previous slide"
           type="button"
         >
-          <ChevronLeft className="w-6 h-6 text-black" />
+          <ChevronLeft className={`w-6 h-6 ${canScrollPrev ? 'text-black' : 'text-gray-700'}`} />
         </button>
-        
         <button
-          className="bg-white p-3 rounded-full hover:bg-white/10 transition-all"
+          className={`p-3 rounded-full transition-all ${
+            canScrollNext 
+              ? 'bg-white hover:bg-white/80' 
+              : 'bg-gray-500 cursor-not-allowed'
+          }`}
           onClick={scrollNext}
           aria-label="Next slide"
           type="button"
         >
-          <ChevronRight className="w-6 h-6 text-black" />
+          <ChevronRight className={`w-6 h-6 ${canScrollNext ? 'text-black' : 'text-gray-700'}`} />
         </button>
       </div>
     </div>

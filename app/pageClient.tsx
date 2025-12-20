@@ -13,32 +13,12 @@ interface PageClientProps {
   projects: Project[];
 }
 
+/**
+ * Generates portfolio homepage using projects passed from server-processing component
+ * @param projects List of projects to display on the portfolio page
+ * @returns rendered portfolio homepage
+ */
 export default function PageClient({ projects }: PageClientProps) {
-
-
-
-  const slides = [
-    <div className="bg-blue-500 h-64 flex items-center justify-center rounded-lg">
-      <span className="text-white text-2xl font-bold">Card 1</span>
-    </div>,
-    <div className="bg-purple-500 h-64 flex items-center justify-center rounded-lg">
-      <span className="text-white text-2xl font-bold">Card 2</span>
-    </div>,
-    <div className="bg-pink-500 h-64 flex items-center justify-center rounded-lg">
-      <span className="text-white text-2xl font-bold">Card 3</span>
-    </div>,
-    <div className="bg-green-500 h-64 flex items-center justify-center rounded-lg">
-      <span className="text-white text-2xl font-bold">Card 4</span>
-    </div>,
-    <div className="bg-orange-500 h-64 flex items-center justify-center rounded-lg">
-      <span className="text-white text-2xl font-bold">Card 5</span>
-    </div>,
-    <div className="bg-red-500 h-64 flex items-center justify-center rounded-lg">
-      <span className="text-white text-2xl font-bold">Card 6</span>
-    </div>
-  ];
-
-
 
   // Scrolling constants
   const [scrolled, setScrolled] = useState(false);
@@ -73,7 +53,7 @@ export default function PageClient({ projects }: PageClientProps) {
         className={`fixed top-0 left-0 right-0 z-50
           flex items-center justify-between
           px-4 sm:px-6
-          py-3 md:py-5 lg:py-6          /* responsive vertical padding */
+          py-3 md:py-4 lg:py-4          /* responsive vertical padding */
           min-h-[56px] md:min-h-[72px]  /* ensure comfortable min heights */
           transition-all duration-300
           ${scrolled ? 'bg-black/80 backdrop-blur-md border-b border-white/10 shadow-lg' : 'bg-transparent'
@@ -88,7 +68,7 @@ export default function PageClient({ projects }: PageClientProps) {
             className="text-xl tracking-wider"
             whileHover={{ scale: 1.05 }}
           >
-            <span className="text-white font-bold">
+            <span className="text-white font-bold text-xl">
               MICHAEL DANLEY
             </span>
           </motion.div>
@@ -283,7 +263,7 @@ export default function PageClient({ projects }: PageClientProps) {
           </div>
         </motion.div>
 
-        {/* Optimized scroll indicator */}
+        {/* Scroll indicator */}
         <motion.div
           className="absolute bottom-10 left-1/2 -translate-x-1/2"
           animate={{ y: [0, 10, 0] }}
@@ -294,8 +274,8 @@ export default function PageClient({ projects }: PageClientProps) {
         </motion.div>
       </section>
 
-      {/* Work Section */}
-      <section id="work" className="py-32 relative bg-white/[0.02]">
+      {/* Projects Section */}
+      <section id="projects" className="py-32 relative bg-white/[0.02]">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -303,49 +283,68 @@ export default function PageClient({ projects }: PageClientProps) {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl font-bold text-white mb-16 text-center">Featured Work</h2>
+            <h2 className="text-4xl font-bold text-white text-left">Featured Work</h2>
+            {/* EmblaCarousel for MDX Projects */}
             <EmblaCarousel
+              // Build project cards using front-matter from MDX projects in content/projects
               slides={projects.map((project, index) => (
-                <motion.div
-                  key={project.slug}
-                  className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/30 h-[600px] flex flex-col"
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1, duration: 0.8 }}
-                  whileHover={{ scale: 1.03, y: -10 }}
-                  style={{ willChange: 'transform' }}
-                >
-                  <div className="h-80 bg-white/5 relative overflow-hidden flex-shrink-0">
-                    <motion.div
-                      className="absolute inset-0 bg-white/10"
-                      initial={{ scale: 1 }}
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 0.4 }}
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      {project.coverImage ? (
-                        <img src={project.coverImage} alt={project.title} className="w-full h-full object-cover" />
-                      ) : (
-                        <Code size={48} className="text-white/50" />
-                      )}
+
+                <div style={{ perspective: "1500px" }}>
+
+                  <motion.div
+                    key={project.slug}
+                    className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/80 h-[600px] flex flex-col"
+                    style={{
+                      transformOrigin: "left center",          // hinge on left edge
+                      transformStyle: "preserve-3d",          // keep children in 3D space
+                      backfaceVisibility: "hidden",           // avoids flicker
+                      willChange: "transform"                 // hint for GPU
+                    }}
+                    whileHover={{
+                      rotateY: -16,                           // target rotation
+                      scale: 1.01                             // subtle scale gives weight
+                    }}
+                    whileTap={{ scale: 0.99 }}                // nice micro feedback on press
+                    transition={{
+                      rotateY: { type: "spring", stiffness: 400, damping: 25, mass: 0.8 },
+                      scale: { type: "spring", stiffness: 300, damping: 30 }
+                    }}
+                  >
+
+
+
+                    <div className="h-80 bg-white/5 relative overflow-hidden flex-shrink-0">
+                      <motion.div
+                        className="absolute inset-0 bg-white/10"
+                        initial={{ scale: 1 }}
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.4 }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        {project.coverImage ? (
+                          <img src={project.coverImage} alt={project.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <Code size={48} className="text-white/50" />
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="p-6 flex-1 flex flex-col">
-                    <h3 className="text-xl font-semibold text-white mb-2">{project.title}</h3>
-                    <p className="text-gray-400 mb-4 flex-1">{project.summary}</p>
-                    <div className="flex gap-2 flex-wrap">
-                      {project.tags.map((tag, tagIndex) => (
-                        <span key={tagIndex} className="px-3 py-1 text-sm bg-white/10 text-gray-300 rounded-full">
-                          {tag}
-                        </span>
-                      ))}
+                    <div className="p-6 flex-1 flex flex-col">
+                      <h3 className="text-xl font-semibold text-white mb-2">{project.title}</h3>
+                      <p className="text-gray-400 mb-4 flex-1">{project.summary}</p>
+                      <div className="flex gap-2 flex-wrap">
+                        {project.tags.map((tag, tagIndex) => (
+                          <span key={tagIndex} className="px-3 py-1 text-sm bg-white/10 text-gray-300 rounded-full">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
+
+                </div>
               ))}
               minCardWidth={400}
-              options={{ loop: true }}
+              options={{ loop: false }}
             />
           </motion.div>
         </div>

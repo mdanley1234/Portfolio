@@ -65,7 +65,7 @@ const EmblaCarousel = ({ slides, options, minCardWidth = 300 }) => {
   if (!slides || slides.length === 0) return null;
 
   return (
-    <div ref={containerRef} className="py-12 -my-12 overflow-hidden">
+    <div ref={containerRef} className="py-2 -my-12 overflow-hidden">
       <div className="rounded-lg" ref={emblaRef}>
         <div className="flex">
           {slides.map((slide, index) => (

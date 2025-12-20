@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, use } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Menu, Github, Linkedin, Mail, Code, Briefcase, User, ChevronDown } from 'lucide-react';
 import { ReactTyped } from "react-typed";
@@ -14,11 +14,56 @@ interface PageClientProps {
 }
 
 /**
- * Generates portfolio homepage using projects passed from server-processing component
+ * Generates portfolio homepage using projects and experiences passed from server-processing component
  * @param projects List of projects to display on the portfolio page
  * @returns rendered portfolio homepage
  */
 export default function PageClient({ projects }: PageClientProps) {
+
+
+  const [activeSection, setActiveSection] = useState('About Me');
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          // Handle navbar background
+          setScrolled(window.scrollY > 50);
+
+          // Handle active section detection
+          const sections = [
+            { name: 'About Me', ref: aboutMeRef },
+            { name: 'Projects', ref: projectsRef },
+            { name: 'Experience', ref: experienceRef }
+          ];
+
+          const scrollPosition = window.scrollY + window.innerHeight / 3;
+
+          for (const section of sections) {
+            const element = section.ref.current;
+            if (element) {
+              const { offsetTop, offsetHeight } = element;
+              if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+                setActiveSection(section.name);
+                break;
+              }
+            }
+          }
+
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Check initial position
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+
 
   // Scrolling constants
   const [scrolled, setScrolled] = useState(false);
@@ -28,69 +73,95 @@ export default function PageClient({ projects }: PageClientProps) {
   const heroY = useTransform(scrollYProgress, [0, 0.3], ['0%', '30%']);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
 
-  // Throttled scroll handler with requestAnimationFrame
-  useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          setScrolled(window.scrollY > 50);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // Smooth href
+  const aboutMeRef = useRef<HTMLDivElement | null>(null);
+  const projectsRef = useRef<HTMLDivElement | null>(null);
+  const experienceRef = useRef<HTMLDivElement | null>(null);
+
+
+
 
   // Build and return webpage
   return (
     <div className="min-h-screen background">
-
       {/* Sticky Header */}
       <motion.header
-        className={`fixed top-0 left-0 right-0 z-50
-          flex items-center justify-between
-          px-4 sm:px-6
-          py-3 md:py-4 lg:py-4          /* responsive vertical padding */
-          min-h-[56px] md:min-h-[72px]  /* ensure comfortable min heights */
-          transition-all duration-300
-          ${scrolled ? 'bg-black/80 backdrop-blur-md border-b border-white/10 shadow-lg' : 'bg-transparent'
-          }`}
+        className="fixed top-0 left-0 right-0 z-50
+        flex items-center justify-between
+        px-4 sm:px-6
+        py-3 md:py-4 lg:py-4
+        min-h-[56px] md:min-h-[72px]
+        transition-all duration-300"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        style={{ willChange: 'transform' }}
+        style={{
+          willChange: 'transform',
+          background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.5) 60%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 75%, transparent 100%)',
+          backdropFilter: 'blur(6px)',
+          WebkitBackdropFilter: 'blur(6px)'
+        }}
       >
+
         <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <motion.div
+          <motion.a
             className="text-xl tracking-wider"
             whileHover={{ scale: 1.05 }}
+            href={''}
           >
-            <span className="text-white font-bold text-xl">
-              MICHAEL DANLEY
+            <span className="text-white font-semibold">
+              Michael Danley
             </span>
-          </motion.div>
+          </motion.a>
 
-          <div className="hidden md:flex items-center gap-8">
-            {['Projects', 'Resume'].map((item, index) => (
-              <motion.a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="text-white-400 hover:text-white transition-colors relative group px-4 py-2 rounded-full"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 + 0.3 }}
-              >
-                <div className="absolute inset-0 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 group-hover:bg-white/20 transition-all" />
-                <span className="relative z-10">
-                  {item}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300" />
-                </span>
-              </motion.a>
-            ))}
-          </div>
+          <motion.div
+            className="hidden md:flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 px-6 py-2"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+
+
+
+            {(['About Me', 'Projects', 'Experience'] as const).map((item, index) => {
+              const refMap = {
+                'About Me': aboutMeRef,
+                'Projects': projectsRef,
+                'Experience': experienceRef
+              };
+
+              // const [activeSection, setActiveSection] = useState('');
+              const isActive = activeSection === item;
+
+              return (
+                <motion.button
+                  key={item}
+                  onClick={() => {
+                    refMap[item]?.current?.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start'
+                    });
+                  }}
+                  className={`transition-colors relative group px-4 py-2 ${isActive
+                      ? 'text-white font-bold border-b-2 border-white'
+                      : 'text-gray-400 hover:text-white'
+                    }`}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 + 0.4 }}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                >
+                  <span className="relative z-10">
+                    {item}
+                  </span>
+                </motion.button>
+              );
+            })}
+
+
+
+          </motion.div>
 
           <motion.button
             className="md:hidden text-gray-400"
@@ -102,7 +173,7 @@ export default function PageClient({ projects }: PageClientProps) {
       </motion.header>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 gradient-background">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20" id='about me' ref={aboutMeRef}>
         {/* DarkVeil Background - Full Width Wrapper */}
         <div className="absolute inset-0 w-full h-full" style={{ zIndex: 0 }}>
           <div style={{ width: '100%', height: '600px', position: 'relative' }}>
@@ -121,15 +192,13 @@ export default function PageClient({ projects }: PageClientProps) {
             <div className="flex flex-col items-start">
               <motion.div
                 className="relative mb-8"
-                initial={{ scale: 0, rotate: -180 }}
+                initial={{ scale: 0, rotate: 0 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}
               >
-                <div className="absolute inset-0 bg-white rounded-full blur-xl opacity-20 animate-pulse" />
+                <div className="absolute inset-0 bg-white rounded-full blur-xl opacity-20" />
                 <motion.div
                   className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl"
-                  whileHover={{ scale: 1.05, rotate: 5 }}
-                  transition={{ duration: 0.3 }}
                   style={{ willChange: 'transform' }}
                 >
                   <img
@@ -161,11 +230,10 @@ export default function PageClient({ projects }: PageClientProps) {
                 <span>
                   <ReactTyped
                     strings={[
-                      "<strong>Electrical &amp; Computer Engineering </strong> and <strong> Computer Science </strong> Undergraduate at Duke University^500",
                       "<strong>ECE</strong> &amp; <strong>CS </strong> @ Duke University"
                     ]}
-                    typeSpeed={40}
-                    backSpeed={20}
+                    typeSpeed={25}
+                    startDelay={600}
                   />
                 </span>
               </motion.div>
@@ -236,11 +304,15 @@ export default function PageClient({ projects }: PageClientProps) {
                 whileHover={{ scale: 1.02, y: -5 }}
                 style={{ willChange: 'transform' }}
               >
-                <Code size={40} className="text-white mb-4" />
-                <h3 className="text-xl font-semibold text-white mb-3">Experience</h3>
+                <div className="flex items-center gap-3 mb-3">
+                  <Code size={40} className="text-white" />
+                  <h3 className="text-xl font-semibold text-white">Background</h3>
+                </div>
                 <p className="text-gray-400">
-                  Building responsive and performant web applications using React,
-                  TypeScript, and modern frameworks.
+
+                  I'm an undergraduate studying
+
+
                 </p>
               </motion.div>
 
@@ -248,17 +320,20 @@ export default function PageClient({ projects }: PageClientProps) {
                 className="p-8 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-white/30 transition-all"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.8, duration: 0.8 }}
+                transition={{ delay: 0.6, duration: 0.8 }}
                 whileHover={{ scale: 1.02, y: -5 }}
                 style={{ willChange: 'transform' }}
               >
-                <Briefcase size={40} className="text-white mb-4" />
-                <h3 className="text-xl font-semibold text-white mb-3">Skills</h3>
+                <div className="flex items-center gap-3 mb-3">
+                  <Code size={40} className="text-white" />
+                  <h3 className="text-xl font-semibold text-white">Skills</h3>
+                </div>
                 <p className="text-gray-400">
-                  5+ years of experience creating innovative solutions for startups
-                  and established companies.
+                  Building responsive and performant web applications using React,
+                  TypeScript, and modern frameworks.
                 </p>
               </motion.div>
+
             </div>
           </div>
         </motion.div>
@@ -275,7 +350,7 @@ export default function PageClient({ projects }: PageClientProps) {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-32 relative bg-white/[0.02]">
+      <section id="projects" className="py-32 relative bg-white/[0.02]" ref={projectsRef}>
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -283,7 +358,7 @@ export default function PageClient({ projects }: PageClientProps) {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl font-bold text-white text-left">Featured Work</h2>
+            <h2 className="text-4xl font-bold text-white text-left px-4">Featured Projects</h2>
             {/* EmblaCarousel for MDX Projects */}
             <EmblaCarousel
               // Build project cards using front-matter from MDX projects in content/projects
@@ -295,7 +370,7 @@ export default function PageClient({ projects }: PageClientProps) {
                     key={project.slug}
                     className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/80 h-[600px] flex flex-col"
                     style={{
-                      transformOrigin: "left center",          // hinge on left edge
+                      transformOrigin: "left center",         // hinge on left edge
                       transformStyle: "preserve-3d",          // keep children in 3D space
                       backfaceVisibility: "hidden",           // avoids flicker
                       willChange: "transform"                 // hint for GPU

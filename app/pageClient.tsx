@@ -7,6 +7,7 @@ import { ReactTyped } from "react-typed";
 import { Project } from '@/lib/getProjects';
 import DarkVeil from '@/lib/bits/DarkVeil';
 import EmblaCarousel from '@/lib/carousel/EmblaCarousel';
+import Link from "next/link"
 
 // For project MDX file parsing
 interface PageClientProps {
@@ -143,14 +144,14 @@ export default function PageClient({ projects }: PageClientProps) {
                       block: 'start'
                     });
                   }}
-                  className={`transition-colors relative group px-4 py-2 ${isActive
-                      ? 'text-white font-bold border-b-2 border-white'
+                  className={`transition-colors relative group px-4 py-2  ${isActive
+                      ? 'text-white font-bold underline underline-offset-6 decoration-2'
                       : 'text-gray-400 hover:text-white'
                     }`}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 + 0.4 }}
-                  whileHover={{ scale: 1.05, y: -2 }}
+                  // transition={{ delay: index * 0.1 + 0.4 }}
+                  whileHover={{ scale: 1.05, y: -1 }}
                 >
                   <span className="relative z-10">
                     {item}
@@ -263,24 +264,6 @@ export default function PageClient({ projects }: PageClientProps) {
                   </motion.a>
                 ))}
               </motion.div>
-
-              <motion.button
-                className="px-8 py-4 bg-white text-black rounded-full hover:shadow-lg hover:shadow-white/20 transition-all relative overflow-hidden group"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9, duration: 0.8 }}
-                style={{ willChange: 'transform' }}
-              >
-                <span className="relative z-10 font-semibold">View My Work</span>
-                <motion.div
-                  className="absolute inset-0 bg-gray-200"
-                  initial={{ x: '100%' }}
-                  whileHover={{ x: 0 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </motion.button>
             </div>
 
             {/* Right Side - About Me Boxes */}
@@ -358,66 +341,72 @@ export default function PageClient({ projects }: PageClientProps) {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl font-bold text-white text-left px-4">Featured Projects</h2>
+
+            <div className="flex items-center justify-between px-4">
+              <h2 className="text-4xl font-bold text-white text-left">
+                Featured Projects
+              </h2>
+
+              <button className="bg-white text-black px-4 py-2 rounded-full font-medium hover:bg-gray-200 transition-colors">
+                See All
+              </button>
+            </div>
+
+
             {/* EmblaCarousel for MDX Projects */}
             <EmblaCarousel
               // Build project cards using front-matter from MDX projects in content/projects
               slides={projects.map((project, index) => (
-
-                <div style={{ perspective: "1500px" }}>
-
-                  <motion.div
-                    key={project.slug}
-                    className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/80 h-[600px] flex flex-col"
-                    style={{
-                      transformOrigin: "left center",         // hinge on left edge
-                      transformStyle: "preserve-3d",          // keep children in 3D space
-                      backfaceVisibility: "hidden",           // avoids flicker
-                      willChange: "transform"                 // hint for GPU
-                    }}
-                    whileHover={{
-                      rotateY: -16,                           // target rotation
-                      scale: 1.01                             // subtle scale gives weight
-                    }}
-                    whileTap={{ scale: 0.99 }}                // nice micro feedback on press
-                    transition={{
-                      rotateY: { type: "spring", stiffness: 400, damping: 25, mass: 0.8 },
-                      scale: { type: "spring", stiffness: 300, damping: 30 }
-                    }}
-                  >
-
-
-
-                    <div className="h-80 bg-white/5 relative overflow-hidden flex-shrink-0">
-                      <motion.div
-                        className="absolute inset-0 bg-white/10"
-                        initial={{ scale: 1 }}
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ duration: 0.4 }}
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        {project.coverImage ? (
-                          <img src={project.coverImage} alt={project.title} className="w-full h-full object-cover" />
-                        ) : (
-                          <Code size={48} className="text-white/50" />
-                        )}
-                      </div>
-                    </div>
-                    <div className="p-6 flex-1 flex flex-col">
-                      <h3 className="text-xl font-semibold text-white mb-2">{project.title}</h3>
-                      <p className="text-gray-400 mb-4 flex-1">{project.summary}</p>
-                      <div className="flex gap-2 flex-wrap">
-                        {project.tags.map((tag, tagIndex) => (
-                          <span key={tagIndex} className="px-3 py-1 text-sm bg-white/10 text-gray-300 rounded-full">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-
-                </div>
-              ))}
+  <div key={project.slug} style={{ perspective: "1500px" }}>
+    <Link href={`/projects/${project.slug}`} className="block h-full">
+      <motion.div
+        className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/80 h-[600px] flex flex-col"
+        style={{
+          transformOrigin: "left center",
+          transformStyle: "preserve-3d",
+          backfaceVisibility: "hidden",
+          willChange: "transform"
+        }}
+        whileHover={{
+          rotateY: -16,
+          scale: 1.01
+        }}
+        whileTap={{ scale: 0.99 }}
+        transition={{
+          rotateY: { type: "spring", stiffness: 400, damping: 25, mass: 0.8 },
+          scale: { type: "spring", stiffness: 300, damping: 30 }
+        }}
+      >
+        <div className="h-80 bg-white/5 relative overflow-hidden flex-shrink-0">
+          <motion.div
+            className="absolute inset-0 bg-white/10"
+            initial={{ scale: 1 }}
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.4 }}
+          />
+          <div className="absolute inset-0 flex items-center justify-center">
+            {project.coverImage ? (
+              <img src={project.coverImage} alt={project.title} className="w-full h-full object-cover" />
+            ) : (
+              <Code size={48} className="text-white/50" />
+            )}
+          </div>
+        </div>
+        <div className="p-6 flex-1 flex flex-col">
+          <h3 className="text-xl font-semibold text-white mb-2">{project.title}</h3>
+          <p className="text-gray-400 mb-4 flex-1">{project.summary}</p>
+          <div className="flex gap-2 flex-wrap">
+            {project.tags.map((tag, tagIndex) => (
+              <span key={tagIndex} className="px-3 py-1 text-sm bg-white/10 text-gray-300 rounded-full">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+    </Link>
+  </div>
+))}
               minCardWidth={400}
               options={{ loop: false }}
             />
@@ -425,7 +414,7 @@ export default function PageClient({ projects }: PageClientProps) {
         </div>
       </section>
 
-      {/* Contact Section */}
+      {/* Experience Section */}
       <section id="contact" className="py-32 relative">
         <div className="container mx-auto px-6">
           <motion.div

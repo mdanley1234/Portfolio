@@ -38,7 +38,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const components = {
-  DemoBanner,
+  // Insert MDX Components here
+  DemoBanner
 }
 
 
@@ -60,21 +61,7 @@ export default async function ProjectPage({ params }: Props) {
   // Generate and return page
   return (
     <main className="max-w-4xl mx-auto p-6">
-      <header className="mb-8">
-        <h1 className="text-4xl font-bold mb-4">{String(data.title ?? slug)}</h1>
-        {data.coverImage && (
-          <div className="mt-4 rounded overflow-hidden">
-            <Image 
-              src={String(data.coverImage)} 
-              alt={String(data.title ?? slug)} 
-              width={1200} 
-              height={600} 
-              className="object-cover" 
-            />
-          </div>
-        )}
-      </header>
-      <article className="prose prose-slate lg:prose-lg max-w-none">
+      <article className="prose prose-invert lg:prose-lg max-w-none">
         {/* Generate MDX file */}
         <MDXRemote 
           source={content}

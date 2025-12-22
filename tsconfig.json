@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "lib/getProjects.tsx"  ],
+, "lib/getProjects.tsx", "lib/carousel/ProjectCard.jsx"  ],
   "exclude": ["node_modules"]
 }

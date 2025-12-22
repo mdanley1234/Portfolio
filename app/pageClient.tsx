@@ -7,6 +7,7 @@ import { ReactTyped } from "react-typed";
 import { Project } from '@/lib/getProjects';
 import DarkVeil from '@/lib/bits/DarkVeil';
 import EmblaCarousel from '@/lib/carousel/EmblaCarousel';
+import ProjectCard from '@/lib/carousel/ProjectCard';
 import Link from "next/link"
 
 // For project MDX file parsing
@@ -267,7 +268,28 @@ export default function PageClient({ projects }: PageClientProps) {
                   </motion.a>
                 ))}
               </motion.div>
+
+              {/* Resume Download */}
+              <motion.button
+                className="px-8 py-4 bg-white text-black rounded-full hover:shadow-lg hover:shadow-white/20 transition-all relative overflow-hidden group"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9, duration: 0.8 }}
+                style={{ willChange: 'transform' }}
+              >
+                <span className="relative z-10 font-semibold">Resume</span>
+                <motion.div
+                  className="absolute inset-0 bg-gray-200"
+                  initial={{ x: '100%' }}
+                  whileHover={{ x: 0 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </motion.button>
+
             </div>
+
 
             {/* Hero Section Right Side */}
             <div className="grid gap-6">
@@ -278,7 +300,7 @@ export default function PageClient({ projects }: PageClientProps) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 0.8 }}
               >
-                <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center gap-4 mb-4">
                   <User size={32} className="text-white" />
                   <h2 className="text-3xl font-bold text-white">About Me</h2>
                 </div>
@@ -373,73 +395,7 @@ export default function PageClient({ projects }: PageClientProps) {
 
               // Build project cards using front-matter from MDX projects in content/projects
               slides={projects.map((project, index) => (
-
-                // Set viewer perspective for swing animation
-                <div key={project.slug} style={{ perspective: "1500px" }}>
-
-                  {/* Setup link to project details page */}
-                  <Link href={`/projects/${project.slug}`} className="block h-full">
-
-                    {/* Build project card */}
-                    <motion.div
-                      className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/80 h-[600px] flex flex-col"
-                      style={{
-                        transformOrigin: "left center",
-                        transformStyle: "preserve-3d",
-                        backfaceVisibility: "hidden",
-                        willChange: "transform"
-                      }}
-
-                      // Define hover swing animation
-                      whileHover={{
-                        rotateY: -16,
-                        scale: 1.01
-                      }}
-                      whileTap={{ scale: 0.99 }}
-                      transition={{
-                        rotateY: { type: "spring", stiffness: 400, damping: 25, mass: 0.8 },
-                        scale: { type: "spring", stiffness: 300, damping: 30 }
-                      }}
-                    >
-
-                      {/* Project Cover Image */}
-                      <div className="h-80 bg-white/5 relative overflow-hidden flex-shrink-0">
-                        <motion.div
-                          className="absolute inset-0 bg-white/10"
-                          initial={{ scale: 1 }}
-                          whileHover={{ scale: 1.1 }}
-                          transition={{ duration: 0.4 }}
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          {project.coverImage ? (
-                            <img src={project.coverImage} alt={project.title} className="w-full h-full object-cover" />
-                          ) : (
-                            <Code size={48} className="text-white/50" />
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Project Blurb */}
-                      <div className="p-6 flex-1 flex flex-col">
-
-                        {/* Project Title */}
-                        <h3 className="text-xl font-semibold text-white mb-2">{project.title}</h3>
-
-                        {/* Project Summary */}
-                        <p className="text-gray-400 mb-4 flex-1">{project.summary}</p>
-
-                        {/* Project Tags */}
-                        <div className="flex gap-2 flex-wrap">
-                          {project.tags.map((tag, tagIndex) => (
-                            <span key={tagIndex} className="px-3 py-1 text-sm bg-white/10 text-gray-300 rounded-full">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </motion.div>
-                  </Link>
-                </div>
+                <ProjectCard key={project.slug} project={project} />
               ))}
 
               // Set minCardWidth
@@ -448,7 +404,7 @@ export default function PageClient({ projects }: PageClientProps) {
             />
           </motion.div>
         </div>
-      </section>
+      </section >
 
 
 
@@ -488,6 +444,6 @@ export default function PageClient({ projects }: PageClientProps) {
           <p>&copy; 2025 Michael Danley. All rights reserved.</p>
         </div>
       </footer>
-    </div>
+    </div >
   );
 }

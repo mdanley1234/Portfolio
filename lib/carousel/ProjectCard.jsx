@@ -1,0 +1,98 @@
+import { motion } from 'framer-motion';
+import { Code } from 'lucide-react';
+import { useState } from 'react';
+
+// ProjectCard component for individual project
+export default function ProjectCard({ project }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div
+      style={{ perspective: "1000px" }}
+      className="relative"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Animated outline behind card */}
+      <motion.div
+        className="absolute inset-0 rounded-2xl border-2 border-white pointer-events-none"
+        style={{
+          transformOrigin: "center",
+          zIndex: 0,
+          scaleX: 0.8,
+          scaleY: 0.8
+        }}
+        animate={isHovered ? {
+          x: 40
+        } : {
+          x: 0
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 25
+        }}
+      />
+
+      {/* Setup link to project details page */}
+      <a href={`/projects/${project.slug}`} className="block h-full relative z-10">            
+      
+        {/* Build project card */}
+        <motion.div
+          className="group relative overflow-hidden rounded-2xl border border-white/20 hover:border-white h-[600px] flex flex-col"
+          style={{
+            transformOrigin: "left center",
+            transformStyle: "preserve-3d",
+            backfaceVisibility: "hidden",
+            willChange: "transform"
+          }}
+          // Define hover swing animation
+          whileHover={{
+            rotateY: -25,
+            scale: 1.01
+          }}
+          whileTap={{ scale: 0.99 }}
+          transition={{
+            rotateY: { type: "spring", stiffness: 400, damping: 25, mass: 0.8 },
+            scale: { type: "spring", stiffness: 300, damping: 30 }
+          }}
+        >
+          {/* Project Cover Image */}
+          <div className="h-80 relative overflow-hidden flex-shrink-0">
+            <motion.div
+              className="absolute inset-0 bg-white/10"
+              initial={{ scale: 1 }}
+              whileHover={{ scale: 1.1 }}
+              transition={{ duration: 0.4 }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              {project.coverImage ? (
+                <img src={project.coverImage} alt={project.title} className="w-full h-full object-cover" />
+              ) : (
+                <Code size={48} className="text-white/50" />
+              )}
+            </div>
+          </div>
+
+          {/* Project Blurb */}
+          <div className="p-6 flex-1 flex flex-col bg-gray-900">
+            {/* Project Title */}
+            <h3 className="text-xl font-semibold text-white mb-2">{project.title}</h3>
+
+            {/* Project Summary */}
+            <p className="text-gray-400 flex-1">{project.summary}</p>
+
+            {/* Project Tags */}
+            <div className="flex gap-2 flex-wrap">
+              {project.tags.map((tag, tagIndex) => (
+                <span key={tagIndex} className="px-3 py-1 text-sm bg-white/10 text-gray-300 rounded-full">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </a>
+    </div>
+  );
+}

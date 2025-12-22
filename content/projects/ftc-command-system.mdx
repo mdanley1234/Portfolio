@@ -1,0 +1,39 @@
+---
+title: "FTC Command System"
+start: "Fall 2024"
+end: "Spring 2025"
+summary: "A custom command-based control system in Java (30+ files, 2,800+ lines) using a trajectory-driven scheduler for modular robot subsystem control; earned 1st Place Programming at the FTC State Competition."
+coverImage: "/images/ftc-command/cover.jpg"
+tags: [software, controls, java]
+---
+
+# FTC Command System
+
+For the 2024–2025 season I developed a custom command-based control system in Java featuring a trajectory-driven scheduler for modular, dynamic robot control.
+
+## Robot Subsystems
+
+Each subsystem implements a generic `Subsystem` interface and defines an enum of substates representing its finite behaviors. Subsystems are composed into higher-level BotState objects for coordinated behaviors.
+
+![Subsystem Diagram](/images/ftc-command/subsystem-diagram.png)
+
+## BotState & SystemTrajectory
+
+* **BotState:** encapsulates a set of subsystem substates and transition conditionals (timers, sensor values).
+* **SystemTrajectory:** sequences BotState instances to approximate an optimized path between system states — avoids unsafe substate permutations that could cause collisions or brownouts.
+
+## Scheduler & Implementation
+
+* Over 30 Java files and ~2,800 lines of code implementing:
+  * trajectory construction,
+  * conditional transitions,
+  * BotSystem management of active trajectories and user gamepad inputs,
+  * subsystem controllers and state transitions.
+* The scheduler was tuned for execution headroom and minimal delay while providing reliable transitions.
+
+![Code Snippet: Trajectory Construction](/images/ftc-command/code-snippet.png)
+
+## Results
+
+The architecture simplified testing and optimization of individual subsystems and allowed easy integration of advanced sensors. This system contributed to winning the 1st Place Programming (Control) award at the FTC State Competition.
+

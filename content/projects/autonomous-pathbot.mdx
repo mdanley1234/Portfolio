@@ -1,0 +1,42 @@
+---
+title: "Autonomous Pathbot"
+start: "Fall 2024"
+end: "Spring 2025"
+summary: "A custom 2-wheeled robot that follows pre-programmed paths using odometry-based localization, an ESP32 MCU, quadrature encoders, and custom PID-based control algorithms."
+coverImage: "/images/pathbot/cover.png"
+tags: [robotics, embedded, control]
+---
+
+# Autonomous Pathbot
+
+This project created a two-wheeled robot capable of following pre-programmed path instructions using odometry localization and custom control software.
+
+## Component Sourcing
+
+* **MCU:** ESP32-WROOM for wireless capabilities and compute.
+* **Motor Driver:** TB6612FNG (up to ~1.2 A continuous).
+* **Motors:** Geared motors ~500 RPM with magnetic quadrature encoders for precise tracking.
+
+![Components: ESP32, Motor Driver, Encoder](/images/pathbot/components.png)
+
+## Chassis Design & Fabrication
+
+Custom enclosure and drivetrain chassis were designed in Fusion 360. Wheels and parts were 3D printed in PLA. Wheel diameter inconsistencies were corrected to improve localization accuracy.
+
+![Chassis Render and 3D Printed Parts](/images/pathbot/chassis-render.png)
+
+## Localization Programming (C++)
+
+* Implemented odometry-based localization using encoder inputs.
+* Custom PID controllers generate motor commands to reach target poses.
+* A command scheduler manages a stack of path commands and updates targets according to positional conditions.
+* Wireless telemetry: robot transmits localization data via TCP and accepts manual control via UDP. A Python PC script displays real-time data.
+
+![Localization Debug and Console](/images/pathbot/localization-debug.png)
+
+## Tuning & Optimization
+
+* **Localization tuning:** calibrate wheel sizing and encoder counts.
+* **PID tuning:** balance speed vs. overshoot to minimize drift.
+* **Results:** Accurate localization within a few centimeters under manual control. Motion profiling absence produced drift on longer trajectories (wheel slip during rotation).
+

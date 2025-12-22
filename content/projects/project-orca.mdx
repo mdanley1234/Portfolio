@@ -1,0 +1,46 @@
+---
+title: "Project ORCA"
+start: "Fall 2025"
+end: "Present"
+summary: "An embedded system that replicates real-time environmental light conditions inside an incubation vessel, featuring custom sensor and chamber electronics with RS-485 communication."
+coverImage: "/images/orca/cover.jpg"
+tags: [embedded, pcb, sensors]
+---
+
+# Project ORCA
+
+ORCA (Optical Replication & Control Apparatus) is a system designed to emulate real-time environmental light intensity inside an incubation vessel aboard a marine research boat. I was responsible for designing and fabricating the electrical circuitry.
+
+## Overview of Solution
+
+To meet the client’s design criteria we developed a two-part system with a sensor module and a chamber module connected via cable. The solution is designed to be at least IP54 compliant. The sensor module collects real-time outdoor light data and transmits it to the chamber module, which modulates LEDs around the incubation vessel to replicate the detected intensity. The system includes wireless interfacing, manual control, and data logging.
+
+![ORCA System Render](/images/orca/enclosure-render.png)
+
+## Sensor Module Design
+
+* **MCU:** ESP32 for low-power operation and integrated wireless.
+* **Sensing:** Two VEML7700 lux sensors on I²C for solar intensity.
+* **Comms:** UART to a MAX3485 RS-485 transceiver for robust long-distance wired link.
+* **Interface:** Power + data fed via RJ45 (twisted pairs used for power, RX/TX, ground).
+* **Power:** AP63203 buck converter drops 24 V VIN to 3.3 V for the module.
+
+![Sensor Module Schematic](/images/orca/sensor-schematic.png)
+
+## Chamber Module Design
+
+* **Controller:** Raspberry Pi Zero 2 (quad-core) for data processing and storage.
+* **Power:** AP63205 fixed buck and AP2112-3.3 LDO supply 5 V and 3.3 V respectively.
+* **Comms:** RS-485 (MAX3485) receives sensor data; Pi converts to UART and calculates PWM duty cycles.
+* **LED Drive:** Pi controls MOSFET drivers to switch high-amperage 24 V LED arrays.
+
+![Chamber Module Schematic](/images/orca/chamber-schematic.png)
+
+## Hardware Communication Design
+
+RS-485 was chosen for EMI immunity and long-distance reliability. An RJ45 connector provides four twisted pairs; power is transmitted at supply voltage to be buck-converted at the sensor end to mitigate cable voltage drop.
+
+## Future Plans
+
+Prototype testing is underway. Next steps include designing robust PCBs for both modules and adding long-range wireless capabilities and enhanced enclosure sealing.
+

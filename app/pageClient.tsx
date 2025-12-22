@@ -21,8 +21,10 @@ interface PageClientProps {
  */
 export default function PageClient({ projects }: PageClientProps) {
 
+  // PRE-RENDER INITIALIZATION STAGE
 
-  const [activeSection, setActiveSection] = useState('About Me');
+  // Navbar scrolling function (Detecting current section)
+  const [activeSection, setActiveSection] = useState('Home');
   useEffect(() => {
     let ticking = false;
 
@@ -34,7 +36,7 @@ export default function PageClient({ projects }: PageClientProps) {
 
           // Handle active section detection
           const sections = [
-            { name: 'About Me', ref: aboutMeRef },
+            { name: 'Home', ref: homeRef },
             { name: 'Projects', ref: projectsRef },
             { name: 'Experience', ref: experienceRef }
           ];
@@ -64,9 +66,7 @@ export default function PageClient({ projects }: PageClientProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-
-
-  // Scrolling constants
+  // More scrolling constants
   const [scrolled, setScrolled] = useState(false);
   const { scrollYProgress } = useScroll();
 
@@ -74,17 +74,15 @@ export default function PageClient({ projects }: PageClientProps) {
   const heroY = useTransform(scrollYProgress, [0, 0.3], ['0%', '30%']);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
 
-  // Smooth href
-  const aboutMeRef = useRef<HTMLDivElement | null>(null);
+  // Smooth href constants
+  const homeRef = useRef<HTMLDivElement | null>(null);
   const projectsRef = useRef<HTMLDivElement | null>(null);
   const experienceRef = useRef<HTMLDivElement | null>(null);
 
-
-
-
-  // Build and return webpage
+  // WEBPAGE BUILDING STAGE
   return (
     <div className="min-h-screen background">
+
       {/* Sticky Header */}
       <motion.header
         className="fixed top-0 left-0 right-0 z-50
@@ -105,7 +103,10 @@ export default function PageClient({ projects }: PageClientProps) {
         }}
       >
 
+        {/* Navbar */}
         <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
+
+          {/* Navbar Left */}
           <motion.a
             className="text-xl tracking-wider"
             whileHover={{ scale: 1.05 }}
@@ -116,6 +117,7 @@ export default function PageClient({ projects }: PageClientProps) {
             </span>
           </motion.a>
 
+          {/* Navbar Right */}
           <motion.div
             className="hidden md:flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 px-6 py-2"
             initial={{ opacity: 0, y: -20 }}
@@ -123,18 +125,16 @@ export default function PageClient({ projects }: PageClientProps) {
             transition={{ delay: 0.3 }}
           >
 
-
-
-            {(['About Me', 'Projects', 'Experience'] as const).map((item, index) => {
+            {/* Generates and links navbar section buttons from list */}
+            {(['Home', 'Projects', 'Experience'] as const).map((item, index) => {
               const refMap = {
-                'About Me': aboutMeRef,
+                'Home': homeRef,
                 'Projects': projectsRef,
                 'Experience': experienceRef
               };
-
-              // const [activeSection, setActiveSection] = useState('');
               const isActive = activeSection === item;
 
+              // Build section buttons and define href behavior
               return (
                 <motion.button
                   key={item}
@@ -145,8 +145,8 @@ export default function PageClient({ projects }: PageClientProps) {
                     });
                   }}
                   className={`transition-colors relative group px-4 py-2  ${isActive
-                      ? 'text-white font-bold underline underline-offset-6 decoration-2'
-                      : 'text-gray-400 hover:text-white'
+                    ? 'text-white font-bold underline underline-offset-6 decoration-2'
+                    : 'text-gray-400 hover:text-white'
                     }`}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -159,11 +159,9 @@ export default function PageClient({ projects }: PageClientProps) {
                 </motion.button>
               );
             })}
-
-
-
           </motion.div>
 
+          {/* TODO: Add expanding menu for mobile devices */}
           <motion.button
             className="md:hidden text-gray-400"
             whileTap={{ scale: 0.9 }}
@@ -174,7 +172,7 @@ export default function PageClient({ projects }: PageClientProps) {
       </motion.header>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20" id='about me' ref={aboutMeRef}>
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20" id='home' ref={homeRef}>
         {/* DarkVeil Background - Full Width Wrapper */}
         <div className="absolute inset-0 w-full h-full" style={{ zIndex: 0 }}>
           <div style={{ width: '100%', height: '600px', position: 'relative' }}>
@@ -182,15 +180,17 @@ export default function PageClient({ projects }: PageClientProps) {
           </div>
         </div>
 
-        {/* Hero content with optimized parallax */}
+        {/* Hero content section with optimized parallax */}
         <motion.div
           className="container mx-auto px-6 relative z-10"
           style={{ y: heroY, opacity: heroOpacity, willChange: 'transform, opacity' }}
         >
-
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Side */}
+
+            {/* Hero Section Left Side */}
             <div className="flex flex-col items-start">
+
+              {/* Profile Image */}
               <motion.div
                 className="relative mb-8"
                 initial={{ scale: 0, rotate: 0 }}
@@ -210,6 +210,7 @@ export default function PageClient({ projects }: PageClientProps) {
                 </motion.div>
               </motion.div>
 
+              {/* Profile Name */}
               <motion.h1
                 className="mb-6"
                 initial={{ opacity: 0, y: 30 }}
@@ -222,6 +223,7 @@ export default function PageClient({ projects }: PageClientProps) {
                 </span>
               </motion.h1>
 
+              {/* Profile Blurb */}
               <motion.div
                 className="text-xl text-gray-300 mb-12 max-w-lg"
                 initial={{ opacity: 0, y: 30 }}
@@ -239,6 +241,7 @@ export default function PageClient({ projects }: PageClientProps) {
                 </span>
               </motion.div>
 
+              {/* Profile Links */}
               <motion.div
                 className="flex gap-6 mb-12"
                 initial={{ opacity: 0, y: 30 }}
@@ -266,8 +269,10 @@ export default function PageClient({ projects }: PageClientProps) {
               </motion.div>
             </div>
 
-            {/* Right Side - About Me Boxes */}
+            {/* Hero Section Right Side */}
             <div className="grid gap-6">
+
+              {/* About Me Header */}
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -279,6 +284,7 @@ export default function PageClient({ projects }: PageClientProps) {
                 </div>
               </motion.div>
 
+              {/* First Information Box */}
               <motion.div
                 className="p-8 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-white/30 transition-all"
                 initial={{ opacity: 0, x: 50 }}
@@ -287,10 +293,13 @@ export default function PageClient({ projects }: PageClientProps) {
                 whileHover={{ scale: 1.02, y: -5 }}
                 style={{ willChange: 'transform' }}
               >
+                {/* First Information Box Header */}
                 <div className="flex items-center gap-3 mb-3">
                   <Code size={40} className="text-white" />
                   <h3 className="text-xl font-semibold text-white">Background</h3>
                 </div>
+
+                {/* First Information Box Content */}
                 <p className="text-gray-400">
 
                   I'm an undergraduate studying
@@ -299,6 +308,7 @@ export default function PageClient({ projects }: PageClientProps) {
                 </p>
               </motion.div>
 
+              {/* Second Information Box */}
               <motion.div
                 className="p-8 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-white/30 transition-all"
                 initial={{ opacity: 0, x: 50 }}
@@ -307,21 +317,23 @@ export default function PageClient({ projects }: PageClientProps) {
                 whileHover={{ scale: 1.02, y: -5 }}
                 style={{ willChange: 'transform' }}
               >
+                {/* Second Information Box Header */}
                 <div className="flex items-center gap-3 mb-3">
                   <Code size={40} className="text-white" />
                   <h3 className="text-xl font-semibold text-white">Skills</h3>
                 </div>
+
+                {/* Second Information Box Content */}
                 <p className="text-gray-400">
                   Building responsive and performant web applications using React,
                   TypeScript, and modern frameworks.
                 </p>
               </motion.div>
-
             </div>
           </div>
         </motion.div>
 
-        {/* Scroll indicator */}
+        {/* Scroll Down Indicator */}
         <motion.div
           className="absolute bottom-10 left-1/2 -translate-x-1/2"
           animate={{ y: [0, 10, 0] }}
@@ -342,77 +354,107 @@ export default function PageClient({ projects }: PageClientProps) {
             transition={{ duration: 0.8 }}
           >
 
+            {/* Projects Section Header */}
             <div className="flex items-center justify-between px-4">
+
+              {/* Left Side - Section Title */}
               <h2 className="text-4xl font-bold text-white text-left">
                 Featured Projects
               </h2>
 
+              {/* Right Side - Section Buttons */}
               <button className="bg-white text-black px-4 py-2 rounded-full font-medium hover:bg-gray-200 transition-colors">
                 See All
               </button>
             </div>
 
-
             {/* EmblaCarousel for MDX Projects */}
             <EmblaCarousel
+
               // Build project cards using front-matter from MDX projects in content/projects
               slides={projects.map((project, index) => (
-  <div key={project.slug} style={{ perspective: "1500px" }}>
-    <Link href={`/projects/${project.slug}`} className="block h-full">
-      <motion.div
-        className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/80 h-[600px] flex flex-col"
-        style={{
-          transformOrigin: "left center",
-          transformStyle: "preserve-3d",
-          backfaceVisibility: "hidden",
-          willChange: "transform"
-        }}
-        whileHover={{
-          rotateY: -16,
-          scale: 1.01
-        }}
-        whileTap={{ scale: 0.99 }}
-        transition={{
-          rotateY: { type: "spring", stiffness: 400, damping: 25, mass: 0.8 },
-          scale: { type: "spring", stiffness: 300, damping: 30 }
-        }}
-      >
-        <div className="h-80 bg-white/5 relative overflow-hidden flex-shrink-0">
-          <motion.div
-            className="absolute inset-0 bg-white/10"
-            initial={{ scale: 1 }}
-            whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.4 }}
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            {project.coverImage ? (
-              <img src={project.coverImage} alt={project.title} className="w-full h-full object-cover" />
-            ) : (
-              <Code size={48} className="text-white/50" />
-            )}
-          </div>
-        </div>
-        <div className="p-6 flex-1 flex flex-col">
-          <h3 className="text-xl font-semibold text-white mb-2">{project.title}</h3>
-          <p className="text-gray-400 mb-4 flex-1">{project.summary}</p>
-          <div className="flex gap-2 flex-wrap">
-            {project.tags.map((tag, tagIndex) => (
-              <span key={tagIndex} className="px-3 py-1 text-sm bg-white/10 text-gray-300 rounded-full">
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-    </Link>
-  </div>
-))}
+
+                // Set viewer perspective for swing animation
+                <div key={project.slug} style={{ perspective: "1500px" }}>
+
+                  {/* Setup link to project details page */}
+                  <Link href={`/projects/${project.slug}`} className="block h-full">
+
+                    {/* Build project card */}
+                    <motion.div
+                      className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/80 h-[600px] flex flex-col"
+                      style={{
+                        transformOrigin: "left center",
+                        transformStyle: "preserve-3d",
+                        backfaceVisibility: "hidden",
+                        willChange: "transform"
+                      }}
+
+                      // Define hover swing animation
+                      whileHover={{
+                        rotateY: -16,
+                        scale: 1.01
+                      }}
+                      whileTap={{ scale: 0.99 }}
+                      transition={{
+                        rotateY: { type: "spring", stiffness: 400, damping: 25, mass: 0.8 },
+                        scale: { type: "spring", stiffness: 300, damping: 30 }
+                      }}
+                    >
+
+                      {/* Project Cover Image */}
+                      <div className="h-80 bg-white/5 relative overflow-hidden flex-shrink-0">
+                        <motion.div
+                          className="absolute inset-0 bg-white/10"
+                          initial={{ scale: 1 }}
+                          whileHover={{ scale: 1.1 }}
+                          transition={{ duration: 0.4 }}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          {project.coverImage ? (
+                            <img src={project.coverImage} alt={project.title} className="w-full h-full object-cover" />
+                          ) : (
+                            <Code size={48} className="text-white/50" />
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Project Blurb */}
+                      <div className="p-6 flex-1 flex flex-col">
+
+                        {/* Project Title */}
+                        <h3 className="text-xl font-semibold text-white mb-2">{project.title}</h3>
+
+                        {/* Project Summary */}
+                        <p className="text-gray-400 mb-4 flex-1">{project.summary}</p>
+
+                        {/* Project Tags */}
+                        <div className="flex gap-2 flex-wrap">
+                          {project.tags.map((tag, tagIndex) => (
+                            <span key={tagIndex} className="px-3 py-1 text-sm bg-white/10 text-gray-300 rounded-full">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  </Link>
+                </div>
+              ))}
+
+              // Set minCardWidth
               minCardWidth={400}
               options={{ loop: false }}
             />
           </motion.div>
         </div>
       </section>
+
+
+
+      {/* TODO - ADD EXPERIENCE SECTION & BUILD FOOTER */}
+
+
 
       {/* Experience Section */}
       <section id="contact" className="py-32 relative">

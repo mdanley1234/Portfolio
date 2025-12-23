@@ -36,27 +36,29 @@ export default function ProjectCard({ project }) {
       />
 
       {/* Setup link to project details page */}
-      <a href={`/projects/${project.slug}`} className="block h-full relative z-10">
 
-        {/* Build project card */}
-        <motion.div
-          className="project-card-bg group relative overflow-hidden rounded-2xl border border-white/20 hover:border-white h-[600px] flex flex-col card-background"
-          style={{
-            transformOrigin: "left center",
-            transformStyle: "preserve-3d",
-            backfaceVisibility: "hidden",
-            willChange: "transform"
-          }}
-          // Define hover swing animation
-          whileHover={{
-            rotateY: -20,
-          }}
-          whileTap={{ scale: 0.99 }}
-          transition={{
-            rotateY: { type: "spring", stiffness: 400, damping: 25, mass: 0.8 },
-            scale: { type: "spring", stiffness: 300, damping: 30 }
-          }}
-        >
+      {/* Build project card */}
+      <motion.div
+        className="project-card-bg group relative overflow-hidden rounded-2xl border border-white/20 hover:border-white h-[600px] flex flex-col card-background"
+        style={{
+          transformOrigin: "left center",
+          transformStyle: "preserve-3d",
+          backfaceVisibility: "hidden",
+          willChange: "transform"
+        }}
+        // Define hover swing animation
+        whileHover={{
+          rotateY: -20,
+        }}
+        whileTap={{ scale: 0.99 }}
+        transition={{
+          rotateY: { type: "spring", stiffness: 400, damping: 25, mass: 0.8 },
+          scale: { type: "spring", stiffness: 300, damping: 30 }
+        }}
+      >
+
+        <a href={`/projects/${project.slug}`} className="block h-full relative z-10">
+
           {/* Project Cover Image */}
           <div className="h-80 relative overflow-hidden flex-shrink-0">
             <motion.div
@@ -91,8 +93,9 @@ export default function ProjectCard({ project }) {
               ))}
             </div>
           </div>
-        </motion.div>
-      </a>
+        </a>
+
+      </motion.div>
     </div>
   );
 }

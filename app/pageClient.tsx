@@ -7,7 +7,7 @@ import { ReactTyped } from "react-typed";
 import { Project } from '@/lib/getProjects';
 import DarkVeil from '@/lib/bits/DarkVeil';
 import EmblaCarousel from '@/lib/carousel/EmblaCarousel';
-import ProjectCard from '@/lib/carousel/ProjectCard';
+import ProjectCard from '@/lib/ProjectCard';
 import Link from "next/link"
 
 // For project MDX file parsing

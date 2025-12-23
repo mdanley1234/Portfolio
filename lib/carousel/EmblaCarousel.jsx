@@ -81,7 +81,7 @@ const EmblaCarousel = ({ slides, options, minCardWidth = 300 }) => {
       </div>
 
       {/* Navigation buttons on the left */}
-      <div className="flex gap-4 mt-12 ml-4">
+      <div className="flex gap-4 mt-6 ml-4">
         <button
           className={`p-3 rounded-full transition-all ${
             canScrollPrev 

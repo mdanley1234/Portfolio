@@ -48,6 +48,10 @@ body {
   background-color: #000000;
 }
 
+.card-background {
+  background-color: #1a1a1a;
+}
+
 /* -----------------------
    Rubik weight helpers (kept from original)
    ----------------------- */

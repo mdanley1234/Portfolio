@@ -1,0 +1,17 @@
+/* Project Card Styles */
+
+.project-card-bg {
+  background-color: #111827; /* gray-900 */
+}
+
+.project-card-bg-solid {
+  background-color: #000000; /* pure black */
+}
+
+.project-card-bg-dark {
+  background-color: #1f2937; /* gray-800 */
+}
+
+.project-card-bg-darker {
+  background-color: #0f172a; /* slate-900 */
+}

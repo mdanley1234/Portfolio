@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Code } from 'lucide-react';
 import { useState } from 'react';
+import "./lib.css";
 
 // ProjectCard component for individual project
 export default function ProjectCard({ project }) {
@@ -8,7 +9,7 @@ export default function ProjectCard({ project }) {
 
   return (
     <div
-      style={{ perspective: "1000px" }}
+      style={{ perspective: "2200px" }}
       className="relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -19,8 +20,8 @@ export default function ProjectCard({ project }) {
         style={{
           transformOrigin: "center",
           zIndex: 0,
-          scaleX: 0.8,
-          scaleY: 0.8
+          scaleX: 0.9,
+          scaleY: 0.9
         }}
         animate={isHovered ? {
           x: 40
@@ -35,11 +36,11 @@ export default function ProjectCard({ project }) {
       />
 
       {/* Setup link to project details page */}
-      <a href={`/projects/${project.slug}`} className="block h-full relative z-10">            
-      
+      <a href={`/projects/${project.slug}`} className="block h-full relative z-10">
+
         {/* Build project card */}
         <motion.div
-          className="group relative overflow-hidden rounded-2xl border border-white/20 hover:border-white h-[600px] flex flex-col"
+          className="project-card-bg group relative overflow-hidden rounded-2xl border border-white/20 hover:border-white h-[600px] flex flex-col card-background"
           style={{
             transformOrigin: "left center",
             transformStyle: "preserve-3d",
@@ -48,8 +49,7 @@ export default function ProjectCard({ project }) {
           }}
           // Define hover swing animation
           whileHover={{
-            rotateY: -25,
-            scale: 1.01
+            rotateY: -20,
           }}
           whileTap={{ scale: 0.99 }}
           transition={{
@@ -75,7 +75,7 @@ export default function ProjectCard({ project }) {
           </div>
 
           {/* Project Blurb */}
-          <div className="p-6 flex-1 flex flex-col bg-gray-900">
+          <div className="p-6 flex-1 flex flex-col">
             {/* Project Title */}
             <h3 className="text-xl font-semibold text-white mb-2">{project.title}</h3>
 

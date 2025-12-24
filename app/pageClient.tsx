@@ -3,12 +3,13 @@
 import { useState, useEffect, useRef, use } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Menu, Github, Linkedin, Mail, Code, User, ChevronDown } from 'lucide-react';
+import { GitHubCalendar } from 'react-github-calendar';
 import { ReactTyped } from "react-typed";
 import { Project } from '@/lib/getProjects';
 import DarkVeil from '@/lib/bits/DarkVeil';
 import EmblaCarousel from '@/lib/carousel/EmblaCarousel';
 import ProjectCard from '@/lib/ProjectCard';
-import Link from "next/link"
+import CustomAccordion from '@/lib/CustomAccordion';
 
 // For project MDX file parsing
 interface PageClientProps {
@@ -23,6 +24,26 @@ interface PageClientProps {
 export default function PageClient({ projects }: PageClientProps) {
 
   // PRE-RENDER INITIALIZATION STAGE
+
+  // Build accordian content
+  const headers = [
+    "Accordion 1",
+    "Accordion 2",
+    "Accordion 3"
+  ];
+
+const dates = [
+  "23 October, 2025",
+  "15 November, 2025",
+  "20 December, 2025"
+];
+
+  const contents = [
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.",
+    "More content here for the third accordion."
+  ];
+
 
   // Navbar scrolling function (Detecting current section)
   const [activeSection, setActiveSection] = useState('Home');
@@ -173,11 +194,11 @@ export default function PageClient({ projects }: PageClientProps) {
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20" id='home' ref={homeRef}>
-        
+
         {/* DarkVeil Background - Full Width Wrapper */}
         <div className="absolute inset-0 w-full h-full" style={{ zIndex: 0 }}>
           <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-            <DarkVeil speed={1} warpAmount={2.5}/>
+            <DarkVeil speed={1} warpAmount={2.5} />
           </div>
         </div>
 
@@ -313,8 +334,8 @@ export default function PageClient({ projects }: PageClientProps) {
                 <p className="text-gray-400">
 
 
-                I'm Michael, an undergraduate at Duke University double majoring
-                in Electrical & Computer Engineering and Computer Science.
+                  I'm Michael, an undergraduate at Duke University double majoring
+                  in Electrical & Computer Engineering and Computer Science.
 
 
 
@@ -358,7 +379,7 @@ export default function PageClient({ projects }: PageClientProps) {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-32 relative bg-white/[0.02]" ref={projectsRef}>
+      <section id="projects" className="py-32 relative" ref={projectsRef}>
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -366,20 +387,6 @@ export default function PageClient({ projects }: PageClientProps) {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.8 }}
           >
-
-            {/* Projects Section Header */}
-            <div className="flex items-center justify-between px-4">
-
-              {/* Left Side - Section Title */}
-              <h2 className="text-4xl font-bold text-white text-left">
-                Featured Projects
-              </h2>
-
-              {/* Right Side - Section Buttons */}
-              <button className="bg-white text-black px-4 py-2 rounded-full font-medium hover:bg-gray-200 transition-colors">
-                See All
-              </button>
-            </div>
 
             {/* EmblaCarousel for MDX Projects */}
             <EmblaCarousel
@@ -389,9 +396,10 @@ export default function PageClient({ projects }: PageClientProps) {
                 <ProjectCard key={project.slug} project={project} />
               ))}
 
-              // Set minCardWidth
+              // Other parameters
               minCardWidth={400}
               options={{ loop: false }}
+              header={"Engineering Projects"}
             />
           </motion.div>
         </div>
@@ -404,33 +412,25 @@ export default function PageClient({ projects }: PageClientProps) {
 
 
       {/* Experience Section */}
-      <section id="contact" className="py-32 relative">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-2xl mx-auto text-center"
-          >
-            <h2 className="text-4xl font-bold text-white mb-6">Let's Work Together</h2>
-            <p className="text-xl text-gray-300 mb-12">
-              Have a project in mind? Let's create something amazing together.
-            </p>
-            <motion.button
-              className="px-12 py-5 bg-white text-black font-semibold rounded-full hover:shadow-2xl hover:shadow-white/20 transition-all"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              style={{ willChange: 'transform' }}
-            >
-              Get In Touch
-            </motion.button>
-          </motion.div>
+      <section id="experience" className="relative" ref={experienceRef}>
+        <div className="container mx-auto px-10 -mt-30 py-22">
+          <h2 className="text-4xl font-bold text-white text-left py-10">
+            Relevant Experience
+          </h2>
+          <CustomAccordion headers={headers} contents={contents} dates={dates}/>
         </div>
       </section>
 
+              <section className='relative'>
+              <div className='container mx-auto px-10 flex justify-center py-32 -mt-26'>
+
+          <GitHubCalendar username="mdanley1234" />
+
+              </div>
+              </section>
+
       {/* Footer */}
-      <footer className="py-12 border-t border-white/10">
+      <footer className="py-10 border-t border-white/20 -mt-24">
         <div className="container mx-auto px-6 text-center text-gray-400">
           <p>&copy; 2025 Michael Danley. All rights reserved.</p>
         </div>

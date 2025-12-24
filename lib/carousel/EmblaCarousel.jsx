@@ -2,7 +2,7 @@ import React from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const EmblaCarousel = ({ slides, options, minCardWidth = 300 }) => {
+const EmblaCarousel = ({ header, slides, options, minCardWidth = 300 }) => {
   const [slidesPerView, setSlidesPerView] = React.useState(1);
   const [canScrollPrev, setCanScrollPrev] = React.useState(false);
   const [canScrollNext, setCanScrollNext] = React.useState(false);
@@ -24,14 +24,14 @@ const EmblaCarousel = ({ slides, options, minCardWidth = 300 }) => {
 
   const slideWidth = `${100 / slidesPerView}%`;
 
-  const defaultOptions = { 
-    loop: false, 
+  const defaultOptions = {
+    loop: false,
     align: 'start',
     dragFree: false,
     draggable: true,
     watchDrag: true
   };
-  
+
   const [emblaRef, emblaApi] = useEmblaCarousel({
     ...defaultOptions,
     ...options
@@ -66,46 +66,52 @@ const EmblaCarousel = ({ slides, options, minCardWidth = 300 }) => {
 
   return (
     <div ref={containerRef} className="py-2 overflow-hidden">
+      <div className="flex items-center justify-between px-4">
+
+        {/* Left Side - Section Title */}
+        <h2 className="text-4xl font-bold text-white text-left">
+          {header}
+        </h2>
+
+        {/* Navigation buttons - top right */}
+        <div className="flex gap-4">
+          <button
+            className={`p-3 rounded-full transition-all ${canScrollPrev
+                ? 'bg-white hover:bg-white/80'
+                : 'bg-gray-500 cursor-not-allowed'
+              }`}
+            onClick={scrollPrev}
+            aria-label="Previous slide"
+            type="button"
+          >
+            <ChevronLeft className={`w-6 h-6 ${canScrollPrev ? 'text-black' : 'text-gray-700'}`} />
+          </button>
+          <button
+            className={`p-3 rounded-full transition-all ${canScrollNext
+                ? 'bg-white hover:bg-white/80'
+                : 'bg-gray-500 cursor-not-allowed'
+              }`}
+            onClick={scrollNext}
+            aria-label="Next slide"
+            type="button"
+          >
+            <ChevronRight className={`w-6 h-6 ${canScrollNext ? 'text-black' : 'text-gray-700'}`} />
+          </button>
+        </div>
+      </div>
+
       <div className="rounded-lg" ref={emblaRef}>
         <div className="flex">
           {slides.map((slide, index) => (
-            <div 
-              key={index} 
-              className="min-w-0 px-4 py-12"
+            <div
+              key={index}
+              className="min-w-0 px-4 py-10"
               style={{ flex: `0 0 ${slideWidth}` }}
             >
               {slide}
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Navigation buttons on the left */}
-      <div className="flex gap-4 mt-4 ml-4">
-        <button
-          className={`p-3 rounded-full transition-all ${
-            canScrollPrev 
-              ? 'bg-white hover:bg-white/80' 
-              : 'bg-gray-500 cursor-not-allowed'
-          }`}
-          onClick={scrollPrev}
-          aria-label="Previous slide"
-          type="button"
-        >
-          <ChevronLeft className={`w-6 h-6 ${canScrollPrev ? 'text-black' : 'text-gray-700'}`} />
-        </button>
-        <button
-          className={`p-3 rounded-full transition-all ${
-            canScrollNext 
-              ? 'bg-white hover:bg-white/80' 
-              : 'bg-gray-500 cursor-not-allowed'
-          }`}
-          onClick={scrollNext}
-          aria-label="Next slide"
-          type="button"
-        >
-          <ChevronRight className={`w-6 h-6 ${canScrollNext ? 'text-black' : 'text-gray-700'}`} />
-        </button>
       </div>
     </div>
   );

@@ -9,6 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.6",
+    "@mui/material": "^7.3.6",
     "@tailwindcss/typography": "^0.5.19",
     "embla-carousel": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
@@ -22,6 +26,7 @@
     "postprocessing": "^6.38.1",
     "react": "19.2.1",
     "react-dom": "19.2.1",
+    "react-github-calendar": "^5.0.3",
     "react-progressive-blur": "^1.0.6",
     "react-typed": "^2.0.12",
     "rehype-highlight": "^7.0.2",

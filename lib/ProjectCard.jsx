@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Code } from 'lucide-react';
 import { useState } from 'react';
+import Tag from './Tag.jsx'
 import "./lib.css";
 
 // ProjectCard component for individual project
@@ -87,11 +88,9 @@ export default function ProjectCard({ project }) {
             <p className="text-gray-400 flex-1">{project.summary}</p>
 
             {/* Project Tags */}
-            <div className="gap-2 absolute bottom-6 left-6 w-full">
+            <div className="flex gap-2 flex-wrap absolute bottom-6 left-6 w-full">
               {project.tags.map((tag, tagIndex) => (
-                <span key={tagIndex} className="px-3 py-1 text-sm bg-white/10 text-gray-300 rounded-full">
-                  {tag}
-                </span>
+                <Tag key={tagIndex} name={tag} />
               ))}
             </div>
           </div>

@@ -25,18 +25,18 @@ export default function PageClient({ projects }: PageClientProps) {
 
   // PRE-RENDER INITIALIZATION STAGE
 
-  // Build accordian content
+  // Experiences Accordian Content
   const headers = [
     "Accordion 1",
     "Accordion 2",
     "Accordion 3"
   ];
 
-const dates = [
-  "23 October, 2025",
-  "15 November, 2025",
-  "20 December, 2025"
-];
+  const dates = [
+    "23 October, 2025",
+    "15 November, 2025",
+    "20 December, 2025"
+  ];
 
   const contents = [
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
@@ -44,6 +44,10 @@ const dates = [
     "More content here for the third accordion."
   ];
 
+  // Hero Left Content
+  const typingIntro = [
+    "<strong>ECE</strong> &amp; <strong>CS </strong> @ Duke University"
+  ]
 
   // Navbar scrolling function (Detecting current section)
   const [activeSection, setActiveSection] = useState('Home');
@@ -254,9 +258,7 @@ const dates = [
               >
                 <span>
                   <ReactTyped
-                    strings={[
-                      "<strong>ECE</strong> &amp; <strong>CS </strong> @ Duke University"
-                    ]}
+                    strings={typingIntro}
                     typeSpeed={25}
                     startDelay={600}
                   />
@@ -320,8 +322,8 @@ const dates = [
                 className="p-8 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-white/30 transition-all"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.6, duration: 0.8 }}
-                whileHover={{ scale: 1.02, y: -5 }}
+                transition={{ duration: 0.8 }}
+                whileHover={{ scale: 1.1, y: -5 }}
                 style={{ willChange: 'transform' }}
               >
                 {/* First Information Box Header */}
@@ -331,13 +333,12 @@ const dates = [
                 </div>
 
                 {/* First Information Box Content */}
-                <p className="text-gray-400">
+                <p className="text-white">
 
-
-                  I'm Michael, an undergraduate at Duke University double majoring
-                  in Electrical & Computer Engineering and Computer Science.
-
-
+                  I'm Michael, an undergraduate at <strong> Duke University </strong> double majoring
+                  in <strong> Electrical Computer Engineering</strong> & <strong>Computer Science</strong>.
+                  I'm primarily interested on <strong> embedded system design</strong>, especially in aerospace and robotics applications.
+                  I also enjoy personal projects, especially those with challenging engineering problems!
 
                 </p>
               </motion.div>
@@ -347,8 +348,8 @@ const dates = [
                 className="p-8 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-white/30 transition-all"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.6, duration: 0.8 }}
-                whileHover={{ scale: 1.02, y: -5 }}
+                transition={{ duration: 0.8 }}
+                whileHover={{ scale: 1.1, y: -5 }}
                 style={{ willChange: 'transform' }}
               >
                 {/* Second Information Box Header */}
@@ -359,8 +360,12 @@ const dates = [
 
                 {/* Second Information Box Content */}
                 <p className="text-gray-400">
+
+
                   Building responsive and performant web applications using React,
                   TypeScript, and modern frameworks.
+
+
                 </p>
               </motion.div>
             </div>
@@ -379,7 +384,7 @@ const dates = [
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-32 relative" ref={projectsRef}>
+      <section id="projects" className="py-26 relative" ref={projectsRef}>
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -413,21 +418,21 @@ const dates = [
 
       {/* Experience Section */}
       <section id="experience" className="relative" ref={experienceRef}>
-        <div className="container mx-auto px-10 -mt-30 py-22">
+        <div className="container mx-auto px-10 -mt-30 py-20">
           <h2 className="text-4xl font-bold text-white text-left py-10">
             Relevant Experience
           </h2>
-          <CustomAccordion headers={headers} contents={contents} dates={dates}/>
+          <CustomAccordion headers={headers} contents={contents} dates={dates} />
         </div>
       </section>
 
-              <section className='relative'>
-              <div className='container mx-auto px-10 flex justify-center py-32 -mt-26'>
+      <section className='relative'>
+        <div className='container mx-auto px-10 flex justify-center py-32 -mt-26'>
 
           <GitHubCalendar username="mdanley1234" />
 
-              </div>
-              </section>
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="py-10 border-t border-white/20 -mt-24">

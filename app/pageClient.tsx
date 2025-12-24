@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, use } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Menu, Github, Linkedin, Mail, Code, Briefcase, User, ChevronDown } from 'lucide-react';
+import { Menu, Github, Linkedin, Mail, Code, User, ChevronDown } from 'lucide-react';
 import { ReactTyped } from "react-typed";
 import { Project } from '@/lib/getProjects';
 import DarkVeil from '@/lib/bits/DarkVeil';
@@ -294,18 +294,6 @@ export default function PageClient({ projects }: PageClientProps) {
             {/* Hero Section Right Side */}
             <div className="grid gap-6">
 
-              {/* About Me Header */}
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4, duration: 0.8 }}
-              >
-                <div className="flex items-center gap-4 mb-4">
-                  <User size={32} className="text-white" />
-                  <h2 className="text-3xl font-bold text-white">About Me</h2>
-                </div>
-              </motion.div>
-
               {/* First Information Box */}
               <motion.div
                 className="p-8 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-white/30 transition-all"
@@ -317,14 +305,17 @@ export default function PageClient({ projects }: PageClientProps) {
               >
                 {/* First Information Box Header */}
                 <div className="flex items-center gap-3 mb-3">
-                  <Code size={40} className="text-white" />
-                  <h3 className="text-xl font-semibold text-white">Background</h3>
+                  <User size={40} className="text-white" />
+                  <h3 className="text-xl font-semibold text-white">About Me</h3>
                 </div>
 
                 {/* First Information Box Content */}
                 <p className="text-gray-400">
 
-                  I'm an undergraduate studying
+
+                I'm Michael, an undergraduate at Duke University double majoring
+                in Electrical & Computer Engineering and Computer Science.
+
 
 
                 </p>

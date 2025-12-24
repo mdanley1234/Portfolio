@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, use } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Menu, Github, Linkedin, Mail, Blocks, User, ChevronDown } from 'lucide-react';
+import { Menu, Github, Linkedin, Mail, Blocks, User, ChevronDown, FileText } from 'lucide-react';
 import { GitHubCalendar } from 'react-github-calendar';
 import { ReactTyped } from "react-typed";
 import { Project } from '@/lib/getProjects';
@@ -40,14 +40,16 @@ export default function PageClient({ projects }: PageClientProps) {
   ];
 
   const contents = [
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.",
-    "More content here for the third accordion."
+    "As an Avionics and Liquid Propulsion Engineer with Duke AERO, I develop embedded systems for high-power rocketry, including live video transmission for IREC 30K SRAD competition vehicles. My work spans RF communication, mixed-signal electronics, and custom PCB design, with a focus on noise mitigation, signal integrity, and robust system integration in demanding aerospace environments.",
+
+    "As Electrical Design Lead for Project ORCA, I designed a two-part embedded system for marine research that emulates real-time environmental light conditions. The system integrates ESP32-based sensor modules, Raspberry Pi control hardware, differential RS-485 communication, and custom PCBs, delivering reliable long-distance data transmission and EMI resilience in an IP54-compliant design.",
+
+    "As Team Captain of a FIRST Tech Challenge robotics team, I led cross-functional engineering efforts across software, electrical, and mechanical subsystems. I developed custom Java-based control systems, implemented agile project workflows, and mentored team members in programming and CAD, contributing to a state-level programming award and sustained competitive success."
   ];
 
-  // Hero Left Content
+  // Hero typing content
   const typingIntro = [
-    "<strong>ECE</strong> &amp; <strong>CS </strong> @ Duke University"
+    "Electrical &amp; Computer Engineer | Duke University"
   ]
 
   // Tags Content
@@ -60,6 +62,7 @@ export default function PageClient({ projects }: PageClientProps) {
     "PCB Design",
     "CAD",
     "CAM",
+    "FEA",
 
     "Fusion 360",
     "KiCAD",
@@ -274,7 +277,7 @@ export default function PageClient({ projects }: PageClientProps) {
 
               {/* Profile Blurb */}
               <motion.div
-                className="text-xl text-gray-300 mb-12 max-w-lg"
+                className="text-xl text-gray-300 mb-10 max-w-xl"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.8 }}
@@ -316,23 +319,23 @@ export default function PageClient({ projects }: PageClientProps) {
               </motion.div>
 
               {/* Resume Download */}
-              <motion.button
-                className="px-8 py-4 bg-white text-black rounded-full hover:shadow-lg hover:shadow-white/20 transition-all relative overflow-hidden group"
-                whileHover={{ scale: 1.05 }}
+              <motion.a
+                href="/Michael Danley Resume.pdf"          // put the PDF in /public or adjust path
+                download                    // forces download
+                className="px-8 py-4 bg-white text-black rounded-full transition-all relative overflow-hidden group inline-flex items-center gap-3 hover:bg-white/85"
+                whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.9, duration: 0.8 }}
                 style={{ willChange: 'transform' }}
               >
-                <span className="relative z-10 font-semibold">Resume</span>
-                <motion.div
-                  className="absolute inset-0 bg-gray-200"
-                  initial={{ x: '100%' }}
-                  whileHover={{ x: 0 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </motion.button>
+                {/* Content */}
+                <span className="relative z-10 font-semibold flex items-center gap-2">
+                  <FileText size={20} />
+                  Resume
+                </span>
+              </motion.a>
 
             </div>
 
@@ -357,12 +360,10 @@ export default function PageClient({ projects }: PageClientProps) {
 
                 {/* First Information Box Content */}
                 <p className="text-white">
-
                   I'm Michael, an undergraduate at <strong> Duke University </strong> double majoring
                   in <strong> Electrical Computer Engineering</strong> & <strong>Computer Science</strong>.
                   I'm primarily interested on <strong> embedded system design</strong>, especially in aerospace and robotics applications.
-                  I also enjoy personal projects, especially those with challenging engineering problems!
-
+                  I also enjoy personal projects, particularly those involving complex engineering challenges.
                 </p>
               </motion.div>
 
@@ -384,7 +385,7 @@ export default function PageClient({ projects }: PageClientProps) {
                 {/* Tags */}
                 <div className="flex gap-2 flex-wrap">
                   {tags.map((tag, tagIndex) => (
-                    <Tag key={tagIndex} name={tag}/>
+                    <Tag key={tagIndex} name={tag} />
                   ))}
                 </div>
               </motion.div>
@@ -430,16 +431,10 @@ export default function PageClient({ projects }: PageClientProps) {
         </div>
       </section >
 
-
-
-      {/* TODO - ADD EXPERIENCE SECTION & BUILD FOOTER */}
-
-
-
       {/* Experience Section */}
       <section id="experience" className="relative" ref={experienceRef}>
-        <div className="container mx-auto px-10 -mt-30 py-20">
-          <h2 className="text-4xl font-bold text-white text-left py-10">
+        <div className="container mx-auto px-10 -mt-32 py-18">
+          <h2 className="text-4xl font-bold text-white text-left py-12">
             Relevant Experience
           </h2>
           <CustomAccordion headers={headers} contents={contents} dates={dates} />
@@ -449,7 +444,7 @@ export default function PageClient({ projects }: PageClientProps) {
       <section className='relative'>
         <div className='container mx-auto px-10 flex justify-center py-32 -mt-26'>
 
-          <GitHubCalendar username="mdanley1234" />
+          <GitHubCalendar username="mdanley1234" maxLevel={6} blockMargin={4} blockSize={10} />
 
         </div>
       </section>

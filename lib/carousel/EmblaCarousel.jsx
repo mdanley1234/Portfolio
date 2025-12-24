@@ -66,7 +66,7 @@ const EmblaCarousel = ({ header, slides, options, minCardWidth = 300 }) => {
 
   return (
     <div ref={containerRef} className="py-2 overflow-hidden">
-      <div className="flex items-center justify-between px-4">
+      <div className="flex items-center justify-between px-4 mb-2">
 
         {/* Left Side - Section Title */}
         <h2 className="text-4xl font-bold text-white text-left">
@@ -76,26 +76,26 @@ const EmblaCarousel = ({ header, slides, options, minCardWidth = 300 }) => {
         {/* Navigation buttons - top right */}
         <div className="flex gap-4">
           <button
-            className={`p-3 rounded-full transition-all ${canScrollPrev
-                ? 'bg-white hover:bg-white/80'
+            className={`p-2 rounded-full transition-all ${canScrollPrev
+                ? 'bg-white hover:bg-white/85'
                 : 'bg-gray-500 cursor-not-allowed'
               }`}
             onClick={scrollPrev}
             aria-label="Previous slide"
             type="button"
           >
-            <ChevronLeft className={`w-6 h-6 ${canScrollPrev ? 'text-black' : 'text-gray-700'}`} />
+            <ChevronLeft className={`w-5 h-5 ${canScrollPrev ? 'text-black' : 'text-gray-700'}`} />
           </button>
           <button
-            className={`p-3 rounded-full transition-all ${canScrollNext
-                ? 'bg-white hover:bg-white/80'
+            className={`p-2 rounded-full transition-all ${canScrollNext
+                ? 'bg-white hover:bg-white/85'
                 : 'bg-gray-500 cursor-not-allowed'
               }`}
             onClick={scrollNext}
             aria-label="Next slide"
             type="button"
           >
-            <ChevronRight className={`w-6 h-6 ${canScrollNext ? 'text-black' : 'text-gray-700'}`} />
+            <ChevronRight className={`w-5 h-5 ${canScrollNext ? 'text-black' : 'text-gray-700'}`} />
           </button>
         </div>
       </div>

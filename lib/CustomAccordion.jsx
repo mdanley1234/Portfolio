@@ -9,7 +9,7 @@ export default function CustomAccordion({ headers, contents, dates, defaultExpan
     <div style={{ 
       border: '1px solid #ffffff', 
       borderRadius: '8px',
-      overflow: 'hidden'
+      overflow: 'hidden',
     }}>
       {headers.map((header, index) => (
         <div key={index}>

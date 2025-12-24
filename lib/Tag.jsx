@@ -1,4 +1,4 @@
-import { NotepadText, Code, Drill, LaptopMinimal, Cpu /* add more icons */ } from 'lucide-react';
+import { NotepadText, Code, Drill, LaptopMinimal, CircleQuestionMark /* add more icons */ } from 'lucide-react';
 
 // Tag configuration dictionary
 const TAG_CONFIG = {
@@ -21,7 +21,7 @@ const TAG_CONFIG = {
     textColor: 'text-green-300',
     borderColor: 'border-green-500/30'
   },
-  
+
   // Engineering Skills (Laptop icon)
   'CAD': {
     icon: NotepadText,
@@ -35,6 +35,12 @@ const TAG_CONFIG = {
     textColor: 'text-cyan-300',
     borderColor: 'border-cyan-500/30'
   },
+  'FEA': {
+    icon: NotepadText,
+    bgColor: 'bg-zinc-500/20',
+    textColor: 'text-zinc-300',
+    borderColor: 'border-zinc-500/30'
+  },
   'Circuit Analysis': {
     icon: NotepadText,
     bgColor: 'bg-yellow-500/20',
@@ -47,7 +53,7 @@ const TAG_CONFIG = {
     textColor: 'text-orange-300',
     borderColor: 'border-orange-500/30'
   },
-  
+
   // Software Tools (Database icon)
   'Fusion 360': {
     icon: LaptopMinimal,
@@ -73,7 +79,7 @@ const TAG_CONFIG = {
     textColor: 'text-slate-300',
     borderColor: 'border-slate-500/30'
   },
-  
+
   // Manufacturing/Hands-on (Wrench icon)
   'Soldering': {
     icon: Drill,
@@ -103,21 +109,21 @@ const TAG_CONFIG = {
 
 // Default styling for unknown tags
 const DEFAULT_TAG = {
-    icon: Cpu,
-    bgColor: 'bg-white/10',
-    textColor: 'text-gray-300',
-    borderColor: 'border-white/20'
+  icon: CircleQuestionMark,
+  bgColor: 'bg-white/10',
+  textColor: 'text-gray-300',
+  borderColor: 'border-white/20'
 };
 
 // Tag component
 export default function Tag({ name }) {
-    const config = TAG_CONFIG[name] || DEFAULT_TAG;
-    const Icon = config.icon;
+  const config = TAG_CONFIG[name] || DEFAULT_TAG;
+  const Icon = config.icon;
 
-    return (
-        <span className={`inline-flex items-center gap-1.5 px-3 py-1 text-sm rounded-full border ${config.bgColor} ${config.textColor} ${config.borderColor}`}>
-            <Icon size={14} />
-            {name}
-        </span>
-    );
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1 text-sm rounded-full border ${config.bgColor} ${config.textColor} ${config.borderColor}`}>
+      <Icon size={14} />
+      {name}
+    </span>
+  );
 }

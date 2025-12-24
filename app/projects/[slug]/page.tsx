@@ -70,16 +70,10 @@ export default async function ProjectPage({ params }: Props) {
 
           <div className="flex items-center gap-4">
             <Link
-              href="/"
-              className="text-black hover:opacity-80 transition-opacity px-4 py-2 rounded-full bg-white border border-white/20"
-            >
-              Return
-            </Link>
-            <Link
               href="/#projects"
-              className="text-black hover:opacity-80 transition-opacity px-4 py-2 rounded-full bg-white border border-white/20"
+              className="text-black hover:opacity-85 transition-opacity px-4 py-2 rounded-full bg-white border border-white/20"
             >
-              See All
+              Back
             </Link>
           </div>
         </nav>

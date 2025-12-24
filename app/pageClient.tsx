@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, use } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Menu, Github, Linkedin, Mail, Code, User, ChevronDown } from 'lucide-react';
+import { Menu, Github, Linkedin, Mail, Blocks, User, ChevronDown } from 'lucide-react';
 import { GitHubCalendar } from 'react-github-calendar';
 import { ReactTyped } from "react-typed";
 import { Project } from '@/lib/getProjects';
@@ -10,6 +10,7 @@ import DarkVeil from '@/lib/bits/DarkVeil';
 import EmblaCarousel from '@/lib/carousel/EmblaCarousel';
 import ProjectCard from '@/lib/ProjectCard';
 import CustomAccordion from '@/lib/CustomAccordion';
+import Tag from '@/lib/Tag';
 
 // For project MDX file parsing
 interface PageClientProps {
@@ -27,15 +28,15 @@ export default function PageClient({ projects }: PageClientProps) {
 
   // Experiences Accordian Content
   const headers = [
-    "Accordion 1",
-    "Accordion 2",
-    "Accordion 3"
+    "Duke AERO - Avionics Engineer, Liquid Propulsion Engineer",
+    "Project ORCA - Electrical Design Lead",
+    "FIRST Tech Challenge Robotics - Team Captain"
   ];
 
   const dates = [
-    "23 October, 2025",
-    "15 November, 2025",
-    "20 December, 2025"
+    "August 2025 - Present",
+    "August 2025 - Present",
+    "August 2021 - May 2025"
   ];
 
   const contents = [
@@ -47,6 +48,28 @@ export default function PageClient({ projects }: PageClientProps) {
   // Hero Left Content
   const typingIntro = [
     "<strong>ECE</strong> &amp; <strong>CS </strong> @ Duke University"
+  ]
+
+  // Tags Content
+  const tags = [
+    "Java",
+    "C++",
+    "Python",
+
+    "Circuit Analysis",
+    "PCB Design",
+    "CAD",
+    "CAM",
+
+    "Fusion 360",
+    "KiCAD",
+    "VS Code",
+    "Github",
+
+    "Soldering",
+    "3D Printing",
+    "Laser Cutting",
+    "CNC Manufacturing"
   ]
 
   // Navbar scrolling function (Detecting current section)
@@ -323,7 +346,7 @@ export default function PageClient({ projects }: PageClientProps) {
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
-                whileHover={{ scale: 1.1, y: -5 }}
+                // whileHover={{ scale: 1.1, y: -5 }}
                 style={{ willChange: 'transform' }}
               >
                 {/* First Information Box Header */}
@@ -349,24 +372,21 @@ export default function PageClient({ projects }: PageClientProps) {
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
-                whileHover={{ scale: 1.1, y: -5 }}
+                // whileHover={{ scale: 1.1, y: -5 }}
                 style={{ willChange: 'transform' }}
               >
                 {/* Second Information Box Header */}
-                <div className="flex items-center gap-3 mb-3">
-                  <Code size={40} className="text-white" />
+                <div className="flex items-center gap-3 mb-4">
+                  <Blocks size={40} className="text-white" />
                   <h3 className="text-xl font-semibold text-white">Skills</h3>
                 </div>
 
-                {/* Second Information Box Content */}
-                <p className="text-gray-400">
-
-
-                  Building responsive and performant web applications using React,
-                  TypeScript, and modern frameworks.
-
-
-                </p>
+                {/* Tags */}
+                <div className="flex gap-2 flex-wrap">
+                  {tags.map((tag, tagIndex) => (
+                    <Tag key={tagIndex} name={tag}/>
+                  ))}
+                </div>
               </motion.div>
             </div>
           </div>

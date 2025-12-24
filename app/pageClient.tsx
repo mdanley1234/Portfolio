@@ -120,7 +120,7 @@ export default function PageClient({ projects }: PageClientProps) {
 
           {/* Navbar Right */}
           <motion.div
-            className="hidden md:flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 px-6 py-2"
+            className="hidden md:flex items-center gap-4 bg-white/8 rounded-full px-6 py-2"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -151,7 +151,6 @@ export default function PageClient({ projects }: PageClientProps) {
                     }`}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  // transition={{ delay: index * 0.1 + 0.4 }}
                   whileHover={{ scale: 1.05, y: -1 }}
                 >
                   <span className="relative z-10">
@@ -174,10 +173,11 @@ export default function PageClient({ projects }: PageClientProps) {
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20" id='home' ref={homeRef}>
+        
         {/* DarkVeil Background - Full Width Wrapper */}
         <div className="absolute inset-0 w-full h-full" style={{ zIndex: 0 }}>
-          <div style={{ width: '100%', height: '600px', position: 'relative' }}>
-            <DarkVeil />
+          <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+            <DarkVeil speed={1} warpAmount={2.5}/>
           </div>
         </div>
 

@@ -8,38 +8,39 @@ export default function ProjectCard({ project }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
+
+    // Perspective container for project card
     <div
       style={{ perspective: "2200px" }}
       className="relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+
       {/* Animated outline behind card */}
       <motion.div
         className="absolute inset-0 rounded-2xl border-2 border-white pointer-events-none"
         style={{
           transformOrigin: "center",
           zIndex: 0,
-          scaleX: 0.9,
-          scaleY: 0.9
+          scaleX: 0.97,
+          scaleY: 0.97
         }}
         animate={isHovered ? {
-          x: 40
+          x: 20
         } : {
           x: 0
         }}
         transition={{
           type: "spring",
-          stiffness: 300,
-          damping: 25
+          stiffness: 260,
+          damping: 20
         }}
       />
 
-      {/* Setup link to project details page */}
-
       {/* Build project card */}
       <motion.div
-        className="project-card-bg group relative overflow-hidden rounded-2xl border border-white/20 hover:border-white h-[600px] flex flex-col card-background"
+        className="project-card-bg group relative overflow-hidden rounded-2xl border border-white/20 hover:border-white h-[580px] flex flex-col card-background"
         style={{
           transformOrigin: "left center",
           transformStyle: "preserve-3d",
@@ -48,15 +49,15 @@ export default function ProjectCard({ project }) {
         }}
         // Define hover swing animation
         whileHover={{
-          rotateY: -20,
+          rotateY: -15,
         }}
         whileTap={{ scale: 0.99 }}
         transition={{
-          rotateY: { type: "spring", stiffness: 400, damping: 25, mass: 0.8 },
-          scale: { type: "spring", stiffness: 300, damping: 30 }
+          rotateY: { type: "spring", stiffness: 260, damping: 20, },
         }}
       >
 
+        {/* Link to project details page */}
         <a href={`/projects/${project.slug}`} className="block h-full relative z-10">
 
           {/* Project Cover Image */}
@@ -78,6 +79,7 @@ export default function ProjectCard({ project }) {
 
           {/* Project Blurb */}
           <div className="p-6 flex-1 flex flex-col">
+
             {/* Project Title */}
             <h3 className="text-xl font-semibold text-white mb-2">{project.title}</h3>
 
@@ -85,7 +87,7 @@ export default function ProjectCard({ project }) {
             <p className="text-gray-400 flex-1">{project.summary}</p>
 
             {/* Project Tags */}
-            <div className="flex gap-2 flex-wrap">
+            <div className="gap-2 absolute bottom-6 left-6 w-full">
               {project.tags.map((tag, tagIndex) => (
                 <span key={tagIndex} className="px-3 py-1 text-sm bg-white/10 text-gray-300 rounded-full">
                   {tag}
@@ -94,7 +96,6 @@ export default function ProjectCard({ project }) {
             </div>
           </div>
         </a>
-
       </motion.div>
     </div>
   );

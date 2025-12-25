@@ -140,7 +140,7 @@ export default function PageClient({ projects }: PageClientProps) {
         className="fixed top-0 left-0 right-0 z-50
         flex items-center justify-between
         px-4 sm:px-6
-        py-3 md:py-4 lg:py-4
+        py-2 md:py-3 lg:py-3
         min-h-[56px] md:min-h-[72px]
         transition-all duration-300"
         initial={{ y: -100 }}
@@ -148,7 +148,7 @@ export default function PageClient({ projects }: PageClientProps) {
         transition={{ duration: 0.6, ease: 'easeOut' }}
         style={{
           willChange: 'transform',
-          background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.5) 60%, transparent 100%)',
+          background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.5) 65%, transparent 100%)',
           WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 75%, transparent 100%)',
           backdropFilter: 'blur(6px)',
           WebkitBackdropFilter: 'blur(6px)'
@@ -160,7 +160,7 @@ export default function PageClient({ projects }: PageClientProps) {
 
           {/* Navbar Left */}
           <motion.a
-            className="text-xl tracking-wider"
+            className="text-xl tracking-wider mb-6"
             whileHover={{ scale: 1.05 }}
             href={''}
           >
@@ -171,7 +171,7 @@ export default function PageClient({ projects }: PageClientProps) {
 
           {/* Navbar Right */}
           <motion.div
-            className="hidden md:flex items-center gap-4 bg-white/8 rounded-full px-6 py-2"
+            className="hidden md:flex items-center gap-4 bg-white/8 rounded-full px-6 py-2 mb-6"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -433,7 +433,7 @@ export default function PageClient({ projects }: PageClientProps) {
 
       {/* Experience Section */}
       <section id="experience" className="relative" ref={experienceRef}>
-        <div className="container mx-auto px-10 -mt-32 py-18">
+        <div className="container mx-auto px-10 -mt-32 py-17">
           <h2 className="text-4xl font-bold text-white text-left py-12">
             Relevant Experience
           </h2>

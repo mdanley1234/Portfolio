@@ -362,7 +362,7 @@ export default function PageClient({ projects }: PageClientProps) {
                 <p className="text-white">
                   I'm Michael, an undergraduate at <strong> Duke University </strong> double majoring
                   in <strong> Electrical Computer Engineering</strong> & <strong>Computer Science</strong>.
-                  I'm primarily interested on <strong> embedded system design</strong>, especially in aerospace and robotics applications.
+                  I'm primarily interested in <strong> embedded system design</strong>, especially in aerospace and robotics applications.
                   I also enjoy personal projects, particularly those involving complex engineering challenges.
                 </p>
               </motion.div>
@@ -405,7 +405,7 @@ export default function PageClient({ projects }: PageClientProps) {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-26 relative" ref={projectsRef}>
+      <section id="projects" className="py-28 relative" ref={projectsRef}>
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -418,9 +418,11 @@ export default function PageClient({ projects }: PageClientProps) {
             <EmblaCarousel
 
               // Build project cards using front-matter from MDX projects in content/projects
-              slides={projects.map((project, index) => (
-                <ProjectCard key={project.slug} project={project} />
-              ))}
+              slides={projects
+                .sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
+                .map((project, index) => (
+                  <ProjectCard key={project.slug} project={project} />
+                ))}
 
               // Other parameters
               minCardWidth={400}
@@ -433,7 +435,7 @@ export default function PageClient({ projects }: PageClientProps) {
 
       {/* Experience Section */}
       <section id="experience" className="relative" ref={experienceRef}>
-        <div className="container mx-auto px-10 -mt-32 py-17">
+        <div className="container mx-auto px-10 -mt-32 py-18">
           <h2 className="text-4xl font-bold text-white text-left py-12">
             Relevant Experience
           </h2>
@@ -441,11 +443,10 @@ export default function PageClient({ projects }: PageClientProps) {
         </div>
       </section>
 
+      {/* Github Contribution Calendar */}
       <section className='relative'>
         <div className='container mx-auto px-10 flex justify-center py-32 -mt-26'>
-
           <GitHubCalendar username="mdanley1234" maxLevel={6} blockMargin={4} blockSize={10} />
-
         </div>
       </section>
 

@@ -10,6 +10,7 @@ export interface Project {
   summary: string;
   coverImage: string | null;
   tags: string[];
+  rank: number;
 }
 
 /**
@@ -36,13 +37,9 @@ export function getProjects(): Project[] {
         summary: data.summary ?? "",
         coverImage: data.coverImage ?? null,
         tags: Array.isArray(data.tags) ? data.tags : [],
+        rank: data.rank ?? Infinity,
       };
     });
-  
-  // .sort((a, b) => {
-  //     if (!a.date || !b.date) return 0
-  //     return new Date(b.date).getTime() - new Date(a.date).getTime()
-  // });
   
   return projects;
 }

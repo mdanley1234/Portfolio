@@ -4,18 +4,26 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-export default function CustomAccordion({ headers, contents, dates, defaultExpanded = null }) {
+/**
+ * 
+ * @param experiences List of Experience objects used to generate expanding components
+ * @returns 
+ */
+export default function CustomAccordion({ experiences }) {
+
+  // Build the accordion component
   return (
-    <div style={{ 
-      border: '1px solid #ffffff', 
+    <div style={{
+      border: '1px solid #ffffff',
       borderRadius: '8px',
       overflow: 'hidden',
     }}
     >
-      {headers.map((header, index) => (
+
+      {/* Build expanding component for each experience */}
+      {experiences.map((experience, index) => (
         <div key={index}>
-          <Accordion 
-            defaultExpanded={defaultExpanded === index}
+          <Accordion
             sx={{
               backgroundColor: '#000000',
               color: '#ffffff',
@@ -25,6 +33,8 @@ export default function CustomAccordion({ headers, contents, dates, defaultExpan
               },
             }}
           >
+
+            {/* Summary Section */}
             <AccordionSummary
               expandIcon={<ExpandMoreIcon sx={{ color: '#ffffff' }} />}
               aria-controls={`panel${index}-content`}
@@ -44,27 +54,33 @@ export default function CustomAccordion({ headers, contents, dates, defaultExpan
                 },
               }}
             >
-              <div>
-                <Typography component="span" sx={{ 
+
+              {/* Left side - Company and Position */}
+              <div className="flex flex-col gap-1">
+
+                {/* Company Header Section */}
+                <Typography component="span" sx={{
                   color: '#ffffff',
-                  fontSize: '18px',
+                  fontSize: '20px',
                   fontWeight: 600,
-                  display: 'block'
+                  lineHeight: 1.2
                 }}>
-                  {header}
+                  {experience.company}
                 </Typography>
-                {dates && dates[index] && (
-                  <Typography sx={{ 
-                    color: '#9ca3af', 
-                    fontSize: '12px',
-                    fontWeight: 400,
-                    marginTop: '4px'
-                  }}>
-                    {dates[index]}
-                  </Typography>
-                )}
+
+                {/* Position and Dates on same line */}
+                <Typography sx={{
+                  color: '#a4aab5ff',
+                  fontSize: '16px',
+                  fontWeight: 400
+                }}>
+                  <strong>{experience.position}</strong> • {experience.start} – {experience.end}
+                </Typography>
               </div>
+
             </AccordionSummary>
+
+            {/* Details Section */}
             <AccordionDetails
               sx={{
                 backgroundColor: '#000000',
@@ -73,12 +89,12 @@ export default function CustomAccordion({ headers, contents, dates, defaultExpan
                 paddingBottom: '16px',
               }}
             >
-              <Typography sx={{ color: '#ffffff' }}>
-                {contents[index]}
-              </Typography>
+
+              {experience.content}
+
             </AccordionDetails>
           </Accordion>
-          {index < headers.length - 1 && (
+          {index < experiences.size - 1 && (
             <div style={{
               height: '1px',
               backgroundColor: '#ffffff',

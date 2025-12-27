@@ -11,18 +11,21 @@ import EmblaCarousel from '@/lib/carousel/EmblaCarousel';
 import ProjectCard from '@/lib/ProjectCard';
 import CustomAccordion from '@/lib/CustomAccordion';
 import Tag from '@/lib/Tag';
+import { Experience } from '@/lib/getExperiences';
 
-// For project MDX file parsing
+// For MDX file parsing (projects, experiences)
 interface PageClientProps {
   projects: Project[];
+  experiences: Experience[];
 }
 
 /**
  * Generates portfolio homepage using projects and experiences passed from server-processing component
  * @param projects List of projects to display on the portfolio page
+ * @param experiences List of experiences to display on the portfolio page
  * @returns rendered portfolio homepage
  */
-export default function PageClient({ projects }: PageClientProps) {
+export default function PageClient({ projects, experiences }: PageClientProps) {
 
   // PRE-RENDER INITIALIZATION STAGE
 
@@ -47,12 +50,14 @@ export default function PageClient({ projects }: PageClientProps) {
     "As Team Captain of a FIRST Tech Challenge robotics team, I led cross-functional engineering efforts across software, electrical, and mechanical subsystems. I developed custom Java-based control systems, implemented agile project workflows, and mentored team members in programming and CAD, contributing to a state-level programming award and sustained competitive success."
   ];
 
-  // Hero typing content
+  //TODO: REMOVE ABOVE CONTENT
+
+  // Hero left section typing content 
   const typingIntro = [
     "Electrical &amp; Computer Engineer | Duke University"
   ]
 
-  // Tags Content
+  // Displayed tags (seperated by category)
   const tags = [
     "Java",
     "C++",
@@ -439,7 +444,7 @@ export default function PageClient({ projects }: PageClientProps) {
           <h2 className="text-4xl font-bold text-white text-left py-12">
             Relevant Experience
           </h2>
-          <CustomAccordion headers={headers} contents={contents} dates={dates} />
+          <CustomAccordion experiences={experiences} />
         </div>
       </section>
 

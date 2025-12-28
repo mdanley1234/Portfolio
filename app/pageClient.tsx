@@ -29,29 +29,6 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
 
   // PRE-RENDER INITIALIZATION STAGE
 
-  // Experiences Accordian Content
-  const headers = [
-    "Duke AERO - Avionics Engineer, Liquid Propulsion Engineer",
-    "Project ORCA - Electrical Design Lead",
-    "FIRST Tech Challenge Robotics - Team Captain"
-  ];
-
-  const dates = [
-    "August 2025 - Present",
-    "August 2025 - Present",
-    "August 2021 - May 2025"
-  ];
-
-  const contents = [
-    "As an Avionics and Liquid Propulsion Engineer with Duke AERO, I develop embedded systems for high-power rocketry, including live video transmission for IREC 30K SRAD competition vehicles. My work spans RF communication, mixed-signal electronics, and custom PCB design, with a focus on noise mitigation, signal integrity, and robust system integration in demanding aerospace environments.",
-
-    "As Electrical Design Lead for Project ORCA, I designed a two-part embedded system for marine research that emulates real-time environmental light conditions. The system integrates ESP32-based sensor modules, Raspberry Pi control hardware, differential RS-485 communication, and custom PCBs, delivering reliable long-distance data transmission and EMI resilience in an IP54-compliant design.",
-
-    "As Team Captain of a FIRST Tech Challenge robotics team, I led cross-functional engineering efforts across software, electrical, and mechanical subsystems. I developed custom Java-based control systems, implemented agile project workflows, and mentored team members in programming and CAD, contributing to a state-level programming award and sustained competitive success."
-  ];
-
-  //TODO: REMOVE ABOVE CONTENT
-
   // Hero left section typing content 
   const typingIntro = [
     "Electrical &amp; Computer Engineer | Duke University"

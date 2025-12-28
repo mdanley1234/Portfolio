@@ -94,7 +94,7 @@ export default function CustomAccordion({ experiences }) {
 
             </AccordionDetails>
           </Accordion>
-          {index < experiences.size - 1 && (
+          {index < experiences.length - 1 && (
             <div style={{
               height: '1px',
               backgroundColor: '#ffffff',

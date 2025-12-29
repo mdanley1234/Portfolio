@@ -10,38 +10,102 @@ rank: 1
 
 # Project ORCA
 
-ORCA (Optical Replication & Control Apparatus) is a system designed to emulate real-time environmental light intensity inside an incubation vessel aboard a marine research boat. I was responsible for designing and fabricating the electrical circuitry.
+ORCA (Optical Replication & Control Apparatus) is a system designed to emulate real-time environmental light intensity inside an incubation vessel aboard a marine research boat. I was in charge of the design, fabrication, and testing of the electrical subsystem. Our team delivered the first iteration of the design to the CASSAR lab in Fall 2025 with future plans for development in Spring 2026. The lab plans to implement our technology to aid in their research on nitrogen fixation, a biological process vital to our understanding of global warming. 
+
+<img 
+  src="/images/orca/Expand.png" 
+  alt="Expanded Overview" 
+  style={{ borderRadius: '12px' }} 
+/>
+
+## Problem Statement & Design Criteria
+
+Accurately measuring nitrogen-fixing microorganism activity is essential for advancing our understanding of marine ecosystems and the impacts of climate change. FARACAS is a novel measurement technique; however, its accuracy hinges heavily on precise replication of natural light intensity. The Cassar lab tasked our team with creating a system that can automatically modulate light intensity within their incubation vessel to match environmental conditions while aboard an ocean research boat. To best meet the needs of our client, our team identified a set of design goals that our solution should aim to achieve. We also developed quantitative metrics for gauging the peformance of our final solution. 
+
+| Design Criteria        | Quantitative Target Metric |
+|------------------------|----------------------------|
+| **Reliability**        | ➤ Continuous operation for at least 23 out of 24 hours a day<br/>➤ Minimal maintenance for at least 2 years |
+| **Accuracy of Sensor** | ➤ Must update in real-time on an evenly set interval<br/>➤ Measurement accuracy within 15% of a verified lux sensor |
+| **Ease of Use**        | ➤ Setup time under 5 minutes<br/>➤ Intuitive manual and automatic light intensity control<br/>➤ Data can be downloaded wirelessly under 2 minutes |
+| **Operating Conditions** | ➤ At least IP54 compliant |
 
 ## Overview of Solution
 
-To meet the client’s design criteria we developed a two-part system with a sensor module and a chamber module connected via cable. The solution is designed to be at least IP54 compliant. The sensor module collects real-time outdoor light data and transmits it to the chamber module, which modulates LEDs around the incubation vessel to replicate the detected intensity. The system includes wireless interfacing, manual control, and data logging.
+<img 
+  src="/images/orca/Overview.jpg" 
+  alt="Solution Overview" 
+  style={{ borderRadius: '12px' }}
+  className="w-full"
+/>
 
-![ORCA System Render](/images/orca/enclosure-render.png)
+To meet the client’s design criteria, we developed a two-part system with a sensor module and a chamber module connected via cable. The entire solution is designed to be at least IP54 compliant. The sensor module collects real-time outdoor light data and transmits it to the chamber module, which modulates LEDs around the incubation vessel to replicate the detected intensity. The system includes wireless interfacing, manual control, and data logging for added functionality.
 
 ## Sensor Module Design
 
-* **MCU:** ESP32 for low-power operation and integrated wireless.
-* **Sensing:** Two VEML7700 lux sensors on I²C for solar intensity.
-* **Comms:** UART to a MAX3485 RS-485 transceiver for robust long-distance wired link.
-* **Interface:** Power + data fed via RJ45 (twisted pairs used for power, RX/TX, ground).
-* **Power:** AP63203 buck converter drops 24 V VIN to 3.3 V for the module.
+<img 
+  src="/images/orca/moduleS.png" 
+  alt="Module Schematic" 
+  style={{ borderRadius: '12px' }} 
+/>
 
-![Sensor Module Schematic](/images/orca/sensor-schematic.png)
+Above is an electrical schematic I designed for the module component. The sensor module is designed around an ESP32-C3 board for its low-power consumption and integrated wireless capabilities. The MCU is wired to two VEML7700 lux sensors via I2C to collect solar intensity data which is then transmitted out via UART to a MAX3485 RS-485 transceiver. Both power and data lines are fed into the module via an RJ45 interface. An AP63203 fixed-voltage buck converter efficiently drops the 24V VIN to the 3.3V required by the module circuit. 
 
 ## Chamber Module Design
 
-* **Controller:** Raspberry Pi Zero 2 (quad-core) for data processing and storage.
-* **Power:** AP63205 fixed buck and AP2112-3.3 LDO supply 5 V and 3.3 V respectively.
-* **Comms:** RS-485 (MAX3485) receives sensor data; Pi converts to UART and calculates PWM duty cycles.
-* **LED Drive:** Pi controls MOSFET drivers to switch high-amperage 24 V LED arrays.
+<img 
+  src="/images/orca/chamberS.png" 
+  alt="Chamber Schematic" 
+  style={{ borderRadius: '12px' }} 
+/>
 
-![Chamber Module Schematic](/images/orca/chamber-schematic.png)
+Above is an electrical schematic I designed for the chamber component. The chamber module is designed around a Raspberry Pi Zero 2 due to its powerful quad-core ARM processor and storage capabilities. The circuit utilizes both an AP63205 fixed-voltage buck converter and AP2112-3.3 LDO to provide both 5V and 3.3V to the various components including another MAX3485 RS-485 transceiver, front IO, and the Pi. Data from the sensor module is received and converted to UART which the Pi uses to calculate a PWM duty cycle that controls a MOSFET driver board for the high amperage 24V LEDs. 
 
 ## Hardware Communication Design
 
-RS-485 was chosen for EMI immunity and long-distance reliability. An RJ45 connector provides four twisted pairs; power is transmitted at supply voltage to be buck-converted at the sensor end to mitigate cable voltage drop.
+<div className="bg-white rounded-lg shadow-lg px-10 py-2 max-w-3xl">
+    <img 
+        src="/images/orca/T568.png" 
+        alt="T568A"
+        className="w-full rounded"
+    />
 
-## Future Plans
+    <img 
+        src="/images/orca/MAX3485.png" 
+        alt="MAX3485"
+        className="w-full rounded"
+    />
+</div>
 
-Prototype testing is underway. Next steps include designing robust PCBs for both modules and adding long-range wireless capabilities and enhanced enclosure sealing.
 
+RS-485 is a differential serial communication protocol designed for reliable long-distance wired connections. I selected this protocol for its strong EMI immunity, achieved through its twisted-pair differential signaling implementation, which enables communication over distances exceeding 1,000 meters. For the physical interface, I selected an RJ45 connector, which provides four twisted pairs (eight total conductors). RX data, 24 V power, and ground are each assigned a dedicated twisted pair to minimize interference and signal degradation. Power is transmitted at the supply voltage and buck-converted at the sensor module to mitigate voltage drop from cable resistance and reduce current draw through the cable.
+
+## Further Development
+
+Prototype testing is currently underway. In Spring 2026 we have plans to continue development of the project and introduce multiple new features and refine elements of the current design. I have drafted preliminary PCB designs for the module and chamber components using specifications from the current schematics.
+
+<div className="bg-black rounded-lg shadow-lg">
+    <div className="grid grid-cols-2 gap-6">
+        <img 
+        src="/images/orca/ChamberP.png" 
+        alt="Chamber PCB"
+        className="w-full rounded"
+        />
+        
+        <img 
+        src="/images/orca/moduleP.png" 
+        alt="Module PCB"
+        className="w-full rounded"
+        />
+    </div>
+</div>
+
+## Design Expo Presentation
+
+Our team presented our prototype and the following design poster at the Duke University EGR 101 Design Expo on December 8th, 2025.
+
+<img 
+    src="/images/orca/poster.png" 
+    alt="Poster"
+    className="max-w-4xl"
+    style={{ borderRadius: '12px' }} 
+/>

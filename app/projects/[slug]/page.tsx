@@ -8,6 +8,7 @@ import rehypeHighlight from "rehype-highlight"
 import type { Metadata } from "next"
 import DemoBanner from "@/mdx-components/DemoBanner"
 import Link from "next/link"
+import { Menu } from "lucide-react"
 
 type Props = { params: Promise<{ slug: string }> }
 const CONTENT_DIR = path.join(process.cwd(), "content", "projects")
@@ -57,29 +58,64 @@ export default async function ProjectPage({ params }: Props) {
   // Generate and return page
   return (
     <div className="min-h-screen background">
-      {/* Header */}
-      <header className="max-w-6xl mx-auto py-3 md:py-4 lg:py-4 min-h-[56px] md:min-h-[72px]">
-        <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <Link
-            href="/"
-            className="text-xl tracking-wider text-white font-semibold hover:opacity-80 transition-opacity"
-          >
-            Michael Danley
-          </Link>
 
-          <div className="flex items-center gap-4">
+
+      {/* Sticky Header */}
+      <header
+        className="fixed top-0 left-0 right-0 z-50
+        flex items-center justify-between
+        px-4 sm:px-6
+        py-2 md:py-3 lg:py-3
+        min-h-[56px] md:min-h-[72px]
+        transition-all duration-300"
+        style={{
+          willChange: 'transform',
+          background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.5) 65%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 75%, transparent 100%)',
+          backdropFilter: 'blur(6px)',
+          WebkitBackdropFilter: 'blur(6px)'
+        }}
+      >
+
+        {/* Navbar */}
+        <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
+
+          {/* Navbar Left */}
+          <a
+            className="text-xl tracking-wider mb-6"
+            href={'/'}
+          >
+            <span className="text-white font-semibold">
+              Michael Danley
+            </span>
+          </a>
+
+          {/* Navbar Right */}
+          <div
+            className="hidden md:flex items-center gap-4 bg-white/8 rounded-full px-6 py-2 mb-6"
+          >
+
+            {/* Back Button */}
             <Link
               href="/#projects"
               className="text-black hover:opacity-85 transition-opacity px-4 py-2 rounded-full bg-white border border-white/20"
             >
               Back
             </Link>
+
           </div>
+
+          {/* TODO: Add expanding menu for mobile devices */}
+          <button
+            className="md:hidden text-gray-400"
+          >
+            <Menu size={24} />
+          </button>
         </nav>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto p-6">
+      <main className="max-w-4xl mx-auto mt-30">
         <article className="prose prose-invert lg:prose-lg max-w-none">
           {/* Generate MDX file */}
           <MDXRemote
@@ -94,6 +130,13 @@ export default async function ProjectPage({ params }: Props) {
           />
         </article>
       </main>
+
+      {/* Footer */}
+      <footer className="py-10 border-t border-white/20 mt-24">
+        <div className="container mx-auto px-6 text-center text-gray-400">
+          <p>&copy; 2025 Michael Danley. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   )
 }

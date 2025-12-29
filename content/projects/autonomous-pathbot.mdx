@@ -18,13 +18,21 @@ This project created a two-wheeled robot capable of following pre-programmed pat
 * **Motor Driver:** TB6612FNG (up to ~1.2 A continuous).
 * **Motors:** Geared motors ~500 RPM with magnetic quadrature encoders for precise tracking.
 
-![Components: ESP32, Motor Driver, Encoder](/images/pathbot/components.png)
+<img
+    src="/images/pathbot/back.png"
+    alt="Bot"
+    className="rounded-xl"
+/>
 
 ## Chassis Design & Fabrication
 
 Custom enclosure and drivetrain chassis were designed in Fusion 360. Wheels and parts were 3D printed in PLA. Wheel diameter inconsistencies were corrected to improve localization accuracy.
 
-![Chassis Render and 3D Printed Parts](/images/pathbot/chassis-render.png)
+<img
+    src="/images/pathbot/print.png"
+    alt="Print"
+    className="rounded-xl"
+/>
 
 ## Localization Programming (C++)
 
@@ -33,7 +41,11 @@ Custom enclosure and drivetrain chassis were designed in Fusion 360. Wheels and 
 * A command scheduler manages a stack of path commands and updates targets according to positional conditions.
 * Wireless telemetry: robot transmits localization data via TCP and accepts manual control via UDP. A Python PC script displays real-time data.
 
-![Localization Debug and Console](/images/pathbot/localization-debug.png)
+<img
+    src="/images/pathbot/program.png"
+    alt="Program"
+    className="rounded-xl"
+/>
 
 ## Tuning & Optimization
 

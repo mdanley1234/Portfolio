@@ -16,7 +16,12 @@ For the 2024–2025 season I developed a custom command-based control system in 
 
 Each subsystem implements a generic `Subsystem` interface and defines an enum of substates representing its finite behaviors. Subsystems are composed into higher-level BotState objects for coordinated behaviors.
 
-![Subsystem Diagram](/images/ftc-command/subsystem-diagram.png)
+<img
+    src="/images/ftc-command/graph.png"
+    alt="Graph"
+    className="rounded-xl"
+/>
+
 
 ## BotState & SystemTrajectory
 
@@ -32,7 +37,24 @@ Each subsystem implements a generic `Subsystem` interface and defines an enum of
   * subsystem controllers and state transitions.
 * The scheduler was tuned for execution headroom and minimal delay while providing reliable transitions.
 
-![Code Snippet: Trajectory Construction](/images/ftc-command/code-snippet.png)
+<img
+    src="/images/ftc-command/state.png"
+    alt="Stage"
+    className="rounded-xl" 
+/>
+
+<img
+    src="/images/ftc-command/switch.png"
+    alt="Switch"
+    className="rounded-xl"
+/>
+
+<img
+    src="/images/ftc-command/trajectory.png"
+    alt="Trajectory"
+    className="rounded-xl"
+/>
+
 
 ## Results
 

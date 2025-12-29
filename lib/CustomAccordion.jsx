@@ -57,7 +57,6 @@ export default function CustomAccordion({ experiences }) {
 
               {/* Left side - Company and Position */}
               <div className="flex flex-col gap-1">
-
                 {/* Company Header Section */}
                 <Typography component="span" sx={{
                   color: '#ffffff',
@@ -67,14 +66,21 @@ export default function CustomAccordion({ experiences }) {
                 }}>
                   {experience.company}
                 </Typography>
-
-                {/* Position and Dates on same line */}
+                {/* Position on its own line */}
+                <Typography sx={{
+                  color: '#ffffff',
+                  fontSize: '16px',
+                  fontWeight: 500
+                }}>
+                  {experience.position}
+                </Typography>
+                {/* Dates on separate line */}
                 <Typography sx={{
                   color: '#a4aab5ff',
-                  fontSize: '16px',
+                  fontSize: '14px',
                   fontWeight: 400
                 }}>
-                  <strong>{experience.position}</strong> • {experience.start} – {experience.end}
+                  {experience.start} - {experience.end}
                 </Typography>
               </div>
 

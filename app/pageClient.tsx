@@ -239,7 +239,7 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
               >
                 <div className="absolute inset-0 bg-white rounded-full blur-xl opacity-20" />
                 <motion.div
-                  className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl"
+                  className="relative w-48 h-48 rounded-full overflow-hidden border-1 border-white/10"
                   style={{ willChange: 'transform' }}
                 >
                   <img
@@ -433,7 +433,7 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
 
       {/* Github Contribution Calendar */}
       <section className='relative'>
-        <div className='container mx-auto px-10 flex justify-center py-32 -mt-26'>
+        <div className='container mx-auto px-10 flex justify-center py-32 -mt-10'>
           {isClient && (
             <GitHubCalendar
               username="mdanley1234"
@@ -441,7 +441,8 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
               blockMargin={4}
               blockSize={10}
             />
-          )}        </div>
+          )}        
+        </div>
       </section>
 
       {/* Footer */}

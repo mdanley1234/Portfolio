@@ -90,20 +90,13 @@ export default async function ProjectPage({ params }: Props) {
             </span>
           </a>
 
-          {/* Navbar Right */}
-          <div
-            className="hidden md:flex items-center gap-4 bg-white/8 rounded-full px-6 py-2 mb-6"
+          {/* Back Button */}
+          <Link
+            href="/#projects"
+            className="text-black hover:opacity-85 transition-opacity px-4 py-2 rounded-full bg-white border border-white/20"
           >
-
-            {/* Back Button */}
-            <Link
-              href="/#projects"
-              className="text-black hover:opacity-85 transition-opacity px-4 py-2 rounded-full bg-white border border-white/20"
-            >
-              Back
-            </Link>
-
-          </div>
+            Back
+          </Link>
 
           {/* TODO: Add expanding menu for mobile devices */}
           <button

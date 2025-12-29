@@ -57,6 +57,12 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
     "CNC Manufacturing"
   ]
 
+  // Client Render Check
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   // Navbar scrolling function (Detecting current section)
   const [activeSection, setActiveSection] = useState('Home');
   useEffect(() => {
@@ -428,8 +434,14 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
       {/* Github Contribution Calendar */}
       <section className='relative'>
         <div className='container mx-auto px-10 flex justify-center py-32 -mt-26'>
-          <GitHubCalendar username="mdanley1234" maxLevel={6} blockMargin={4} blockSize={10} />
-        </div>
+          {isClient && (
+            <GitHubCalendar
+              username="mdanley1234"
+              maxLevel={6}
+              blockMargin={4}
+              blockSize={10}
+            />
+          )}        </div>
       </section>
 
       {/* Footer */}

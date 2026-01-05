@@ -2,28 +2,42 @@ import React from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const EmblaCarousel = ({ header, slides, options, minCardWidth = 300 }) => {
-  const [slidesPerView, setSlidesPerView] = React.useState(1);
+/**
+ * Builds carousel of cards using EmblaCarousel
+ * @param cardWidth Set width of card in px
+ * @param cardHeight Set height of card in px
+ */
+const EmblaCarousel = ({ header, slides, options, cardWidth }) => {
   const [canScrollPrev, setCanScrollPrev] = React.useState(false);
   const [canScrollNext, setCanScrollNext] = React.useState(false);
   const containerRef = React.useRef(null);
 
+  // Scaling constants
+  const [containerWidth, setContainerWidth] = React.useState(0);
+  const [scale, setScale] = React.useState(1);
+  const [scaledWidth, setScaledWidth] = React.useState(cardWidth);
+
+  // Calculate scaling
   React.useEffect(() => {
-    const calculateSlides = () => {
-      if (containerRef.current) {
-        const containerWidth = containerRef.current.offsetWidth;
-        const calculatedSlides = Math.floor(containerWidth / minCardWidth) || 1;
-        setSlidesPerView(calculatedSlides);
-      }
+    const calculate = () => {
+      if (!containerRef.current) return;
+
+      // Store container width
+      const w = containerRef.current.offsetWidth;
+      setContainerWidth(w);
+
+      // Calculate and store scaling values
+      const s = Math.min(1, w / cardWidth);
+      setScale(s);
+      setScaledWidth(Math.max(1, Math.floor(cardWidth * s)));
     };
 
-    calculateSlides();
-    window.addEventListener('resize', calculateSlides);
-    return () => window.removeEventListener('resize', calculateSlides);
-  }, [minCardWidth]);
+    calculate();
+    window.addEventListener('resize', calculate);
+    return () => window.removeEventListener('resize', calculate);
+  }, [cardWidth]);
 
-  const slideWidth = `${100 / slidesPerView}%`;
-
+  // Card behaviors
   const defaultOptions = {
     loop: false,
     align: 'start',
@@ -77,8 +91,8 @@ const EmblaCarousel = ({ header, slides, options, minCardWidth = 300 }) => {
         <div className="flex gap-4">
           <button
             className={`p-2 rounded-full transition-all ${canScrollPrev
-                ? 'bg-white hover:bg-white/85'
-                : 'bg-gray-500 cursor-not-allowed'
+              ? 'bg-white hover:bg-white/85'
+              : 'bg-gray-500 cursor-not-allowed'
               }`}
             onClick={scrollPrev}
             aria-label="Previous slide"
@@ -88,8 +102,8 @@ const EmblaCarousel = ({ header, slides, options, minCardWidth = 300 }) => {
           </button>
           <button
             className={`p-2 rounded-full transition-all ${canScrollNext
-                ? 'bg-white hover:bg-white/85'
-                : 'bg-gray-500 cursor-not-allowed'
+              ? 'bg-white hover:bg-white/85'
+              : 'bg-gray-500 cursor-not-allowed'
               }`}
             onClick={scrollNext}
             aria-label="Next slide"
@@ -102,15 +116,39 @@ const EmblaCarousel = ({ header, slides, options, minCardWidth = 300 }) => {
 
       <div className="rounded-lg" ref={emblaRef}>
         <div className="flex">
+
+          {/* {slides.map((slide, idx) => (
+          // wrapper has the visual (scaled) size so layout matches visuals
+          <div
+            key={idx}
+            style={{ width: `${effectiveSlideWidth}px`, flex: `0 0 ${effectiveSlideWidth}px` }}
+            className="min-w-0 px-4 py-10"
+          >
+            <div
+              style={{
+                width: `${cardWidth}px`,
+                transform: `scale(${scale})`,
+                transformOrigin: 'top left',
+                // set transform-style if necessary
+              }}
+            >
+              {slide}
+            </div>
+          </div>
+        ))} */}
+
           {slides.map((slide, index) => (
             <div
               key={index}
-              className="min-w-0 px-4 py-10"
-              style={{ flex: `0 0 ${slideWidth}` }}
+              className="min-w-0 px-4 py-10 scale-[var(--card-scale)]"
+              style={{ flex: `0 0 ${cardWidth}px`,
+                        '--card-scale': scale }}
             >
               {slide}
             </div>
           ))}
+
+
         </div>
       </div>
     </div>

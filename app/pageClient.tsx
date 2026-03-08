@@ -413,7 +413,7 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
                 ))}
 
               // Other parameters
-              minCardWidth={400}
+              cardWidth={411} // 379
               options={{ loop: false }}
               header={"Engineering Projects"}
             />

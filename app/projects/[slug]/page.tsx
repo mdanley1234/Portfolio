@@ -7,6 +7,7 @@ import remarkGfm from "remark-gfm"
 import rehypeHighlight from "rehype-highlight"
 import type { Metadata } from "next"
 import DemoBanner from "@/mdx-components/DemoBanner"
+import CADViewer from "@/mdx-components/CADViewer"
 import Link from "next/link"
 import { Menu } from "lucide-react"
 
@@ -37,7 +38,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 const components = {
   // Insert MDX Components here
-  DemoBanner
+  DemoBanner,
+  CADViewer
 }
 
 // Returns ProjectPage object with { params } containing mdx slug

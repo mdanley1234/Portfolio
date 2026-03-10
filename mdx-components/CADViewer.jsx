@@ -130,15 +130,15 @@ export default function CADViewer({
     });
 
     return (
-<figure style={{
-  margin: "2rem 0",
-  fontFamily: "'Courier New', monospace",
-  border: "2px solid #1e293b",
-  borderRadius: "10px",
-  overflow: "hidden",
-  padding: "20px",
-  background: "#000000",
-}}>
+        <figure style={{
+            margin: "2rem 0",
+            fontFamily: "'Courier New', monospace",
+            border: "2px solid #1e293b",
+            borderRadius: "10px",
+            overflow: "hidden",
+            padding: "20px",
+            background: "#000000",
+        }}>
 
             {/* Controls */}
             <div style={{ display: "flex", justifyContent: "flex-end", gap: "6px", marginBottom: "8px" }}>
@@ -151,7 +151,7 @@ export default function CADViewer({
             </div>
 
             {/* Canvas */}
-<div style={{ height, borderRadius: "6px", overflow: "hidden" }}>
+            <div style={{ height, borderRadius: "6px", overflow: "hidden" }}>
                 <Canvas
                     camera={{ position: [3, 2, 5], fov: 45 }}
                     gl={{ antialias: true, alpha: false }}

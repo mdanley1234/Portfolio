@@ -90,3 +90,67 @@ The user interface is a Python program that wirelessly pairs with the ECU and is
 
 The ENO ECU V2.0 transitions to a modular, two-board architecture to isolate EMI from analog sampling. Key upgrades include enhanced power circuitry with low-noise regulators, integrated support for thermistors and load cells, and an ESP32-S3 core featuring LoRa connectivity and local data logging for superior reliability.
 
+{/* TODO: Insert board image here */}
+
+## Design Goals
+
+| Objective | Component | Description |
+| :--- | :--- | :--- |
+| PT Sampling | TLA2518 ADC | The TLA2518 is an 8-channel, 12-bit Analog-to-Digital Converter. It uses an SPI interface to provide high-speed monitoring of pressure transducer (PT) signals with integrated hardware averaging to reduce noise. |
+| Thermistor Sampling | AD8495 Amplifier | The AD8495 is an op-amp that amplifies analog signals from K-type thermocouples before sending the signals to the TLA2518 ADC |
+| Load Cell Sampling | HX711 ADC | The HX711 is an op-amp ADC that is able to read analog signals from load cells on the testing platform and send 24-bit readings to the MCU.
+| Servo Control | PCA9685 PWM Driver | The PCA9685 is an I2C-controlled 16-channel LED/PWM controller. It offloads timing-critical pulse-width modulation from the main MCU, providing 12-bit resolution for precise angular control of servos. |
+| Servo Power | TPS56A37 Buck Converter | The TPS56A37 is a 10A buck converter paired with increased bulk capacitance to handle large current spikes from servo power draw. |
+| VBUS Power | TPS5430 Buck Converter | The TPS5430 is a 3A high-efficiency buck converter that converts 12V DC battery voltage to a stable VBUS voltage that is linearly regulated for logic applications. |
+| Logic Power | TPS7A4701 LDO | The TPS7A4701 is a low-noise, high-PSRR linear regulator that provides a clean 3.3V supply from the VBUS supply for sensitive analog components, minimizing EMI and ensuring stable operation. |
+| IO Hardware | JST Connectors | XH-JST and VH-JST Connectors are used for secure, wire-to-board connections. PH-JST and SH-JST Connectors are used for secure, board-to-board connections |
+
+## Schematics
+
+### Control Board Schematic
+
+<img
+  src="/images/propulsion/schematic2.png"
+  alt="Full PCB"
+  className="rounded-xl"
+/>
+
+{/* Full Download Button */}
+<a
+  href="/files/V2_Schematic_Control.pdf"
+  download="V1_Schematic.pdf"
+  className="inline-flex items-center px-6 py-2 bg-white border border-gray-300 rounded-full text-black no-underline hover:bg-gray-200 transition-colors shadow-sm"
+>
+  <svg className="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+  </svg>
+  <span className="font-medium">Download Full Schematic</span>
+</a>
+
+### Sampling Board Schematic
+
+<img
+  src="/images/propulsion/schematic3.png"
+  alt="Full PCB"
+  className="rounded-xl"
+/>
+
+{/* Full Download Button */}
+<a
+  href="/files/V2_Schematic_Sampling.pdf"
+  download="V1_Schematic.pdf"
+  className="inline-flex items-center px-6 py-2 bg-white border border-gray-300 rounded-full text-black no-underline hover:bg-gray-200 transition-colors shadow-sm"
+>
+  <svg className="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+  </svg>
+  <span className="font-medium">Download Full Schematic</span>
+</a>
+
+## PCB Layout
+
+<img
+  src="/images/propulsion/pcb3.png"
+  alt="Full PCB"
+  className="rounded-xl"
+/>

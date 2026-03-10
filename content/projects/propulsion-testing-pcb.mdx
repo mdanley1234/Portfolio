@@ -3,14 +3,14 @@ title: "Liquid Propulsion ECU"
 start: "Fall 2025"
 end: "Present"
 summary: "An integrated ECU platform for Duke AERO's liquid propulsion rocket engine, combining precision sensor sampling, power distribution, valve control, and wireless telemetry."
-coverImage: "/images/propulsion/cover.png"
+coverImage: "/images/propulsion/cover4.png"
 tags: [Circuit Analysis, PCB Design]
 rank: 2
 ---
 
 # Liquid Propulsion ECU
 
-ENO is a regeneratively cooled custom liquid rocket engine developed by Duke AERO, designed to produce 2500 N of thrust using nitrous oxide and kerosene. The propulsion test platform is a critical component of the ENO development program, providing a controlled environment for validating engine performance and characterizing combustion behavior. A CAD model of the engine is included below for reference. 
+ENO is a regeneratively cooled custom liquid rocket engine developed by Duke AERO designed to produce 2500 newtons of thrust using nitrous oxide and kerosene. The propulsion test platform is a critical component of the ENO development program, providing a controlled environment for validating engine performance and characterizing combustion behavior.
 
 <CADViewer
   src="/models/chamber_3.glb"
@@ -28,6 +28,8 @@ The ENO test platform is built around a network of pressurized tanks, tubing, va
     className="rounded-xl"
 />
 
+[Jump to ENO ECU V2.0](#ecu-v2)
+
 # ENO ECU V1.0
 
 The ENO ECU V1.0 focuses on high-frequency data acquisition, power management, and servo control. Powered by an ESP32-C3 MCU, the board can use WiFi to communicate with a connected laptop to both send telemetry and recieve wireless servo commands. This iteration also contains additional connectors to interface with an external DAQ. 
@@ -38,7 +40,7 @@ The ENO ECU V1.0 focuses on high-frequency data acquisition, power management, a
     className="rounded-xl"
 />
 
-## Design Goals
+## V1.0 Design Goals
 
 | Objective | Component | Description |
 | :--- | :--- | :--- |
@@ -48,7 +50,7 @@ The ENO ECU V1.0 focuses on high-frequency data acquisition, power management, a
 | Logic Power | AP63205 Buck Converter | The AP63205 is a 2A low-noise fixed 5V buck converter capable of converting 12V DC battery voltage to a stable 5V rail for the MCU board which provides 3V3 for digital logic. |
 | IO Hardware | JST Connectors | XH-JST and VH-JST Connectors are used for secure, wire-to-board connections. Their keyed housings prevent reverse-polarity errors during maintenance. |
 
-## User Interface
+## V1.0 User Interface
 
 The user interface is a Python program that wirelessly pairs with the ECU and is capable of streaming live telemetry data and sending servo commands. A custom CLI allows the user to interact with the system while a real-time graphical display plots calibrated pressure data from up to twelve transducers using a configurable moving average filter. The application supports timed command sequences and script execution for automated valve actuation, along with live channel selection and servo state indicators. Telemetry and actuator states can be logged to CSV for post-test analysis, making the tool suitable for both live monitoring and structured experimental runs.
 
@@ -58,7 +60,7 @@ The user interface is a Python program that wirelessly pairs with the ECU and is
     className="rounded-xl"
 />
 
-## Schematic
+## V1.0 Schematic
 
 <img
     src="/images/propulsion/schematic.png"
@@ -78,7 +80,7 @@ The user interface is a Python program that wirelessly pairs with the ECU and is
   <span className="font-medium">Download Full Schematic</span>
 </a>
 
-## PCB Layout
+## V1.0 PCB Layout
 
 <img
   src="/images/propulsion/cover.png"
@@ -86,13 +88,31 @@ The user interface is a Python program that wirelessly pairs with the ECU and is
   className="rounded-xl"
 />
 
+## V1.0 Testing
+
+Cold flow testing allows us to test ENO flow performance and measure pressure changes through components in our test platform. V1.0 reduced electrical setup time from hours to minutes while simplifying the interface and removing the need for a bulky external DAQ. The integrated sampling solution more than doubled the polling frequency from 40 hz to 100 hz. However, testing also revealed undersized current capacity for servos and noisy sampling due to routing. V2.0 attempts to address those issues. 
+
+<iframe
+  width="100%"
+  height="400"
+  src="https://www.youtube.com/embed/NwgMCZ_6MqQ?si=brFg5oASvcm8bnCf"
+  title="YouTube video player"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  allowFullScreen
+  id="ecu-v2"
+  className="rounded-xl"
+></iframe>
+
+<br />
+<br />
+
 # ENO ECU V2.0
 
 The ENO ECU V2.0 transitions to a modular, two-board architecture to isolate EMI from analog sampling. Key upgrades include enhanced power circuitry with low-noise regulators, integrated support for thermistors and load cells, and an ESP32-S3 core featuring LoRa connectivity and local data logging for superior reliability.
 
 {/* TODO: Insert board image here */}
 
-## Design Goals
+## V2.0 Design Goals
 
 | Objective | Component | Description |
 | :--- | :--- | :--- |
@@ -105,7 +125,7 @@ The ENO ECU V2.0 transitions to a modular, two-board architecture to isolate EMI
 | Logic Power | TPS7A4701 LDO | The TPS7A4701 is a low-noise, high-PSRR linear regulator that provides a clean 3.3V supply from the VBUS supply for sensitive analog components, minimizing EMI and ensuring stable operation. |
 | IO Hardware | JST Connectors | XH-JST and VH-JST Connectors are used for secure, wire-to-board connections. PH-JST and SH-JST Connectors are used for secure, board-to-board connections |
 
-## Schematics
+## V2.0 Schematics
 
 ### Control Board Schematic
 
@@ -147,7 +167,7 @@ The ENO ECU V2.0 transitions to a modular, two-board architecture to isolate EMI
   <span className="font-medium">Download Full Schematic</span>
 </a>
 
-## PCB Layout
+## V2.0 PCB Layout
 
 <img
   src="/images/propulsion/pcb3.png"

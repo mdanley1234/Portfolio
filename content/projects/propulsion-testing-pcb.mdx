@@ -22,11 +22,13 @@ ENO is a regeneratively cooled custom liquid rocket engine developed by Duke AER
 
 The ENO test platform is built around a network of pressurized tanks, tubing, valves, and sensors. The previous system consisted of a mess of cables, various protoboards, an Arduino UNO, and an external DAQ. The result was a system completely inadequate for the reliability and consistency required by a liquid rocket engine. Each test required hours of wiring and troubleshooting. To improve both reliability and simplicity, I designed a fully integrated engine control unit PCB capable of handling all the previous functionalities on a single dedicated board. Currently, I'm leading a team in developing a 2nd iteration of the board with additional features and modifications to issues found during testing of V1.0.
 
+<div className="flex justify-center">
 <img
     src="/images/propulsion/platform.png"
     alt="Liquid Propulsion Test Platform"
-    className="rounded-xl"
+    className="rounded-xl w-3/4"
 />
+</div>
 
 [Jump to ENO ECU V2.0](#ecu-v2)
 
@@ -34,11 +36,13 @@ The ENO test platform is built around a network of pressurized tanks, tubing, va
 
 The ENO ECU V1.0 focuses on high-frequency data acquisition, power management, and servo control. Powered by an ESP32-C3 MCU, the board can use WiFi to communicate with a connected laptop to both send telemetry and recieve wireless servo commands. This iteration also contains additional connectors to interface with an external DAQ. 
 
+<div className="flex justify-center">
 <img
     src="/images/propulsion/scpt.png"
     alt="Board V1.0 Schematic"
-    className="rounded-xl"
+    className="rounded-xl w-3/4"
 />
+</div>
 
 ### V1.0 Design Goals
 
@@ -54,11 +58,13 @@ The ENO ECU V1.0 focuses on high-frequency data acquisition, power management, a
 
 The user interface is a Python program that wirelessly pairs with the ECU and is capable of streaming live telemetry data and sending servo commands. A custom CLI allows the user to interact with the system while a real-time graphical display plots calibrated pressure data from up to twelve transducers using a configurable moving average filter. The application supports timed command sequences and script execution for automated valve actuation, along with live channel selection and servo state indicators. Telemetry and actuator states can be logged to CSV for post-test analysis, making the tool suitable for both live monitoring and structured experimental runs.
 
+<div className="flex justify-center">
 <img
     src="/images/propulsion/interface.png"
     alt="Board V1.0 Schematic"
-    className="rounded-xl"
+    className="rounded w-3/4"
 />
+</div>
 
 ### V1.0 Schematic
 
@@ -82,11 +88,13 @@ The user interface is a Python program that wirelessly pairs with the ECU and is
 
 ### V1.0 PCB Layout
 
+<div className="flex justify-center">
 <img
   src="/images/propulsion/cover.png"
   alt="Full PCB"
-  className="rounded-xl"
+  className="rounded-xl w-3/4"
 />
+</div>
 
 ### V1.0 Testing
 
@@ -168,8 +176,22 @@ The ENO ECU V2.0 transitions to a modular, two-board architecture to isolate EMI
 
 ### V2.0 PCB Layout
 
+#### Control Board Layout
+
+<div className="flex justify-center">
 <img
-  src="/images/propulsion/pcb3.png"
+  src="/images/propulsion/control_pcb.png"
   alt="Full PCB"
-  className="rounded-xl"
+  className="rounded-xl w-3/4"
 />
+</div>
+
+#### Sampling Board Layout
+
+<div className="flex justify-center">
+<img
+  src="/images/propulsion/samp_pcb.png"
+  alt="Full PCB"
+  className="rounded-xl w-3/4"
+/>
+</div>

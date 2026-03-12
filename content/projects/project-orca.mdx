@@ -2,7 +2,7 @@
 title: "Project ORCA"
 start: "Fall 2025"
 end: "Present"
-summary: "An embedded system that replicates real-time environmental light conditions inside an incubation vessel, featuring custom sensor and chamber electronics with RS-485 communication."
+summary: "A research-grade environmental emulation system that replicates real-time marine light conditions using custom PCBs, spectral sensing, and RS-485/LoRa communication"
 coverImage: "/images/orca/cover.jpg"
 tags: [PCB Design, Soldering, C++]
 rank: 1
@@ -12,16 +12,13 @@ rank: 1
 
 ORCA (Optical Replication & Control Apparatus) is a high-fidelity environmental emulation system designed to replicate real-time solar intensity within marine incubation vessels. As the Electrical Systems Engineer, I lead the end-to-end hardware lifecycle, including the design, fabrication, and validation of all control electronics. After a successful proof-of-concept phase in Fall 2025, the project is currently in active fabrication for a ruggedized, research-grade unit ready for offshore deployment.
 
-<figure>
-  <img
-    src="/images/orca/Expand.png"
-    alt="Expanded Overview"
-    className="rounded-xl"
-  />
-  <figcaption className="text-sm text-gray-500 mt-2">
-    Initial prototyping. Fall 2025
-  </figcaption>
-</figure>
+  <div className="flex justify-center">
+    <img
+      src="/images/orca/both.png"
+      alt="Expanded Overview"
+      className="rounded-xl w-3/4"
+    />
+  </div>
 
 Accurately measuring nitrogen-fixing microorganism activity is essential for advancing our understanding of marine ecosystems and the impacts of climate change. FARACAS is a novel measurement technique; however, its accuracy hinges heavily on precise replication of natural light intensity. The Cassar lab at Duke University tasked our team with creating a system that can automatically modulate light intensity within their incubation vessel to match environmental conditions while aboard an ocean research boat. To best meet the needs of our client, our team identified a set of design goals that our solution should aim to achieve.
 
@@ -34,43 +31,50 @@ Accurately measuring nitrogen-fixing microorganism activity is essential for adv
 
 ## Initial Prototyping (Fall 2025)
 
-<img 
-    src="/images/orca/Overview.jpg" 
-    alt="T568A"
-    className="w-full rounded-xl"
-/>
+<div className="flex justify-center">
+  <img 
+      src="/images/orca/Overview.jpg" 
+      alt="T568A"
+      className="rounded-xl w-3/4"
+  />
+</div>
 
 The system features a split architecture consisting of an outdoor sensor module and an internal chamber module, linked via an RJ45 interface for robust power and data transmission. The sensor module relies on an ESP32-C3 microcontroller—powered by an external buck converter that steps down 24V to 3.3V—to collect real-time solar intensity data from dual VEML7700 lux sensors via I2C. This data is routed via UART through a MAX3485 RS-485 transceiver over the connecting cable to the chamber module. 
+<div className="flex justify-center">
 
 <img 
     src="/images/orca/Expand.png" 
     alt="MAX3485"
-    className="w-full rounded-xl"
+    className="w-3/4 rounded-xl"
 />
+</div>
 
 Within the chamber unit, a receiving MAX3485 transceiver routes the incoming data to a central ESP32 microcontroller, which also interfaces with the manual front-panel IO. The ESP32 processes the UART data stream to calculate a precise PWM duty cycle for a MOSFET driver board; this board modulates the high-amperage 24V LEDs surrounding the incubation vessel to accurately replicate the detected outdoor light intensity, while the ESP32 simultaneously manages the system's wireless interfacing and local data logging capabilities. More information on the initial prototype can be found in the following design poster our team presented at the Duke University EGR 101 Design Expo on December 8th, 2025. 
 
+<div className="flex justify-center">
 <img 
     src="/images/orca/poster.png" 
     alt="Poster"
-    className="max-w-4xl rounded-xl"
+    className="w-3/4 rounded-xl"
 />
+</div>
 
 
 ### RJ45 Interface Design
 
-<div className="bg-white rounded-xl shadow-lg px-20 py-2 max-w">
-    <img 
-        src="/images/orca/T568.png" 
-        alt="T568A"
-        className="w-full rounded"
-    />
+<br/>
+<div className="bg-white rounded-xl shadow-lg px-20 py-0 w-3/4 mx-auto flex flex-col items-center gap-4">
+  <img 
+    src="/images/orca/T568.png" 
+    alt="T568A"
+    className="w-full rounded"
+  />
 
-    <img 
-        src="/images/orca/MAX3485.png" 
-        alt="MAX3485"
-        className="w-full rounded"
-    />
+  <img 
+    src="/images/orca/MAX3485.png" 
+    alt="MAX3485"
+    className="w-full rounded"
+  />
 </div>
 
 
@@ -128,24 +132,68 @@ The chamber module PCB is designed in the Pi HAT formfactor for direct integrati
 
 #### Chamber Module PCB Layout
 
+<div className="flex justify-center">
 <img 
     src="/images/orca/chamber_lay.png" 
     alt="Layout"
-    className="rounded-xl"
+    className="rounded-xl w-3/4"
 />
+</div>
 
 ### Sensor Module PCB
+<br/>
 
-<div className="flex flex-col items-center">
-  <img 
-    src="/images/orca/sat_1.png" 
+<div className="not-prose flex flex-col items-center gap-4">
+  <img
+    src="/images/orca/sat_1.png"
     alt="Primary"
-    className="rounded-xl w-165 object-contain"
+    className="rounded-xl w-3/4 object-contain"
   />
-  <img 
-    src="/images/orca/sat_2.png" 
+  <img
+    src="/images/orca/sat_2.png"
     alt="Primary"
-    className="rounded-xl w-165 object-contain"
+    className="rounded-xl w-3/4 object-contain"
   />
 </div>
 
+The chamber module PCB is designed around the ESP32-C6 DevKitC-1 due to its extensive GPIO and low-power core enabling efficient battery operation. An AS7343 breakout replaces the original VEML7700 due to its multi-spectral sensing capabilities. A BQ25185 battery controller breakout handles battery management, allowing the sensor module to work completely independent of any wired connection. The board also includes LoRa for wireless communication and GPS for position and time data.
+
+| Objective | Component | Description |
+| :--- | :--- | :--- |
+| Battery Management | BQ25185 Breakout | The BQ25185 breakout manages a 3000 mAh LiPo cell with near-MPPT capability for solar charging from an ETFE coated panel placed outside the sensor module enclosure. Additionally, the breakout can draw power from the RJ45 connector located on the PCB. |
+| Power Circuitry | XC6220 | The BQ25185 provides unregulated ~4.5V to the sensor module PCB. The XC6220 is a high-efficiency LDO regulator used to provide stable, low-noise 3.3V power to the board. |
+| Communication Systems | MAX3485, LORA1262 | The PCB implements the same MAX3485 interface from prototyping with the addition of a LORA1262 chip capable of sending long-range wireless communication to the chamber module anywhere on the ship. |
+| Light Sensing | AS7343 Breakout | The AS7343 breakout can sample 14 different wavelengths across and beyond the visible spectrum allowing it to capture a spectrum of intensities for a more accurate representation of light conditions. |
+| GPS | LC86GLA | The LC86GLA was selected for its integrated patch antenna and ultra low power consumption. GPS data provides both time and location allowing us to calculate solar inclination that may impact the accuracy of our spectral sampling. |
+
+
+#### Sensor Module Schematic
+
+<img 
+    src="/images/orca/sat_sch.png" 
+    alt="Schematic"
+    className="rounded-xl"
+/>
+
+{/* Full Download Button */}
+<a
+  href="/files/Sensor_Schematic.pdf"
+  download="Sensor_Schematic.pdf"
+  className="inline-flex items-center px-6 py-2 bg-white border border-gray-300 rounded-full text-black no-underline hover:bg-gray-200 transition-colors shadow-sm"
+>
+  <svg className="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+  </svg>
+  <span className="font-medium">Download Full Schematic</span>
+</a>
+
+#### Sensor Module PCB Layout
+<div className="flex justify-center">
+<img 
+    src="/images/orca/sat_pcb.png" 
+    alt="Layout"
+    className="rounded-xl w-3/4"
+/>
+</div>
+
+{/* TODO: Add testing, firmware, etc. */}

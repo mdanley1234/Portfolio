@@ -1,88 +1,197 @@
 ---
-title: "Propulsion Testing PCB"
+title: "Liquid Propulsion ECU"
 start: "Fall 2025"
 end: "Present"
-summary: "A custom PCB solution for Duke AERO's liquid rocket engine test platform, featuring precision analog sampling, high-current power distribution, and servo valve control."
-coverImage: "/images/propulsion/cover.png"
+summary: "An integrated ECU platform for Duke AERO's liquid propulsion rocket engine, combining precision sensor sampling, power distribution, valve control, and wireless telemetry."
+coverImage: "/images/propulsion/cover4.png"
 tags: [Circuit Analysis, PCB Design]
 rank: 2
 ---
 
-# Propulsion Testing PCB
+# Liquid Propulsion ECU
 
-This project is part of the Duke AERO liquid propulsion test platform. To increase the reliability of the electrical system during test runs of the team's experimental liquid rocket engine, I am developing a PCB designed to perform analog signal sampling, power distribution, and valve control.
+ENO is a regeneratively cooled custom liquid rocket engine developed by Duke AERO designed to produce 2500 newtons of thrust using nitrous oxide and kerosene. The propulsion test platform is a critical component of the ENO development program, providing a controlled environment for validating engine performance and characterizing combustion behavior.
 
-## Problem Overview
+<CADViewer
+  src="/models/chamber_3.glb"
+  caption="ENO engine chamber model. Image credit: Duke AERO."
+  autoRotate
+/>
 
-The test platform is built around a network of pressurized tanks, tubing, valves, and sensors. Pressure transducers monitor system pressures up to 1000 PSI and output analog signals, which are captured and processed by an external measurement unit. The valves are actuated by servos that respond to external HIGH/LOW control signals.
+## Electrical Overview
 
-<figure className="flex flex-col items-center">
-  <img
-    src="/images/propulsion/plumbing.jpg"
-    alt="Plumbing Diagram"
-    className="rounded-xl"
-  />
-  <figcaption className="mt-2 text-center">
-    Plumbing diagram. Image credit: Duke AERO.
-  </figcaption>
-</figure>
+The ENO test platform is built around a network of pressurized tanks, tubing, valves, and sensors. The previous system consisted of a mess of cables, various protoboards, an Arduino UNO, and an external DAQ. The result was a system completely inadequate for the reliability and consistency required by a liquid rocket engine. Each test required hours of wiring and troubleshooting. To improve both reliability and simplicity, I designed a fully integrated engine control unit PCB capable of handling all the previous functionalities on a single dedicated board. Currently, I'm leading a team in developing a 2nd iteration of the board with additional features and modifications to issues found during testing of V1.0.
 
+<div className="flex justify-center">
+<img
+    src="/images/propulsion/platform.png"
+    alt="Liquid Propulsion Test Platform"
+    className="rounded-xl w-3/4"
+/>
+</div>
 
+[Jump to ENO ECU V2.0](#ecu-v2)
 
-## Signal Sampling
+## ENO ECU V1.0
 
-The pressure transducers interface directly with the PCB, where they receive power and have their analog outputs routed to a connector for the external measurement unit.
+The ENO ECU V1.0 focuses on high-frequency data acquisition, power management, and servo control. Powered by an ESP32-C3 MCU, the board can use WiFi to communicate with a connected laptop to both send telemetry and recieve wireless servo commands. This iteration also contains additional connectors to interface with an external DAQ. 
 
-* **Ground Referencing:** Because the external unit uses differential inputs while the sensors are ground-referenced, ground is treated as S-, with 25 kΩ bias resistors pulling to an external COM reference.
-* **ADC Integration:** Two TLA2518 ADCs provide onboard sampling to validate sensor readings and help diagnose wiring issues between the PCB and the measurement unit.
+<div className="flex justify-center">
+<img
+    src="/images/propulsion/scpt.png"
+    alt="Board V1.0 Schematic"
+    className="rounded-xl w-3/4"
+/>
+</div>
+
+### V1.0 Design Goals
+
+| Objective | Component | Description |
+| :--- | :--- | :--- |
+| PT Sampling | TLA2518 ADC | The TLA2518 is an 8-channel, 12-bit Analog-to-Digital Converter. It uses an SPI interface to provide high-speed monitoring of pressure transducer (PT) signals with integrated hardware averaging to reduce noise. |
+| Servo Control | PCA9685 PWM Driver | The PCA9685 is an I2C-controlled 16-channel LED/PWM controller. It offloads timing-critical pulse-width modulation from the main MCU, providing 12-bit resolution for precise angular control of servos. |
+| Servo Power | AP63300 Buck Converter | The AP63300 is a 3A synchronous buck converter capable of converting 12V DC battery voltage to a stable 6V rail for servo power.|
+| Logic Power | AP63205 Buck Converter | The AP63205 is a 2A low-noise fixed 5V buck converter capable of converting 12V DC battery voltage to a stable 5V rail for the MCU board which provides 3V3 for digital logic. |
+| IO Hardware | JST Connectors | XH-JST and VH-JST Connectors are used for secure, wire-to-board connections. Their keyed housings prevent reverse-polarity errors during maintenance. |
+
+### V1.0 User Interface
+
+The user interface is a Python program that wirelessly pairs with the ECU and is capable of streaming live telemetry data and sending servo commands. A custom CLI allows the user to interact with the system while a real-time graphical display plots calibrated pressure data from up to twelve transducers using a configurable moving average filter. The application supports timed command sequences and script execution for automated valve actuation, along with live channel selection and servo state indicators. Telemetry and actuator states can be logged to CSV for post-test analysis, making the tool suitable for both live monitoring and structured experimental runs.
+
+<div className="flex justify-center">
+<img
+    src="/images/propulsion/interface.png"
+    alt="Board V1.0 Schematic"
+    className="rounded w-3/4"
+/>
+</div>
+
+### V1.0 Schematic
 
 <img
-    src="/images/propulsion/sample.png"
+    src="/images/propulsion/schematic.png"
     alt="Sampling Interface"
     className="rounded-xl"
 />
 
-## Power Distribution
+{/* Full Download Button */}
+<a
+  href="/files/V1_Schematic.pdf"
+  download="V1_Schematic.pdf"
+  className="inline-flex items-center px-6 py-2 bg-white border border-gray-300 rounded-full text-black no-underline hover:bg-gray-200 transition-colors shadow-sm"
+>
+  <svg className="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+  </svg>
+  <span className="font-medium">Download Full Schematic</span>
+</a>
 
-Buck converters regulate the fluctuating +12 V battery input into stable lower-voltage rails for the PCB.
+### V1.0 PCB Layout
 
-* **Voltage Rails:** Two independent AP63300 converters supply +6 V to separate servo banks, while an AP63205 converter generates the +5 V rail used by the ESP32-C3 and the pressure transducers.
-* **Layout Optimization:** The placement of the buck converters and their supporting components is optimized to minimize switching noise and reduce inductive coupling. High-current traces and copper pours are used to support elevated load currents and help dissipate heat generated by the converters.
+<div className="flex justify-center">
+<img
+  src="/images/propulsion/cover.png"
+  alt="Full PCB"
+  className="rounded-xl w-3/4"
+/>
+</div>
+
+### V1.0 Testing
+
+Cold flow testing allows us to test ENO flow performance and measure pressure changes through components in our test platform. V1.0 reduced electrical setup time from hours to minutes while simplifying the interface and removing the need for a bulky external DAQ. The integrated sampling solution more than doubled the polling frequency from 40 hz to 100 hz. However, testing also revealed undersized current capacity for servos and noisy sampling due to routing. V2.0 attempts to address those issues. 
+
+<iframe
+  width="100%"
+  height="400"
+  src="https://www.youtube.com/embed/NwgMCZ_6MqQ?si=brFg5oASvcm8bnCf"
+  title="YouTube video player"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  allowFullScreen
+  id="ecu-v2"
+  className="rounded-xl"
+></iframe>
+
+<br />
+
+## ENO ECU V2.0
+
+The ENO ECU V2.0 transitions to a modular, two-board architecture to isolate EMI from analog sampling. Key upgrades include enhanced power circuitry with low-noise regulators, integrated support for thermistors and load cells, and an ESP32-S3 core featuring LoRa connectivity and local data logging for superior reliability.
+
+{/* TODO: Insert board image here */}
+
+### V2.0 Design Goals
+
+| Objective | Component | Description |
+| :--- | :--- | :--- |
+| PT Sampling | TLA2518 ADC | The TLA2518 is an 8-channel, 12-bit Analog-to-Digital Converter. It uses an SPI interface to provide high-speed monitoring of pressure transducer (PT) signals with integrated hardware averaging to reduce noise. |
+| Thermistor Sampling | AD8495 Amplifier | The AD8495 is an op-amp that amplifies analog signals from K-type thermocouples before sending the signals to the TLA2518 ADC |
+| Load Cell Sampling | HX711 ADC | The HX711 is an op-amp ADC that is able to read analog signals from load cells on the testing platform and send 24-bit readings to the MCU.
+| Servo Control | PCA9685 PWM Driver | The PCA9685 is an I2C-controlled 16-channel LED/PWM controller. It offloads timing-critical pulse-width modulation from the main MCU, providing 12-bit resolution for precise angular control of servos. |
+| Servo Power | TPS56A37 Buck Converter | The TPS56A37 is a 10A buck converter paired with increased bulk capacitance to handle large current spikes from servo power draw. |
+| VBUS Power | TPS5430 Buck Converter | The TPS5430 is a 3A high-efficiency buck converter that converts 12V DC battery voltage to a stable VBUS voltage that is linearly regulated for logic applications. |
+| Logic Power | TPS7A4701 LDO | The TPS7A4701 is a low-noise, high-PSRR linear regulator that provides a clean 3.3V supply from the VBUS supply for sensitive analog components, minimizing EMI and ensuring stable operation. |
+| IO Hardware | JST Connectors | XH-JST and VH-JST Connectors are used for secure, wire-to-board connections. PH-JST and SH-JST Connectors are used for secure, board-to-board connections |
+
+### V2.0 Schematics
+
+#### Control Board Schematic
 
 <img
-    src="/images/propulsion/buckS.png"
-    alt="Buck Schematic"
-    className="rounded-xl"
+  src="/images/propulsion/schematic2.png"
+  alt="Full PCB"
+  className="rounded-xl"
 />
+
+{/* Full Download Button */}
+<a
+  href="/files/V2_Schematic_Control.pdf"
+  download="V2_Schematic_Control.pdf"
+  className="inline-flex items-center px-6 py-2 bg-white border border-gray-300 rounded-full text-black no-underline hover:bg-gray-200 transition-colors shadow-sm"
+>
+  <svg className="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+  </svg>
+  <span className="font-medium">Download Full Schematic</span>
+</a>
+
+#### Sampling Board Schematic
 
 <img
-    src="/images/propulsion/buckP.png"
-    alt="Buck PCB"
-    className="rounded-xl"
+  src="/images/propulsion/schematic3.png"
+  alt="Full PCB"
+  className="rounded-xl"
 />
 
-## Valve Control
+{/* Full Download Button */}
+<a
+  href="/files/V2_Schematic_Sampling.pdf"
+  download="V2_Schematic_Sampling.pdf"
+  className="inline-flex items-center px-6 py-2 bg-white border border-gray-300 rounded-full text-black no-underline hover:bg-gray-200 transition-colors shadow-sm"
+>
+  <svg className="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+  </svg>
+  <span className="font-medium">Download Full Schematic</span>
+</a>
 
-The test platform's valves are actuated by servos controlled through a PCA9685 PWM driver, which provides eight independent output channels. To meet competition requirements, external trigger lines are also routed to the MCU, with an additional TLA2518 functioning as an I/O expander to capture these signals reliably.
+### V2.0 PCB Layout
 
-  <img
-    src="/images/propulsion/PWM.png"
-    alt="Servo Interface"
-    className="rounded-xl"
-  />
+#### Control Board Layout
 
-## Future Plans
+<div className="flex justify-center">
+<img
+  src="/images/propulsion/control_pcb.png"
+  alt="Full PCB"
+  className="rounded-xl w-3/4"
+/>
+</div>
 
-The PCB is currently in review, where the schematic and layout are under consideration prior to fabrication. Once manufactured, the board will undergo a validation process that includes:
+#### Sampling Board Layout
 
-1. Power rail stability testing.
-2. Signal-integrity checks.
-3. Verification of all analog and digital interfaces.
-
-Findings from this evaluation will guide any necessary design iterations before the PCB is fully integrated into the liquid propulsion test platform.
-
-  <img
-    src="/images/propulsion/full.png"
-    alt="Full PCB"
-    className="rounded-xl"
-  />
+<div className="flex justify-center">
+<img
+  src="/images/propulsion/samp_pcb.png"
+  alt="Full PCB"
+  className="rounded-xl w-3/4"
+/>
+</div>

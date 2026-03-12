@@ -2,7 +2,7 @@
 title: "Project ORCA"
 start: "Fall 2025"
 end: "Present"
-summary: "An embedded system that replicates real-time environmental light conditions inside an incubation vessel, featuring custom sensor and chamber electronics with RS-485 communication."
+summary: "A research-grade environmental emulation system that replicates real-time marine light conditions using custom PCBs, spectral sensing, and RS-485/LoRa communication"
 coverImage: "/images/orca/cover.jpg"
 tags: [PCB Design, Soldering, C++]
 rank: 1
@@ -10,102 +10,190 @@ rank: 1
 
 # Project ORCA
 
-ORCA (Optical Replication & Control Apparatus) is a system designed to emulate real-time environmental light intensity inside an incubation vessel aboard a marine research boat. I was in charge of the design, fabrication, and testing of the electrical subsystem. Our team delivered the first iteration of the design to the CASSAR lab in Fall 2025 with future plans for development in Spring 2026. The lab plans to implement our technology to aid in their research on nitrogen fixation, a biological process vital to our understanding of global warming. 
+ORCA (Optical Replication & Control Apparatus) is a high-fidelity environmental emulation system designed to replicate real-time solar intensity within marine incubation vessels. As the Electrical Systems Engineer, I lead the end-to-end hardware lifecycle, including the design, fabrication, and validation of all control electronics. After a successful proof-of-concept phase in Fall 2025, the project is currently in active fabrication for a ruggedized, research-grade unit ready for offshore deployment.
 
-<img 
-  src="/images/orca/Expand.png" 
-  alt="Expanded Overview" 
-  style={{ borderRadius: '12px' }} 
-/>
+  <div className="flex justify-center">
+    <img
+      src="/images/orca/both.png"
+      alt="Expanded Overview"
+      className="rounded-xl w-3/4"
+    />
+  </div>
 
-## Problem Statement & Design Criteria
+Accurately measuring nitrogen-fixing microorganism activity is essential for advancing our understanding of marine ecosystems and the impacts of climate change. FARACAS is a novel measurement technique; however, its accuracy hinges heavily on precise replication of natural light intensity. The Cassar lab at Duke University tasked our team with creating a system that can automatically modulate light intensity within their incubation vessel to match environmental conditions while aboard an ocean research boat. To best meet the needs of our client, our team identified a set of design goals that our solution should aim to achieve.
 
-Accurately measuring nitrogen-fixing microorganism activity is essential for advancing our understanding of marine ecosystems and the impacts of climate change. FARACAS is a novel measurement technique; however, its accuracy hinges heavily on precise replication of natural light intensity. The Cassar lab tasked our team with creating a system that can automatically modulate light intensity within their incubation vessel to match environmental conditions while aboard an ocean research boat. To best meet the needs of our client, our team identified a set of design goals that our solution should aim to achieve. We also developed quantitative metrics for gauging the peformance of our final solution. 
-
-| Design Criteria        | Quantitative Target Metric |
+| Design Criteria        | Target Metric |
 |------------------------|----------------------------|
-| **Reliability**        | ➤ Continuous operation for at least 23 out of 24 hours a day<br/>➤ Minimal maintenance for at least 2 years |
-| **Accuracy of Sensor** | ➤ Must update in real-time on an evenly set interval<br/>➤ Measurement accuracy within 15% of a verified lux sensor |
-| **Ease of Use**        | ➤ Setup time under 5 minutes<br/>➤ Intuitive manual and automatic light intensity control<br/>➤ Data can be downloaded wirelessly under 2 minutes |
-| **Operating Conditions** | ➤ At least IP54 compliant |
+| Reliability        | ➤ Continuous operation for at least 23 out of 24 hours a day<br/>➤ Minimal maintenance for at least 2 years |
+| Accuracy of Sensor | ➤ Must update in real-time on an evenly set interval<br/>➤ Measurement accuracy within 15% of a verified lux sensor |
+| Ease of Use        | ➤ Setup time under 5 minutes<br/>➤ Intuitive manual and automatic light intensity control<br/>➤ Data can be downloaded wirelessly in under 2 minutes |
+| Operating Conditions | ➤ At least IP54 compliant <br/>➤ Measurement unit must work in temperatures above 60° C|
 
-## Overview of Solution
+## Initial Prototyping (Fall 2025)
 
-<img 
-  src="/images/orca/Overview.jpg" 
-  alt="Solution Overview" 
-  style={{ borderRadius: '12px' }}
-  className="w-full"
-/>
+<div className="flex justify-center">
+  <img 
+      src="/images/orca/Overview.jpg" 
+      alt="T568A"
+      className="rounded-xl w-3/4"
+  />
+</div>
 
-To meet the client’s design criteria, we developed a two-part system with a sensor module and a chamber module connected via cable. The entire solution is designed to be at least IP54 compliant. The sensor module collects real-time outdoor light data and transmits it to the chamber module, which modulates LEDs around the incubation vessel to replicate the detected intensity. The system includes wireless interfacing, manual control, and data logging for added functionality.
-
-## Sensor Module Design
-
-<img 
-  src="/images/orca/moduleS.png" 
-  alt="Module Schematic" 
-  style={{ borderRadius: '12px' }} 
-/>
-
-Above is an electrical schematic I designed for the module component. The sensor module is designed around an ESP32-C3 board for its low-power consumption and integrated wireless capabilities. The MCU is wired to two VEML7700 lux sensors via I2C to collect solar intensity data which is then transmitted out via UART to a MAX3485 RS-485 transceiver. Both power and data lines are fed into the module via an RJ45 interface. An AP63203 fixed-voltage buck converter efficiently drops the 24V VIN to the 3.3V required by the module circuit. 
-
-## Chamber Module Design
+The system features a split architecture consisting of an outdoor sensor module and an internal chamber module, linked via an RJ45 interface for robust power and data transmission. The sensor module relies on an ESP32-C3 microcontroller—powered by an external buck converter that steps down 24V to 3.3V—to collect real-time solar intensity data from dual VEML7700 lux sensors via I2C. This data is routed via UART through a MAX3485 RS-485 transceiver over the connecting cable to the chamber module. 
+<div className="flex justify-center">
 
 <img 
-  src="/images/orca/chamberS.png" 
-  alt="Chamber Schematic" 
-  style={{ borderRadius: '12px' }} 
+    src="/images/orca/Expand.png" 
+    alt="MAX3485"
+    className="w-3/4 rounded-xl"
 />
+</div>
 
-Above is an electrical schematic I designed for the chamber component. The chamber module is designed around a Raspberry Pi Zero 2 due to its powerful quad-core ARM processor and storage capabilities. The circuit utilizes both an AP63205 fixed-voltage buck converter and AP2112-3.3 LDO to provide both 5V and 3.3V to the various components including another MAX3485 RS-485 transceiver, front IO, and the Pi. Data from the sensor module is received and converted to UART which the Pi uses to calculate a PWM duty cycle that controls a MOSFET driver board for the high amperage 24V LEDs. 
+Within the chamber unit, a receiving MAX3485 transceiver routes the incoming data to a central ESP32 microcontroller, which also interfaces with the manual front-panel IO. The ESP32 processes the UART data stream to calculate a precise PWM duty cycle for a MOSFET driver board; this board modulates the high-amperage 24V LEDs surrounding the incubation vessel to accurately replicate the detected outdoor light intensity, while the ESP32 simultaneously manages the system's wireless interfacing and local data logging capabilities. More information on the initial prototype can be found in the following design poster our team presented at the Duke University EGR 101 Design Expo on December 8th, 2025. 
 
-## Hardware Communication Design
+<div className="flex justify-center">
+<img 
+    src="/images/orca/poster.png" 
+    alt="Poster"
+    className="w-3/4 rounded-xl"
+/>
+</div>
 
-<div className="bg-white rounded-lg shadow-lg px-10 py-2 max-w-3xl">
-    <img 
-        src="/images/orca/T568.png" 
-        alt="T568A"
-        className="w-full rounded"
-    />
 
-    <img 
-        src="/images/orca/MAX3485.png" 
-        alt="MAX3485"
-        className="w-full rounded"
-    />
+### RJ45 Interface Design
+
+<br/>
+<div className="bg-white rounded-xl shadow-lg px-20 py-0 w-3/4 mx-auto flex flex-col items-center gap-4">
+  <img 
+    src="/images/orca/T568.png" 
+    alt="T568A"
+    className="w-full rounded"
+  />
+
+  <img 
+    src="/images/orca/MAX3485.png" 
+    alt="MAX3485"
+    className="w-full rounded"
+  />
 </div>
 
 
 RS-485 is a differential serial communication protocol designed for reliable long-distance wired connections. I selected this protocol for its strong EMI immunity, achieved through its twisted-pair differential signaling implementation, which enables communication over distances exceeding 1,000 meters. For the physical interface, I selected an RJ45 connector, which provides four twisted pairs (eight total conductors). RX data, 24 V power, and ground are each assigned a dedicated twisted pair to minimize interference and signal degradation. Power is transmitted at the supply voltage and buck-converted at the sensor module to mitigate voltage drop from cable resistance and reduce current draw through the cable.
 
-## Further Development
+## Research-Grade Hardware (Spring 2026)
 
-Prototype testing is currently underway. In Spring 2026 we have plans to continue development of the project and introduce multiple new features and refine elements of the current design. I have drafted preliminary PCB designs for the module and chamber components using specifications from the current schematics.
+With prototype testing data and feedback from our client, we're currently developing research-grade hardware that aims to enchance reliability, improve on previous design flaws, and add expanded functionality. Both the chamber and module electrical designs have moved onto PCBs with integrated power management, LoRa communication, and LED control circuitry. 
 
-<div className="bg-black rounded-lg shadow-lg">
-    <div className="grid grid-cols-2 gap-6">
-        <img 
-        src="/images/orca/ChamberP.png" 
-        alt="Chamber PCB"
-        className="w-full rounded"
-        />
-        
-        <img 
-        src="/images/orca/moduleP.png" 
-        alt="Module PCB"
-        className="w-full rounded"
-        />
-    </div>
+{/* TODO: Insert picture of final system */}
+
+### Chamber Module PCB
+
+<div className="flex gap-4 justify-center items-center">
+  <img 
+    src="/images/orca/primary_2.png" 
+    alt="Primary"
+    className="rounded-xl h-86 object-contain"
+  />
+  <img 
+    src="/images/orca/primary_1.png" 
+    alt="Primary"
+    className="rounded-xl h-86 object-contain"
+  />
 </div>
 
-## Design Expo Presentation
+The chamber module PCB is designed in the Pi HAT formfactor for direct integration with a Raspberry Pi 3B. It integrates power circuitry, communication systems, chamber control circuitry, and front IO interfacing onto one compact board. A single 24V power connection onto the board powers all chamber systems including the Pi itself, chamber LEDs, and the sensor module if connected via RJ45. 
 
-Our team presented our prototype and the following design poster at the Duke University EGR 101 Design Expo on December 8th, 2025.
+| Objective | Component | Description |
+| :--- | :--- | :--- |
+| Power Circuitry | TPS5430 | TPS5430 buck converters provide a 12V and 5V rail from the 24V input to power chamber hardware, the Raspberry Pi 3B, and the RJ45 power interface. |
+| Communication Systems | MAX3485, LORA1262 | The PCB implements the same MAX3485 interface from prototyping with the addition of a LORA1262 chip capable of recieving long-range wireless communication from the sensor module anywhere on the ship. |
+| Chamber Control | AO3400 | These MOSFETs are used to control both the chamber LEDs via PWM and solenoid valves controlling fluid flow into and out of the chamber, an additional feature requested by our client. |
+| Front IO | Pin Headers | To maximize compatibility, all IO connectors are standard 2.54mm pin headers. A rotary encoder circuit is also embedded into the board for native rotary dial support.  |
+
+#### Chamber Module Schematic
 
 <img 
-    src="/images/orca/poster.png" 
-    alt="Poster"
-    className="max-w-4xl"
-    style={{ borderRadius: '12px' }} 
+    src="/images/orca/chamber_sch.png" 
+    alt="Schematic"
+    className="rounded-xl"
 />
+
+{/* Full Download Button */}
+<a
+  href="/files/Chamber_Schematic.pdf"
+  download="Chamber_Schematic.pdf"
+  className="inline-flex items-center px-6 py-2 bg-white border border-gray-300 rounded-full text-black no-underline hover:bg-gray-200 transition-colors shadow-sm"
+>
+  <svg className="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+  </svg>
+  <span className="font-medium">Download Full Schematic</span>
+</a>
+
+#### Chamber Module PCB Layout
+
+<div className="flex justify-center">
+<img 
+    src="/images/orca/chamber_lay.png" 
+    alt="Layout"
+    className="rounded-xl w-3/4"
+/>
+</div>
+
+### Sensor Module PCB
+<br/>
+
+<div className="not-prose flex flex-col items-center gap-4">
+  <img
+    src="/images/orca/sat_1.png"
+    alt="Primary"
+    className="rounded-xl w-3/4 object-contain"
+  />
+  <img
+    src="/images/orca/sat_2.png"
+    alt="Primary"
+    className="rounded-xl w-3/4 object-contain"
+  />
+</div>
+
+The chamber module PCB is designed around the ESP32-C6 DevKitC-1 due to its extensive GPIO and low-power core enabling efficient battery operation. An AS7343 breakout replaces the original VEML7700 due to its multi-spectral sensing capabilities. A BQ25185 battery controller breakout handles battery management, allowing the sensor module to work completely independent of any wired connection. The board also includes LoRa for wireless communication and GPS for position and time data.
+
+| Objective | Component | Description |
+| :--- | :--- | :--- |
+| Battery Management | BQ25185 Breakout | The BQ25185 breakout manages a 3000 mAh LiPo cell with near-MPPT capability for solar charging from an ETFE coated panel placed outside the sensor module enclosure. Additionally, the breakout can draw power from the RJ45 connector located on the PCB. |
+| Power Circuitry | XC6220 | The BQ25185 provides unregulated ~4.5V to the sensor module PCB. The XC6220 is a high-efficiency LDO regulator used to provide stable, low-noise 3.3V power to the board. |
+| Communication Systems | MAX3485, LORA1262 | The PCB implements the same MAX3485 interface from prototyping with the addition of a LORA1262 chip capable of sending long-range wireless communication to the chamber module anywhere on the ship. |
+| Light Sensing | AS7343 Breakout | The AS7343 breakout can sample 14 different wavelengths across and beyond the visible spectrum allowing it to capture a spectrum of intensities for a more accurate representation of light conditions. |
+| GPS | LC86GLA | The LC86GLA was selected for its integrated patch antenna and ultra low power consumption. GPS data provides both time and location allowing us to calculate solar inclination that may impact the accuracy of our spectral sampling. |
+
+
+#### Sensor Module Schematic
+
+<img 
+    src="/images/orca/sat_sch.png" 
+    alt="Schematic"
+    className="rounded-xl"
+/>
+
+{/* Full Download Button */}
+<a
+  href="/files/Sensor_Schematic.pdf"
+  download="Sensor_Schematic.pdf"
+  className="inline-flex items-center px-6 py-2 bg-white border border-gray-300 rounded-full text-black no-underline hover:bg-gray-200 transition-colors shadow-sm"
+>
+  <svg className="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+  </svg>
+  <span className="font-medium">Download Full Schematic</span>
+</a>
+
+#### Sensor Module PCB Layout
+<div className="flex justify-center">
+<img 
+    src="/images/orca/sat_pcb.png" 
+    alt="Layout"
+    className="rounded-xl w-3/4"
+/>
+</div>
+
+{/* TODO: Add testing, firmware, etc. */}

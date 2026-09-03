@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Code } from 'lucide-react';
 import { useState } from 'react';
 import Tag from './Tag.jsx'
@@ -71,7 +72,13 @@ export default function ProjectCard({ project }) {
             />
             <div className="absolute inset-0 flex items-center justify-center">
               {project.coverImage ? (
-                <img src={project.coverImage} alt={project.title} className="w-full h-full object-cover" />
+                <Image
+                  src={project.coverImage}
+                  alt={project.title}
+                  fill
+                  sizes="(max-width: 640px) 90vw, 411px"
+                  className="object-cover"
+                />
               ) : (
                 <Code size={48} className="text-white/50" />
               )}

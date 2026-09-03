@@ -1,8 +1,12 @@
 ---
-company: Project ORCA
-position: Electrical Design Lead
+company: Project ORCA, Cassar Lab
+position: Lead Electrical Engineer
 start: August 2025
-end: Present
+end: May 2026
 ---
 
-Lead Electrical Systems Engineer for Project ORCA, a field-deployable embedded system designed to replicate real-time marine light conditions for shipboard research. Own the end-to-end electrical architecture, including schematic design, PCB layout, power systems, and hardware validation. Architected a dual-module system integrating ESP32 microcontrollers, Raspberry Pi control hardware, RS-485 and LoRa communication, battery-managed solar power, and PWM-controlled LED drivers. Led the transition from proof-of-concept to research-grade fabrication, improving reliability, modularity, and environmental durability for offshore deployment.
+Project ORCA is a field-deployable embedded system built for the Cassar Lab at Duke University to replicate real-time marine light conditions for shipboard research. I designed two custom PCBs in KiCad: a solar/battery-powered ESP32-C6 satellite module and a Raspberry Pi HAT chamber controller, integrating 13-channel spectral sensing (AS7343), GNSS positioning, a 24 V power tree (TPS5430 buck converters, BQ25185 near-MPPT charge management, XC6220 LDOs), and MOSFET-driven PWM for high-amperage LED modulation.
+
+The two modules are joined by a dual-path link: RS-485 over RJ45 carrying differential data and 12 V power for EMI immunity, with 915 MHz LoRa as a wireless option. I wrote the satellite firmware in C++ on ESP-IDF, accumulating spectral samples in RTC memory across deep-sleep cycles to hold draw at roughly 50 mA for unattended outdoor operation.
+
+The chamber application is written in Python: a real-time control loop maps received spectral data to LED PWM, backed by SQLite logging, a Flask dashboard, and an automated validation layer that models expected solar irradiance from GPS position and UTC time to flag physically implausible sensor readings.

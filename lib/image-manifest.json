@@ -1,0 +1,250 @@
+{
+  "/images/ftc-command/cover.webp": {
+    "width": 1400,
+    "height": 1314
+  },
+  "/images/ftc-command/graph.webp": {
+    "width": 1600,
+    "height": 979
+  },
+  "/images/ftc-command/state.webp": {
+    "width": 434,
+    "height": 180
+  },
+  "/images/ftc-command/state2.webp": {
+    "width": 426,
+    "height": 180
+  },
+  "/images/ftc-command/switch.webp": {
+    "width": 558,
+    "height": 331
+  },
+  "/images/ftc-command/trajectory.webp": {
+    "width": 829,
+    "height": 271
+  },
+  "/images/homelab/build.webp": {
+    "width": 1600,
+    "height": 2135
+  },
+  "/images/homelab/cover.webp": {
+    "width": 1400,
+    "height": 1868
+  },
+  "/images/homelab/rack.webp": {
+    "width": 1600,
+    "height": 2139
+  },
+  "/images/orca/Expand.webp": {
+    "width": 1466,
+    "height": 560
+  },
+  "/images/orca/MAX3485.webp": {
+    "width": 1600,
+    "height": 530
+  },
+  "/images/orca/ModuleP.webp": {
+    "width": 1168,
+    "height": 1180
+  },
+  "/images/orca/Overview.webp": {
+    "width": 663,
+    "height": 279
+  },
+  "/images/orca/T568.webp": {
+    "width": 610,
+    "height": 212
+  },
+  "/images/orca/Wiring.webp": {
+    "width": 1258,
+    "height": 610
+  },
+  "/images/orca/both.webp": {
+    "width": 1600,
+    "height": 900
+  },
+  "/images/orca/chamberP.webp": {
+    "width": 1330,
+    "height": 1330
+  },
+  "/images/orca/chamberS.webp": {
+    "width": 1434,
+    "height": 868
+  },
+  "/images/orca/chamber_lay.webp": {
+    "width": 1600,
+    "height": 1243
+  },
+  "/images/orca/chamber_sch.webp": {
+    "width": 1600,
+    "height": 830
+  },
+  "/images/orca/cover.webp": {
+    "width": 1400,
+    "height": 876
+  },
+  "/images/orca/module.webp": {
+    "width": 392,
+    "height": 558
+  },
+  "/images/orca/moduleS.webp": {
+    "width": 1600,
+    "height": 1073
+  },
+  "/images/orca/poster.webp": {
+    "width": 1382,
+    "height": 1392
+  },
+  "/images/orca/primary_1.webp": {
+    "width": 1600,
+    "height": 1200
+  },
+  "/images/orca/primary_2.webp": {
+    "width": 1600,
+    "height": 2133
+  },
+  "/images/orca/sat_1.webp": {
+    "width": 1600,
+    "height": 867
+  },
+  "/images/orca/sat_2.webp": {
+    "width": 1600,
+    "height": 937
+  },
+  "/images/orca/sat_pcb.webp": {
+    "width": 1600,
+    "height": 1237
+  },
+  "/images/orca/sat_sch.webp": {
+    "width": 1600,
+    "height": 904
+  },
+  "/images/pathbot/back.webp": {
+    "width": 1430,
+    "height": 1101
+  },
+  "/images/pathbot/board.webp": {
+    "width": 1458,
+    "height": 1184
+  },
+  "/images/pathbot/cover.webp": {
+    "width": 1400,
+    "height": 1006
+  },
+  "/images/pathbot/driver.webp": {
+    "width": 1500,
+    "height": 1500
+  },
+  "/images/pathbot/print.webp": {
+    "width": 1417,
+    "height": 1055
+  },
+  "/images/pathbot/program.webp": {
+    "width": 1244,
+    "height": 926
+  },
+  "/images/profile_picture.webp": {
+    "width": 640,
+    "height": 509
+  },
+  "/images/propulsion/Bus.webp": {
+    "width": 354,
+    "height": 1318
+  },
+  "/images/propulsion/PWM.webp": {
+    "width": 1100,
+    "height": 1224
+  },
+  "/images/propulsion/buckS.webp": {
+    "width": 1431,
+    "height": 1350
+  },
+  "/images/propulsion/control_pcb.webp": {
+    "width": 1240,
+    "height": 1236
+  },
+  "/images/propulsion/cover.webp": {
+    "width": 1400,
+    "height": 1146
+  },
+  "/images/propulsion/cover3.webp": {
+    "width": 1400,
+    "height": 1290
+  },
+  "/images/propulsion/cover4.webp": {
+    "width": 1400,
+    "height": 1235
+  },
+  "/images/propulsion/full.webp": {
+    "width": 1462,
+    "height": 1304
+  },
+  "/images/propulsion/interface.webp": {
+    "width": 1600,
+    "height": 975
+  },
+  "/images/propulsion/pcb.webp": {
+    "width": 1310,
+    "height": 1304
+  },
+  "/images/propulsion/pcb3.webp": {
+    "width": 1600,
+    "height": 800
+  },
+  "/images/propulsion/platform.webp": {
+    "width": 1600,
+    "height": 1200
+  },
+  "/images/propulsion/plumbing.webp": {
+    "width": 1600,
+    "height": 1274
+  },
+  "/images/propulsion/samp_pcb.webp": {
+    "width": 1216,
+    "height": 1228
+  },
+  "/images/propulsion/sample.webp": {
+    "width": 1600,
+    "height": 489
+  },
+  "/images/propulsion/schematic.webp": {
+    "width": 1600,
+    "height": 1120
+  },
+  "/images/propulsion/schematic2.webp": {
+    "width": 1520,
+    "height": 1010
+  },
+  "/images/propulsion/schematic3.webp": {
+    "width": 1130,
+    "height": 824
+  },
+  "/images/propulsion/scpt.webp": {
+    "width": 1600,
+    "height": 1200
+  },
+  "/images/propulsion/v2board.webp": {
+    "width": 1600,
+    "height": 929
+  },
+  "/images/urban-scooter/cover.webp": {
+    "width": 1400,
+    "height": 1126
+  },
+  "/images/urban-scooter/fea.webp": {
+    "width": 896,
+    "height": 462
+  },
+  "/images/urban-scooter/pipe.webp": {
+    "width": 1600,
+    "height": 951
+  },
+  "/images/urban-scooter/plate.webp": {
+    "width": 1600,
+    "height": 548
+  },
+  "/images/urban-scooter/total.webp": {
+    "width": 1600,
+    "height": 951
+  }
+}

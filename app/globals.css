@@ -6,20 +6,16 @@
    Design tokens / globals
    ----------------------- */
 :root {
-  --background: #2b2b2b;
-  --foreground: #171717;
+  /* The site is dark-only by design (the WebGL hero and every asset are
+     authored for it). These used to flip with prefers-color-scheme, which put
+     near-black text on the black page for anyone on a light-themed OS. */
+  color-scheme: dark;
+  --background: #0a0a0a;
+  --foreground: #ededed;
 
   /* Font stacks (single token to use across the site) */
   --font-sans: "Rubik", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
-}
-
-/* Dark mode (prefers-color-scheme) */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 /* Expose tokens to Tailwind inline theme integration */
@@ -73,4 +69,23 @@ body {
 .rubik-bold {
   font-family: var(--font-sans);
   font-weight: 700;
+}
+
+/* -----------------------
+   Project content images
+   ----------------------- */
+
+/* An <img> used as a flex item keeps its intrinsic width by default
+   (min-width: auto), so a side-by-side pair in project content widened the
+   whole document on narrow screens — which also dragged the fixed header,
+   and its menu button, off the right edge. No effect where the row already
+   fits, so desktop layout is unchanged. */
+.prose img {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Wide comparison tables scroll inside themselves rather than the page. */
+.prose .table-scroll {
+  overflow-x: auto;
 }

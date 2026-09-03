@@ -13,23 +13,16 @@ const EmblaCarousel = ({ header, slides, options, cardWidth }) => {
   const containerRef = React.useRef(null);
 
   // Scaling constants
-  const [containerWidth, setContainerWidth] = React.useState(0);
   const [scale, setScale] = React.useState(1);
-  const [scaledWidth, setScaledWidth] = React.useState(cardWidth);
 
   // Calculate scaling
   React.useEffect(() => {
     const calculate = () => {
       if (!containerRef.current) return;
 
-      // Store container width
+      // Calculate and store the scaling factor
       const w = containerRef.current.offsetWidth;
-      setContainerWidth(w);
-
-      // Calculate and store scaling values
-      const s = Math.min(1, w / cardWidth);
-      setScale(s);
-      setScaledWidth(Math.max(1, Math.floor(cardWidth * s)));
+      setScale(Math.min(1, w / cardWidth));
     };
 
     calculate();

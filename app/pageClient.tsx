@@ -1,17 +1,67 @@
 'use client'
 
-import { useState, useEffect, useRef, use } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import Image from 'next/image';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Menu, Github, Linkedin, Mail, Blocks, User, ChevronDown, FileText } from 'lucide-react';
-import { GitHubCalendar } from 'react-github-calendar';
+import { Github, Linkedin, Mail, Blocks, User, ChevronDown, FileText } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { ReactTyped } from "react-typed";
 import { Project } from '@/lib/getProjects';
+
+// Client-only: the calendar fetches its data in the browser.
+const GitHubCalendar = dynamic(
+  () => import('react-github-calendar').then((m) => m.GitHubCalendar),
+  { ssr: false }
+);
 import DarkVeil from '@/lib/bits/DarkVeil';
 import EmblaCarousel from '@/lib/carousel/EmblaCarousel';
 import ProjectCard from '@/lib/ProjectCard';
-import CustomAccordion from '@/lib/CustomAccordion';
+import ExperienceTimeline from '@/lib/ExperienceTimeline';
 import Tag from '@/lib/Tag';
+import MobileNav from '@/lib/MobileNav';
 import { Experience } from '@/lib/getExperiences';
+
+/**
+ * How far the hero drifts as it leaves, in pixels.
+ *
+ * This used to be '30%', which resolves against the hero's own height — 550px
+ * on desktop but 1512px on mobile, so the drift tripled and the content nearly
+ * pinned itself to the screen while you scrolled. A fixed distance behaves the
+ * same at every size.
+ */
+const HERO_DRIFT_PX = 160;
+
+/**
+ * How far into the hero's exit the effect waits before starting, as a fraction
+ * of the effect window (which is one viewport height of scrolling).
+ *
+ * From lg the hero fits the viewport: you have seen all of it at rest, so the
+ * effect can begin immediately. Below lg it is a tall single column you scroll
+ * *through*, and the window opens the moment the last card clears the fold —
+ * seen, but not yet read. Holding off gives it reading room first.
+ */
+const HERO_EFFECT_DELAY = { compact: 0.32, roomy: 0 };
+const HERO_EFFECT_SPAN = 0.6;
+
+/**
+ * matchMedia as an external store: no setState inside an effect, and the server
+ * render has a defined answer.
+ */
+function useMediaQuery(query: string) {
+  const subscribe = useCallback(
+    (onChange: () => void) => {
+      const mq = window.matchMedia(query);
+      mq.addEventListener('change', onChange);
+      return () => mq.removeEventListener('change', onChange);
+    },
+    [query]
+  );
+  return useSyncExternalStore(
+    subscribe,
+    () => window.matchMedia(query).matches,
+    () => false
+  );
+}
 
 // For MDX file parsing (projects, experiences)
 interface PageClientProps {
@@ -40,28 +90,26 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
     "C++",
     "Python",
 
+    "ESP-IDF",
+    "FreeRTOS",
+    "RS-485",
+    "LoRa",
+
     "Circuit Analysis",
     "PCB Design",
     "CAD",
-    "CAM",
     "FEA",
 
-    "Fusion 360",
     "KiCAD",
-    "VS Code",
+    "Fusion 360",
     "Github",
 
-    "Soldering",
-    "3D Printing",
-    "Laser Cutting",
-    "CNC Manufacturing"
-  ]
+    "Linux",
+    "Docker",
 
-  // Client Render Check
-  const [isClient, setIsClient] = useState(false);
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+    "Soldering",
+    "3D Printing"
+  ]
 
   // Navbar scrolling function (Detecting current section)
   const [activeSection, setActiveSection] = useState('Home');
@@ -71,9 +119,6 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          // Handle navbar background
-          setScrolled(window.scrollY > 50);
-
           // Handle active section detection
           const sections = [
             { name: 'Home', ref: homeRef },
@@ -106,18 +151,34 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // More scrolling constants
-  const [scrolled, setScrolled] = useState(false);
-  const { scrollYProgress } = useScroll();
-
-  // Hero parallax
-  const heroY = useTransform(scrollYProgress, [0, 0.3], ['0%', '30%']);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
-
   // Smooth href constants
   const homeRef = useRef<HTMLDivElement | null>(null);
   const projectsRef = useRef<HTMLDivElement | null>(null);
   const experienceRef = useRef<HTMLDivElement | null>(null);
+
+  // Hero parallax.
+  //
+  // Measured against the hero's own exit rather than progress through the whole
+  // document. On mobile the hero stacks to roughly two viewports, so a
+  // page-fraction range faded it to zero while the About and Skills cards were
+  // still on screen. Anchoring to 'end end' means the fade cannot start until
+  // the bottom of the hero has been seen, at any viewport size.
+  const { scrollYProgress } = useScroll({
+    target: homeRef,
+    offset: ['end end', 'end start'],
+  });
+  const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const compact = useMediaQuery('(max-width: 1023px)');
+
+  const from = compact ? HERO_EFFECT_DELAY.compact : HERO_EFFECT_DELAY.roomy;
+  const to = from + HERO_EFFECT_SPAN;
+
+  const heroY = useTransform(
+    scrollYProgress,
+    [from, to],
+    ['0px', reduceMotion ? '0px' : `${HERO_DRIFT_PX}px`]
+  );
+  const heroOpacity = useTransform(scrollYProgress, [from, to], [1, 0]);
 
   // WEBPAGE BUILDING STAGE
   return (
@@ -166,7 +227,7 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
           >
 
             {/* Generates and links navbar section buttons from list */}
-            {(['Home', 'Projects', 'Experience'] as const).map((item, index) => {
+            {(['Home', 'Projects', 'Experience'] as const).map((item) => {
               const refMap = {
                 'Home': homeRef,
                 'Projects': projectsRef,
@@ -200,18 +261,26 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
             })}
           </motion.div>
 
-          {/* TODO: Add expanding menu for mobile devices */}
-          <motion.button
-            className="md:hidden text-gray-400"
-            whileTap={{ scale: 0.9 }}
-          >
-            <Menu size={24} />
-          </motion.button>
+          {/* Mobile menu — same sections, same scroll behavior as above */}
+          <MobileNav
+            active={activeSection}
+            items={(['Home', 'Projects', 'Experience']).map((item) => ({
+              label: item,
+              onSelect: () =>
+                ({ Home: homeRef, Projects: projectsRef, Experience: experienceRef })[
+                  item
+                ]?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+            }))}
+          />
         </nav>
       </motion.header>
 
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20" id='home' ref={homeRef}>
+      {/* Hero Section
+          Top padding tracks the header height (100px, then 136px from md) so
+          the avatar never starts underneath it. From lg the hero grid is two
+          columns, so the content is short enough to centre on its own and the
+          original pt-20 applies. */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28 md:pt-36 lg:pt-20" id='home' ref={homeRef}>
 
         {/* DarkVeil Background - Full Width Wrapper */}
         <div className="absolute inset-0 w-full h-full" style={{ zIndex: 0 }}>
@@ -242,10 +311,13 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
                   className="relative w-48 h-48 rounded-full overflow-hidden border-1 border-white/10"
                   style={{ willChange: 'transform' }}
                 >
-                  <img
-                    src="/images/profile_picture.jpg"
+                  <Image
+                    src="/images/profile_picture.webp"
                     alt="Profile"
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="192px"
+                    priority
+                    className="object-cover"
                   />
                 </motion.div>
               </motion.div>
@@ -257,7 +329,7 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
               >
-                <span className="block text-gray-400 mb-2">Hi, I'm</span>
+                <span className="block text-gray-400 mb-2">Hi, I&apos;m</span>
                 <span className="block text-white text-5xl font-bold">
                   Michael Danley
                 </span>
@@ -289,7 +361,7 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
                 {[
                   { Icon: Github, href: 'https://github.com/mdanley1234' },
                   { Icon: Linkedin, href: 'https://linkedin.com/in/michael-danley' },
-                  { Icon: Mail, href: 'mailto:danleymichael23@gmail.com' },
+                  { Icon: Mail, href: 'mailto:michael.danley@duke.edu' },
                 ].map(({ Icon, href }, index) => (
                   <motion.a
                     key={index}
@@ -348,9 +420,9 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
 
                 {/* First Information Box Content */}
                 <p className="text-white">
-                  I'm Michael, an undergraduate at <strong> Duke University </strong> double majoring
+                  I&apos;m Michael, an undergraduate at <strong> Duke University </strong> (B.S.E. expected May 2029) double majoring
                   in <strong> Electrical Computer Engineering</strong> & <strong>Computer Science</strong>.
-                  I'm primarily interested in <strong> embedded system design</strong>, especially in aerospace and robotics applications.
+                  I&apos;m primarily interested in <strong> embedded system design</strong>, especially in aerospace and robotics applications.
                   I also enjoy personal projects, particularly those involving complex engineering challenges.
                 </p>
               </motion.div>
@@ -406,9 +478,9 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
             <EmblaCarousel
 
               // Build project cards using front-matter from MDX projects in content/projects
-              slides={projects
+              slides={[...projects]
                 .sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
-                .map((project, index) => (
+                .map((project) => (
                   <ProjectCard key={project.slug} project={project} />
                 ))}
 
@@ -427,21 +499,19 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
           <h2 className="text-4xl font-bold text-white text-left py-12">
             Relevant Experience
           </h2>
-          <CustomAccordion experiences={experiences} />
+          <ExperienceTimeline experiences={experiences} />
         </div>
       </section>
 
       {/* Github Contribution Calendar */}
       <section className='relative'>
         <div className='container mx-auto px-10 flex justify-center py-32 -mt-10'>
-          {isClient && (
-            <GitHubCalendar
-              username="mdanley1234"
-              maxLevel={6}
-              blockMargin={4}
-              blockSize={10}
-            />
-          )}        
+          <GitHubCalendar
+            username="mdanley1234"
+            maxLevel={6}
+            blockMargin={4}
+            blockSize={10}
+          />
         </div>
       </section>
 

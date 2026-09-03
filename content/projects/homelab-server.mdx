@@ -1,0 +1,91 @@
+---
+title: "Homelab Server"
+start: "Summer 2026"
+end: "Present"
+summary: "A self-hosted compute and storage server built from salvaged and second-hand hardware for roughly $300, running Proxmox VE over a ZFS RAIDZ1 pool with containerised services and zero-trust remote access."
+coverImage: "/images/homelab/cover.webp"
+tags: [Linux, Docker, 3D Printing]
+rank: 6
+---
+
+# Homelab Server
+
+The homelab is a self-hosted compute and storage platform that sits beside my home router and handles file storage, photo backup, documentation hosting, game servers, and a general container workload. Rather than buying a prebuilt NAS, I built around older and salvaged hardware — more performance per dollar, and full control over both the physical design and the software stack.
+
+<div className="flex justify-center">
+  <img
+    src="/images/homelab/build.webp"
+    alt="The assembled homelab server in its 3D printed micro rack"
+    className="rounded-xl w-3/4"
+  />
+</div>
+
+{/* PHOTO SLOT — a wider shot of the rack in place beside the router.
+    Drop the file in public/images/homelab/ and uncomment:
+
+<div className="flex justify-center">
+  <img src="/images/homelab/YOUR_PHOTO.webp" alt="Describe the photo" className="rounded-xl w-3/4" />
+</div>
+*/}
+
+## Hardware
+
+Storage was the single largest line item. Drive prices are elevated right now on the back of AI infrastructure and data-centre demand, so I bought what were advertised as used enterprise drives from goHardDrive. They arrived as new units with a three-year warranty — a substantial saving against retail, on a component that accounted for roughly half the budget.
+
+| Component | Part | Cost |
+|---|---|---|
+| Compute | Dell OptiPlex 3050 Micro (i3-7100T) | $20 — Goodwill |
+| Memory | 16 GB DDR4 @ 2400 MHz | already owned |
+| Storage expansion | M.2 to SATA 3.0 adapter (ASM1166) | $23 |
+| Bulk storage | 3× 2 TB Seagate 7E8 ST2000NM012A | $150 |
+| Boot drive | 128 GB SATA SSD | $29 |
+| Cooling | 2× 80 mm 12 V fans, Molex to XH splitter | $22 |
+| Power | SATA power splitter, desktop PSU | $6 + already owned |
+| Enclosure | ~2 kg PETG, M3/M4 screws and threaded inserts | $62 |
+
+The chassis is a 3D printed micro rack (the NexGen3D micro rack system), printed in PETG and assembled with heat-set threaded inserts. Access to a printer and the reuse of previous-generation components held the total build to roughly **$300**.
+
+{/* PHOTO SLOT — printing or assembling the case; drive sled detail shots.
+    Consider a slideshow if you have several:
+
+<ImageSlideshow
+  images={[
+    { src: "/images/homelab/YOUR_PHOTO_1.webp", caption: "Printed chassis parts" },
+    { src: "/images/homelab/YOUR_PHOTO_2.webp", caption: "Drive sleds during assembly" }
+  ]}
+/>
+*/}
+
+<div className="flex justify-center">
+  <img
+    src="/images/homelab/rack.webp"
+    alt="Drive bays and cabling inside the 3D printed rack"
+    className="rounded-xl w-3/4"
+  />
+</div>
+
+## Storage and data integrity
+
+The three 2 TB drives form a **ZFS RAIDZ1** pool, giving single-drive fault tolerance alongside end-to-end checksumming and per-dataset compression tuned to each workload. Application data is bind-mounted from ZFS into the containers that use it, so snapshots and backups are managed centrally rather than per service.
+
+Retention runs on two layers: Sanoid takes hourly-through-monthly snapshots of the pool, and weekly Vzdump jobs capture full container backups. ZED and smartd report over SMTP on pool degradation and SMART attribute trends, so a failing drive surfaces well before it drops out.
+
+## Software architecture
+
+The host runs **Proxmox VE**, booting from a dedicated SSD so the storage pool stays independent of the operating system. Workloads are split across LXC containers by trust boundary rather than packed together:
+
+* **Docker container** — all application services, managed as Compose stacks through Dockge. File browsing, a documentation wiki, and a photo library run here.
+* **File sharing container** — SMB shares, deliberately isolated from the application services.
+* **Game server container** — a Java game server with its own management panel.
+
+{/* PHOTO SLOT — a screenshot of the Proxmox dashboard or Dockge stack list
+    makes a good visual break here. */}
+
+## Remote access
+
+There are no inbound ports open on the router for the web services. Two paths cover different needs:
+
+* A **Tailscale** subnet router gives me private, encrypted access to every service on the LAN from any device on the tailnet — the fast path for large transfers, since traffic stays local.
+* A **Cloudflare Tunnel** agent makes an outbound connection only, so the services stay reachable from anywhere without exposing the home IP or depending on dynamic DNS.
+
+Authentication sits in front of the tunnel rather than inside each app. **Cloudflare Access** gates requests against a Google email allowlist before they ever reach the server, and the wiki authenticates through a self-hosted **Dex** OIDC provider that bridges application login to Google OAuth. The result is a single identity across services, with no service-specific passwords to manage.

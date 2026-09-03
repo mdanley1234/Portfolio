@@ -9,8 +9,11 @@ import type { Metadata } from "next"
 import DemoBanner from "@/mdx-components/DemoBanner"
 import CADViewer from "@/mdx-components/CADViewer"
 import ImageSlideshow from "@/mdx-components/ImageSlideshow"
+import MdxImage from "@/mdx-components/MdxImage"
+import MdxEmbed from "@/mdx-components/MdxEmbed"
+import remarkMdxElements from "@/lib/remark-mdx-elements.mjs"
 import Link from "next/link"
-import { Menu } from "lucide-react"
+import MobileNav from "@/lib/MobileNav"
 
 type Props = { params: Promise<{ slug: string }> }
 const CONTENT_DIR = path.join(process.cwd(), "content", "projects")
@@ -41,7 +44,19 @@ const components = {
   // Insert MDX Components here
   DemoBanner,
   CADViewer,
-  ImageSlideshow
+  ImageSlideshow,
+  // Every image in project content renders through next/image; every embed
+  // loads lazily. remarkMdxElements rewrites literal <img>/<iframe> tags to
+  // these, since MDX does not route lowercase JSX through this map on its own.
+  img: MdxImage,
+  MdxImage,
+  MdxEmbed,
+  // Wide tables scroll inside their own box instead of widening the page.
+  table: (props: React.ComponentProps<"table">) => (
+    <div className="table-scroll">
+      <table {...props} />
+    </div>
+  ),
 }
 
 // Returns ProjectPage object with { params } containing mdx slug
@@ -55,9 +70,9 @@ export default async function ProjectPage({ params }: Props) {
     return <main className="max-w-4xl mx-auto p-6">Project not found</main>
   }
 
-  // Read slug.mdx file and seperate between content and data using gray-matter
+  // Read slug.mdx and take the body; the frontmatter is read by generateMetadata
   const source = fs.readFileSync(filePath, "utf8")
-  const { content, data } = matter(source)
+  const { content } = matter(source)
 
   // Generate and return page
   return (
@@ -102,12 +117,14 @@ export default async function ProjectPage({ params }: Props) {
             Back
           </Link>
 
-          {/* TODO: Add expanding menu for mobile devices */}
-          <button
-            className="md:hidden text-gray-400"
-          >
-            <Menu size={24} />
-          </button>
+          {/* Mobile menu — links back to the homepage sections */}
+          <MobileNav
+            items={[
+              { label: 'Home', href: '/#home' },
+              { label: 'Projects', href: '/#projects' },
+              { label: 'Experience', href: '/#experience' },
+            ]}
+          />
         </nav>
       </header>
 
@@ -120,7 +137,7 @@ export default async function ProjectPage({ params }: Props) {
             components={components}
             options={{
               mdxOptions: {
-                remarkPlugins: [remarkGfm],
+                remarkPlugins: [remarkGfm, remarkMdxElements],
                 rehypePlugins: [rehypeHighlight],
               },
             }}

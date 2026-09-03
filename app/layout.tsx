@@ -1,18 +1,12 @@
 import type { Metadata } from "next";
-import { Rubik, Rubik_Mono_One } from "next/font/google";
+import { Rubik } from "next/font/google";
 import "./globals.css";
 
+// Variable axis (300-900) rather than four static cuts: one file to download,
+// and font-semibold (600) renders a real weight instead of a synthesized one.
 const rubik = Rubik({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
-  display: "swap",
-});
-
-const rubikMono = Rubik_Mono_One({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  weight: "400",
   display: "swap",
 });
 
@@ -29,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${rubik.variable} ${rubikMono.variable} font-sans antialiased`}
+        className={`${rubik.variable} font-sans antialiased`}
       >
         {children}
       </body>

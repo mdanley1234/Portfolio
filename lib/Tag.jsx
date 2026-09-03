@@ -1,4 +1,4 @@
-import { NotepadText, Code, Drill, LaptopMinimal, CircleQuestionMark /* add more icons */ } from 'lucide-react';
+import { NotepadText, Code, Drill, LaptopMinimal, Cpu, Terminal, CircleQuestionMark /* add more icons */ } from 'lucide-react';
 
 // Tag configuration dictionary
 const TAG_CONFIG = {
@@ -20,6 +20,58 @@ const TAG_CONFIG = {
     bgColor: 'bg-green-500/20',
     textColor: 'text-green-300',
     borderColor: 'border-green-500/30'
+  },
+
+  // Embedded (CPU icon)
+  'ESP-IDF': {
+    icon: Cpu,
+    bgColor: 'bg-sky-600/20',
+    textColor: 'text-sky-300',
+    borderColor: 'border-sky-600/30'
+  },
+  'FreeRTOS': {
+    icon: Cpu,
+    bgColor: 'bg-teal-600/20',
+    textColor: 'text-teal-300',
+    borderColor: 'border-teal-600/30'
+  },
+  'RS-485': {
+    icon: Cpu,
+    bgColor: 'bg-violet-600/20',
+    textColor: 'text-violet-300',
+    borderColor: 'border-violet-600/30'
+  },
+  'LoRa': {
+    icon: Cpu,
+    bgColor: 'bg-pink-600/20',
+    textColor: 'text-pink-300',
+    borderColor: 'border-pink-600/30'
+  },
+
+  // Infrastructure (Terminal icon)
+  'Linux': {
+    icon: Terminal,
+    bgColor: 'bg-yellow-600/20',
+    textColor: 'text-yellow-300',
+    borderColor: 'border-yellow-600/30'
+  },
+  'Docker': {
+    icon: Terminal,
+    bgColor: 'bg-blue-600/20',
+    textColor: 'text-blue-300',
+    borderColor: 'border-blue-600/30'
+  },
+  'Proxmox': {
+    icon: Terminal,
+    bgColor: 'bg-orange-600/20',
+    textColor: 'text-orange-300',
+    borderColor: 'border-orange-600/30'
+  },
+  'ZFS': {
+    icon: Terminal,
+    bgColor: 'bg-emerald-600/20',
+    textColor: 'text-emerald-300',
+    borderColor: 'border-emerald-600/30'
   },
 
   // Engineering Skills (Laptop icon)

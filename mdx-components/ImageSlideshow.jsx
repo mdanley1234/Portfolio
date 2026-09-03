@@ -2,6 +2,10 @@
 
 import useEmblaCarousel from 'embla-carousel-react'
 import { useCallback, useEffect, useState } from 'react'
+import Image from 'next/image'
+import manifest from '@/lib/image-manifest.json'
+
+const SIZES = manifest
 
 export default function ImageSlideshow({ images = [], height = 480 }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
@@ -68,13 +72,26 @@ export default function ImageSlideshow({ images = [], height = 480 }) {
                   justifyContent: 'center',
                 }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={img.src}
-                  alt={img.caption || `Slide ${i + 1}`}
-                  draggable={false}
-                  style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-                />
+                {SIZES[img.src] ? (
+                  <Image
+                    src={img.src}
+                    alt={img.caption || `Slide ${i + 1}`}
+                    width={SIZES[img.src].width}
+                    height={SIZES[img.src].height}
+                    sizes="(max-width: 900px) 95vw, 896px"
+                    draggable={false}
+                    style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto', objectFit: 'contain' }}
+                  />
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={img.src}
+                    alt={img.caption || `Slide ${i + 1}`}
+                    loading="lazy"
+                    draggable={false}
+                    style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                  />
+                )}
               </div>
             ))}
           </div>

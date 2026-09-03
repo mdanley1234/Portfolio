@@ -89,3 +89,54 @@ body {
 .prose .table-scroll {
   overflow-x: auto;
 }
+
+/* -----------------------
+   Code in project content
+   ----------------------- */
+
+/* The typography plugin wraps every inline <code> in literal backtick
+   pseudo-elements, and gives <pre> a 50%-black panel that is invisible
+   against this page. Both are restyled here so code reads as part of the
+   site rather than as unstyled markdown. */
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after {
+  content: none;
+}
+
+.prose :not(pre) > code {
+  padding: 0.125rem 0.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.375rem;
+  background-color: rgba(255, 255, 255, 0.08);
+  font-weight: 500;
+}
+
+.prose pre {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* rehype-highlight emits hljs class names but ships no theme. The site is
+   monochrome, so the tokens are separated by weight and opacity rather than
+   by hue. */
+.prose .hljs-comment,
+.prose .hljs-quote {
+  color: rgba(255, 255, 255, 0.45);
+  font-style: italic;
+}
+
+.prose .hljs-string,
+.prose .hljs-number,
+.prose .hljs-literal {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.prose .hljs-keyword,
+.prose .hljs-built_in,
+.prose .hljs-title,
+.prose .hljs-section,
+.prose .hljs-attr {
+  color: #ffffff;
+  font-weight: 600;
+}

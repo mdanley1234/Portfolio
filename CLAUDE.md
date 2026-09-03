@@ -52,6 +52,16 @@ upgraded automatically.**
 
 After adding images, run `node scripts/image-manifest.mjs` (or just build).
 
+### Prose styling
+
+Project pages render inside `prose prose-invert` from
+`@tailwindcss/typography`. Two of its defaults are overridden in
+`app/globals.css`: inline `<code>` otherwise ships literal backtick
+pseudo-elements, and `<pre>` otherwise sits on a 50%-black panel that is
+invisible against this page. `rehype-highlight` emits `hljs` class names but
+no theme, so the tokens there are separated by weight and opacity rather than
+by hue, to stay inside the site's monochrome palette.
+
 ### Performance constraints
 
 Deliberate. Do not undo these.

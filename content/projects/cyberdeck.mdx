@@ -1,0 +1,193 @@
+---
+title: "Cyberdeck"
+start: "Summer 2026"
+end: "Present"
+summary: "A ruggedized portable workstation built from a Dell Inspiron 5410 mainboard inside a Pelican IP67 case, with a custom ESP32 fan controller, external SMA antennas, an onboard gigabit switch, and integrated Analog Discovery instrumentation."
+coverImage: "/images/cyberdeck/cover.webp"
+tags: [Linux, C++, 3D Printing]
+rank: 7
+---
+
+# Cyberdeck
+
+The cyberdeck is a custom portable computer built for fieldwork — a full laptop mainboard, a bench instrument, and a small network stack packed into a sealed case that can be carried into environments a normal laptop would not survive. It grew out of a simple problem: field testing needs a real computer, a real oscilloscope, and a real radio, and carrying three separate devices into a hangar or onto a boat is how equipment gets damaged.
+
+<div className="flex justify-center">
+  <img
+    src="/images/cyberdeck/cover.webp"
+    alt="The cyberdeck open on a desk, showing the mounted display, mechanical keyboard, trackpad, and front panel IO"
+    className="rounded-xl w-3/4"
+  />
+</div>
+
+Most cyberdeck builds start from a single-board computer and optimize for flexibility. This one deliberately goes the other way. A full Dell Inspiron 5410 mainboard is an awkward form factor to design around and it locks in the feature set, but it brings an i5-11320H, 8 GB of dual-channel memory, and NVMe storage — an order of magnitude more compute than a Pi-class board, and enough to run the design and analysis tools this system exists to support.
+
+<div className="flex justify-center">
+  <img
+    src="/images/cyberdeck/case.webp"
+    alt="The Pelican 1400 case closed, latched, and ready for transport"
+    className="rounded-xl w-2/3"
+  />
+</div>
+
+The whole assembly closes into a Pelican 1400 Protector Case: IP67 sealed, gasketed, and rated for the kind of handling that field deployment involves. Every custom bracket, panel, and mount inside it is printed in PETG and secured with heat-set threaded inserts.
+
+{/* PHOTO SLOT — the interior with the lid removed, or the printed panels
+    before assembly, would sit well here.
+    Drop the file in public/images/cyberdeck/ and uncomment:
+
+<div className="flex justify-center">
+  <img src="/images/cyberdeck/YOUR_PHOTO.webp" alt="Describe the photo" className="rounded-xl w-3/4" />
+</div>
+*/}
+
+## Hardware
+
+| Subsystem | Part | Cost |
+|---|---|---|
+| Case | Pelican 1400 Protector Case | already owned |
+| Structure | ~1 kg PETG, M3/M4 screws and threaded inserts | already owned |
+| Compute | Dell Inspiron 5410 mainboard — i5-11320H, 2×4 GB @ 3200 MHz, 512 GB Kioxia BG4 NVMe | already owned |
+| Display | 10.5" 1920×1280 portable monitor | $60 |
+| Power | 25,000 mAh EcoFlow bank (2× 140 W USB-C, 33 W USB-A) | $60 |
+| Power delivery | USB-C to Dell 4.5×3.0 mm adapter, USB-C PD trigger module | $14 |
+| Cooling | 2× 4015 12 V fans, 1× 8020 12 V fan, ESP32 + MOSFET driver | $5 + already owned |
+| Input | GM611 60% mechanical keyboard, Inspiron 5410 OEM trackpad | $18 |
+| Networking | 5-port gigabit switch, USB-to-gigabit adapter, ASUS USB-AC56 (RTL8812AU) | $11 + already owned |
+| Radio | 2× panel-mount SMA connectors, 2× 50 cm RG316 right-angle SMA cables | $10 |
+| Instrumentation | Analog Discovery 1, 6× BNC screw terminals, banana jacks, mini breadboard | $9 + already owned |
+| USB infrastructure | Powered USB 3.0 hub, right-angle adapters and extensions | $51 |
+
+Total spend came to roughly **$250**. The two most expensive components — the laptop and the Pelican case — were already on hand, and 3D printing absorbed the rest of what would otherwise have been custom fabrication cost. The tradeoff is expansion: the mainboard's fixed footprint and IO placement dictate nearly every internal dimension, so adding a subsystem later means re-printing panels rather than reshuffling a layout.
+
+## Internal wiring
+
+Power enters from the battery bank, splits at the PD trigger module between the mainboard's barrel input and the 12 V rail feeding the fans, and everything else fans out from a powered USB 3.0 hub. Keeping a *powered* hub at the center matters — the trackpad, keyboard, Analog Discovery, Wi-Fi adapter, and Ethernet adapter together draw more than the mainboard's own ports will supply.
+
+<div className="bg-white rounded-xl shadow-lg p-6 w-full mx-auto">
+  <img
+    src="/images/cyberdeck/wiring.webp"
+    alt="Block diagram of the cyberdeck's internal wiring, showing power, USB, and Ethernet paths between the mainboard, powered hub, fan controller, and peripherals"
+    className="w-full rounded"
+  />
+</div>
+
+Both radio and instrumentation connections terminate at the case wall rather than inside it. Two panel-mount SMA connectors carry the Wi-Fi adapter's antennas out through the shell, and the Analog Discovery's channels break out to front-panel BNC and banana jacks, so the case can be probed and antennas swapped without ever opening it.
+
+## Cooling and fan control
+
+A sealed case has no passive path for heat, so cooling is active and controlled rather than always-on. Three 12 V fans, on two independently controlled channels, are driven by an ESP32 running custom firmware, addressed from the laptop over USB serial by `fanctl`, a small Python CLI installed as a global command.
+
+| | Channel 1 | Channel 2 |
+|---|---|---|
+| Drive | 12 V switched through a MOSFET module | 4-pin PWM control line |
+| PWM frequency | **1 kHz** | **25 kHz** (Intel 4-wire spec) |
+| Tachometer | none | 2 pulses per revolution |
+
+### Two fans, two frequencies, one subtle trap
+
+The two channels run at deliberately different frequencies. The MOSFET module has no gate driver IC, so at 25 kHz the gate never fully charges and discharges within a cycle — the transistor only saturates near 100% duty and the fan behaves as a simple on/off load. Dropping that channel to 1 kHz gives the gate time to switch cleanly and restores real proportional control. The 4-pin fan, meanwhile, has its own decoder expecting the 25 kHz Intel spec.
+
+Two frequencies means two hardware timers, and this is where the ESP32 hides a trap. The LEDC peripheral maps channels to timers as `timer = (chan / 2) % 4`, so **channels 0 and 1 share timer 0**. Assigning the second fan to channel 1 silently retunes the first fan to 25 kHz and breaks its MOSFET drive — no error, no warning, just a fan that no longer responds below full speed. Putting it on channel 2 lands it on timer 1 and keeps the two independent.
+
+### Serial protocol
+
+The firmware speaks a newline-terminated, case-insensitive protocol at 115200 baud and answers every command with exactly one line.
+
+| Command | Reply |
+|---|---|
+| `F1 <0-100>` | `OK F1=60%` |
+| `F2 <0-100>` | `OK F2=60%` |
+| `ALL <0-100>` | `OK F1=60% F2=60%` |
+| `STATUS` | `F1=0% F2=45% RPM2=270` |
+
+Arguments are validated in firmware rather than trusted from the client: a non-numeric or out-of-range value returns `ERR expected 0-100`, an unknown verb returns `ERR unknown command`. A stray keystroke from a serial monitor cannot silently stop a fan.
+
+The baud rate is not arbitrary either. The ESP32 ROM bootloader emits its boot banner at 115200 no matter what the application selects, so running the firmware at a lower rate causes that banner to be mis-sampled into a burst of garbage that corrupts whichever reply lands next.
+
+### Why there is no daemon
+
+Opening the serial port does not reset this board. The ESP32 auto-reset circuit only pulses EN when DTR and RTS *differ*, and pyserial asserts both on open, which cancels the pulse. Measured across three consecutive close-and-reopen cycles, a fan left at 40% stayed at 40% with no boot banner emitted.
+
+That single fact shapes the architecture: **fan state lives in the firmware and survives disconnection.** A stateless one-shot command — open, send, close — is therefore sufficient, with no resident process to supervise and no visible glitch on the fans. `fanctl status --json` drops straight into a status bar module, and one-shot invocations exit 0 on success, 1 on a firmware error or timeout, and 2 on a bad argument, so the whole thing scripts cleanly.
+
+```bash
+fanctl status           # F1=0% F2=45% RPM2=270
+fanctl status --json    # {"f1": 0, "f2": 45, "rpm2": 270}
+fanctl f2 60            # set channel 2 to 60%
+fanctl all 0            # both channels to minimum
+```
+
+Device selection is the other detail worth stating. Two USB-serial devices live on this machine — the CP2102 fan controller and the Analog Discovery's FT232H — and their `ttyUSB` numbering swaps with enumeration order at boot. The Digilent device advertises both "FTDI" and "USB-UART" in its description, so naive keyword matching picks the wrong one. `fanctl` matches `cp210` first, demotes `ftdi` and `uart` to a lower tier, and excludes `digilent` outright, which makes it immune to renumbering without needing a udev rule.
+
+{/* PHOTO SLOT — the ESP32 fan controller board, or the fans mounted in the
+    lid, would illustrate this section well.
+
+<div className="flex justify-center">
+  <img src="/images/cyberdeck/YOUR_PHOTO.webp" alt="Describe the photo" className="rounded-xl w-3/4" />
+</div>
+*/}
+
+## Software
+
+The system runs EndeavourOS — an Arch derivative — with the GNOME desktop, chosen to keep the software overhead low enough that battery runtime is governed by the hardware rather than by background services.
+
+<div className="flex justify-center">
+  <img
+    src="/images/cyberdeck/desktop.webp"
+    alt="The cyberdeck's GNOME desktop running on the built-in display"
+    className="rounded-xl w-3/4"
+  />
+</div>
+
+### Two radios is one radio too many
+
+The build carries both the USB RTL8812AU adapter and the mainboard's internal Intel AX201. With both managed by NetworkManager, the system produced repeated connection failures and dropped sessions — and the cause turned out to be structural rather than a driver fault.
+
+Linux offers no automatic failover or bonding between wireless interfaces. NetworkManager treats each radio as fully independent, so both associated to the same access point and both pulled their own DHCP lease on the same subnet, installing two default routes at adjacent metrics. Two failure modes follow. Egress always took the lower-metric route, sourced from the *other* interface's address, so the router saw one subnet behind two MACs and ARP flux followed. Worse, those metrics are assigned in interface bring-up order — on a DHCP renewal or a momentary deauth the winner could swap, killing every open socket at that instant.
+
+The fix was to mark the internal card unmanaged in a NetworkManager drop-in. The important part is *what it matches on*: `wlan0` and `wlan1` are assigned in probe order and swap between reboots, because one radio is USB and the other is PCIe/CNVi. Matching on MAC address rather than interface name is what makes the configuration survive a reboot.
+
+Keeping the Realtek over the objectively better Intel card is a deliberate compromise. On general merit the AX201 wins — `iwlwifi` is better maintained than rtw88's USB support, which has known throughput and stability rough edges under load. But the AX201 has no path to the case-mounted SMA antennas, and it cannot do the monitor and injection mode that WFB-NG video reception requires. The RTL8812AU is the only radio in the build that can do either.
+
+### Instrumentation
+
+Digilent ships WaveForms as a `.deb` only, so getting the Analog Discovery working on Arch took three separate fixes: building from the AUR package rather than a `debtap` conversion, pre-downloading the vendor `.deb` by hand because their file server blocks the build script's automated request, and registering Digilent's library directory with `ldconfig` since it installs outside the default linker search path.
+
+The last one was the least obvious. Even with the software running, the device stayed undetected — the udev rule granting USB access only fires on a device `add` event, and the Analog Discovery had been plugged in before the rule was installed. Reloading and triggering udev does not reliably force re-enumeration for an already-present device; a full reboot does. It also identifies itself in `lsusb` as an FTDI FT232H rather than as a Digilent device, which sends you looking for the wrong thing entirely.
+
+## Resources
+
+<div className="flex flex-wrap gap-3 not-prose">
+  <a
+    href="https://github.com/mdanley1234/Cyberdeck"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex items-center px-6 py-2 bg-white border border-gray-300 rounded-full text-black no-underline hover:bg-gray-200 transition-colors shadow-sm"
+  >
+    <span className="font-medium">Firmware & CLI on GitHub</span>
+  </a>
+  <a
+    href="https://a360.co/4hrpfd7"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex items-center px-6 py-2 bg-white border border-gray-300 rounded-full text-black no-underline hover:bg-gray-200 transition-colors shadow-sm"
+  >
+    <span className="font-medium">Fusion 360 Assembly</span>
+  </a>
+</div>
+
+## Where it stands
+
+The firmware and CLI are deployed and in daily use. Three additions are queued, in rough order of value:
+
+1. **A temperature daemon** — a user service reading hwmon sensors and applying a curve with hysteresis, a minimum duty so the fans do not stall, and a spin-up kick for the MOSFET-driven channel, which may not start from rest at low duty. This is the only piece that genuinely warrants a resident process; when it runs it would hold the port, so `fanctl` should talk to it over a Unix socket and fall back to direct serial when it is not running.
+2. **A firmware watchdog** — ramp to 100% if no command arrives within a timeout. If the daemon dies or the host suspends with the fans at 15%, a sealed enclosure cooks. This belongs alongside the daemon, not after it.
+3. **NVS persistence** — save duty across power cycles, so a reboot resumes at a sane default instead of leaving both fans at zero.
+
+{/* PHOTO SLOT — a shot of the deck in actual field use makes a strong closer.
+
+<div className="flex justify-center">
+  <img src="/images/cyberdeck/YOUR_PHOTO.webp" alt="Describe the photo" className="rounded-xl w-3/4" />
+</div>
+*/}

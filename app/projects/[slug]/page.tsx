@@ -13,7 +13,6 @@ import MdxImage from "@/mdx-components/MdxImage"
 import MdxEmbed from "@/mdx-components/MdxEmbed"
 import remarkMdxElements from "@/lib/remark-mdx-elements.mjs"
 import Link from "next/link"
-import MobileNav from "@/lib/MobileNav"
 
 type Props = { params: Promise<{ slug: string }> }
 const CONTENT_DIR = path.join(process.cwd(), "content", "projects")
@@ -116,15 +115,6 @@ export default async function ProjectPage({ params }: Props) {
           >
             Back
           </Link>
-
-          {/* Mobile menu — links back to the homepage sections */}
-          <MobileNav
-            items={[
-              { label: 'Home', href: '/#home' },
-              { label: 'Projects', href: '/#projects' },
-              { label: 'Experience', href: '/#experience' },
-            ]}
-          />
         </nav>
       </header>
 

@@ -18,7 +18,6 @@ import EmblaCarousel from '@/lib/carousel/EmblaCarousel';
 import ProjectCard from '@/lib/ProjectCard';
 import ExperienceTimeline from '@/lib/ExperienceTimeline';
 import Tag from '@/lib/Tag';
-import MobileNav from '@/lib/MobileNav';
 import { Experience } from '@/lib/getExperiences';
 
 /**
@@ -260,18 +259,6 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
               );
             })}
           </motion.div>
-
-          {/* Mobile menu — same sections, same scroll behavior as above */}
-          <MobileNav
-            active={activeSection}
-            items={(['Home', 'Projects', 'Experience']).map((item) => ({
-              label: item,
-              onSelect: () =>
-                ({ Home: homeRef, Projects: projectsRef, Experience: experienceRef })[
-                  item
-                ]?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
-            }))}
-          />
         </nav>
       </motion.header>
 

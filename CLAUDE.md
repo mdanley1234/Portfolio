@@ -92,7 +92,7 @@ Registered in `mdx-components/` and injected at render time for project detail p
 
 ### Shared UI
 
-- `lib/MobileNav.jsx` — the header menu below `md`, used by both `app/pageClient.tsx` and `app/projects/[slug]/page.tsx`
+- Below `md` the header carries no section navigation at all. It collapses to the wordmark alone — plus the Back link on a project page — rather than to a hamburger. Deliberate, not a missing feature: both headers paint through a `-webkit-mask-image` that fades to transparent at their bottom edge, and because a mask applies to the whole subtree, any panel hung below the header renders invisible *and* drops out of hit testing.
 - `lib/ExperienceTimeline.jsx` — the experience section. Orders entries by an optional frontmatter `rank`, otherwise ongoing roles first then by `end` date descending (the order a resume uses); a role whose `end` is "Present" gets a filled timeline node. From `xl` entries alternate sides and the rail steps with them — offset `DELTA` right on a left-hand entry, `DELTA` left on a right-hand one, joined by a horizontal jog in the gap between the two, so each card gains `DELTA` over an even split. Below `xl` it collapses to a single left-rail column, because half a container is too narrow to read in. Plain React + framer-motion, no component library.
 
 ### Key Libraries

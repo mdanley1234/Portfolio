@@ -4,13 +4,35 @@ start: "Fall 2025"
 end: "Present"
 summary: "An integrated ECU platform for Duke AERO's liquid propulsion rocket engine, combining precision sensor sampling, power distribution, valve control, and wireless telemetry."
 coverImage: "/images/propulsion/cover4.webp"
+layout: "feature"
+heroImage: "/images/propulsion/v2board.webp"
+heroAlt: "The two ENO ECU V2.0 boards — sampling board and control board — mounted side by side on a black anodized plate engraved 'Duke AERO — ENO ECU V2.0'."
+tagline: "One integrated control unit for the test platform behind Duke AERO's ENO liquid rocket engine."
+lede: >
+  ENO is Duke AERO's regeneratively cooled liquid engine, designed for 2500 N
+  of thrust on nitrous oxide and kerosene. Its test platform used to run on a
+  mess of cables, protoboards, an Arduino UNO and an external DAQ — hours of
+  wiring before every test. This ECU folds all of it onto one board:
+  transducer sampling, power distribution, valve and servo control, and
+  wireless telemetry.
+facts:
+  - label: "Engine"
+    value: "ENO — 2500 N thrust on nitrous oxide and kerosene"
+  - label: "V1.0 core"
+    value: "ESP32-C3, Wi-Fi telemetry and wireless servo commands"
+  - label: "PT sampling"
+    value: "TLA2518 — 8-channel 12-bit ADC over SPI, hardware averaging"
+  - label: "Servo control"
+    value: "PCA9685 — 16-channel, 12-bit PWM off the main MCU"
+  - label: "V1.0 result"
+    value: "Setup cut from hours to minutes; polling 40 Hz → 100 Hz"
+  - label: "V2.0"
+    value: "Two-board split to isolate EMI, ESP32-S3, LoRa, local logging"
+  - label: "Interface"
+    value: "Python CLI — live plotting, timed sequences, CSV logging"
 tags: [Circuit Analysis, PCB Design]
-rank: 2
+rank: 1
 ---
-
-# Liquid Propulsion ECU
-
-ENO is a regeneratively cooled custom liquid rocket engine developed by Duke AERO designed to produce 2500 newtons of thrust using nitrous oxide and kerosene. The propulsion test platform is a critical component of the ENO development program, providing a controlled environment for validating engine performance and characterizing combustion behavior.
 
 <CADViewer
   src="/models/chamber_3.glb"
@@ -116,14 +138,6 @@ Cold flow testing allows us to test ENO flow performance and measure pressure ch
 ## ENO ECU V2.0
 
 The ENO ECU V2.0 transitions to a modular, two-board architecture to isolate EMI from analog sampling. Key upgrades include enhanced power circuitry with low-noise regulators, integrated support for thermistors and load cells, and an ESP32-S3 core featuring LoRa connectivity and local data logging for superior reliability.
-
-<div className="flex justify-center">
-<img
-  src="/images/propulsion/v2board.webp"
-  alt="Full PCB"
-  className="rounded-xl w-3/4"
-/>
-</div>
 
 ### V2.0 Design Goals
 

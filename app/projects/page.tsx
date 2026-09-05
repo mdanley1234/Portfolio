@@ -4,7 +4,11 @@ import { getProjects } from '@/lib/getProjects';
 import Tag from '@/lib/Tag';
 
 export default function ProjectsPage() {
-  const projects = getProjects(); // NOTE: Add "await" getProjects() for async
+  // Same order as the homepage carousel and the next-project link on a detail
+  // page: frontmatter `rank`, not the order readdir happens to return.
+  const projects = getProjects().sort(
+    (a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity)
+  );
 
   return (
     <main className="min-h-screen background">

@@ -4,19 +4,34 @@ start: "Fall 2024"
 end: "Spring 2025"
 summary: "A custom 2-wheeled robot that follows pre-programmed paths using odometry-based localization, an ESP32 MCU, quadrature encoders, and custom PID-based control algorithms."
 coverImage: "/images/pathbot/cover.webp"
+layout: "feature"
+heroImage: "/images/pathbot/board.webp"
+heroAlt: "The robot's electronics tray: an ESP32-WROOM and motor driver on protoboard, wired out to the encoders and motors in colour-coded jumpers."
+tagline: "A two-wheeled robot that drives pre-programmed paths from encoder odometry alone."
+lede: >
+  There is no beacon, no camera and no map — the robot knows where it is
+  entirely from how far each wheel has turned. That makes the whole problem
+  one of calibration and control: get the wheel geometry and the PID right
+  and it holds position to within a few centimetres, get them wrong and the
+  error compounds every metre.
+facts:
+  - label: "MCU"
+    value: "ESP32-WROOM"
+  - label: "Motor driver"
+    value: "TB6612FNG, up to ~1.2 A continuous"
+  - label: "Motors"
+    value: "~500 RPM geared, magnetic quadrature encoders"
+  - label: "Chassis"
+    value: "Designed in Fusion 360, 3D printed in PLA"
+  - label: "Localization"
+    value: "Encoder odometry with custom PID controllers"
+  - label: "Telemetry"
+    value: "TCP out, UDP manual control, Python PC client"
+  - label: "Accuracy"
+    value: "Within a few centimetres under manual control"
 tags: [C++, CAD, Soldering]
-rank: 5
+rank: 7
 ---
-
-# Autonomous Pathbot
-
-This project created a two-wheeled robot capable of following pre-programmed path instructions using odometry localization and custom control software.
-
-## Component Sourcing
-
-* **MCU:** ESP32-WROOM for wireless capabilities and compute.
-* **Motor Driver:** TB6612FNG (up to ~1.2 A continuous).
-* **Motors:** Geared motors ~500 RPM with magnetic quadrature encoders for precise tracking.
 
 <img
     src="/images/pathbot/back.webp"

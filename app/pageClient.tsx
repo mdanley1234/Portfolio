@@ -452,7 +452,11 @@ export default function PageClient({ projects, experiences }: PageClientProps) {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-28 relative" ref={projectsRef}>
+      {/* z-10: the experience section below pulls its container up with -mt-32,
+          which overlaps the foot of this one. Both are positioned and neither
+          painted a background, so the overlap was invisible but it still won
+          hit testing — and it sat exactly on the carousel's arrows. */}
+      <section id="projects" className="py-16 sm:py-28 relative z-10" ref={projectsRef}>
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 50 }}

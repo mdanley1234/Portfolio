@@ -4,21 +4,31 @@ start: "Summer 2026"
 end: "Present"
 summary: "A ruggedized portable workstation built from a Dell Inspiron 5410 mainboard inside a Pelican IP67 case, with a custom ESP32 fan controller, external SMA antennas, an onboard gigabit switch, and integrated Analog Discovery instrumentation."
 coverImage: "/images/cyberdeck/cover.webp"
+layout: "feature"
+heroImage: "/images/cyberdeck/cover.webp"
+heroAlt: "The cyberdeck open on a desk, its mounted display lit, backlit mechanical keyboard and trackpad seated in the Pelican case."
+tagline: "A full laptop mainboard, a bench instrument and a radio stack sealed into one Pelican case."
+lede: >
+  Field testing needs a real computer, a real oscilloscope and a real radio,
+  and carrying three separate devices into a hangar or onto a boat is how
+  equipment gets damaged. This is all three in one IP67 case — and it came to
+  roughly $250, because the two most expensive parts were already on hand.
+facts:
+  - label: "Compute"
+    value: "Dell Inspiron 5410 mainboard — i5-11320H, 8 GB, 512 GB NVMe"
+  - label: "Enclosure"
+    value: "Pelican 1400 Protector, IP67 sealed, PETG internals"
+  - label: "Instruments"
+    value: "Analog Discovery 1 on front-panel BNC and banana jacks"
+  - label: "Cooling"
+    value: "3 fans on 2 channels, ESP32 controller over USB serial"
+  - label: "OS"
+    value: "EndeavourOS with GNOME"
+  - label: "Build cost"
+    value: "≈$250"
 tags: [Linux, C++, 3D Printing]
-rank: 7
+rank: 4
 ---
-
-# Cyberdeck
-
-The cyberdeck is a custom portable computer built for fieldwork — a full laptop mainboard, a bench instrument, and a small network stack packed into a sealed case that can be carried into environments a normal laptop would not survive. It grew out of a simple problem: field testing needs a real computer, a real oscilloscope, and a real radio, and carrying three separate devices into a hangar or onto a boat is how equipment gets damaged.
-
-<div className="flex justify-center">
-  <img
-    src="/images/cyberdeck/cover.webp"
-    alt="The cyberdeck open on a desk, showing the mounted display, mechanical keyboard, trackpad, and front panel IO"
-    className="rounded-xl w-3/4"
-  />
-</div>
 
 Most cyberdeck builds start from a single-board computer and optimize for flexibility. This one deliberately goes the other way. A full Dell Inspiron 5410 mainboard is an awkward form factor to design around and it locks in the feature set, but it brings an i5-11320H, 8 GB of dual-channel memory, and NVMe storage — an order of magnitude more compute than a Pi-class board, and enough to run the design and analysis tools this system exists to support.
 

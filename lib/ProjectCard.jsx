@@ -42,7 +42,7 @@ export default function ProjectCard({ project }) {
 
       {/* Build project card */}
       <motion.div
-        className="project-card-bg group relative overflow-hidden rounded-2xl border border-white/20 hover:border-white h-[580px] flex flex-col card-background"
+        className="project-card-bg group relative overflow-hidden rounded-2xl border border-white/20 hover:border-white h-[460px] sm:h-[580px] flex flex-col card-background"
         style={{
           transformOrigin: "left center",
           transformStyle: "preserve-3d",
@@ -60,10 +60,10 @@ export default function ProjectCard({ project }) {
       >
 
         {/* Link to project details page */}
-        <a href={`/projects/${project.slug}`} className="block h-full relative z-10">
+        <a href={`/projects/${project.slug}`} className="relative z-10 flex h-full flex-col">
 
           {/* Project Cover Image */}
-          <div className="h-80 relative overflow-hidden flex-shrink-0">
+          <div className="h-44 sm:h-80 relative overflow-hidden flex-shrink-0">
             <motion.div
               className="absolute inset-0 bg-white/10"
               initial={{ scale: 1 }}
@@ -76,7 +76,7 @@ export default function ProjectCard({ project }) {
                   src={project.coverImage}
                   alt={project.title}
                   fill
-                  sizes="(max-width: 640px) 90vw, 411px"
+                  sizes="(max-width: 640px) 100vw, 411px"
                   className="object-cover"
                 />
               ) : (
@@ -86,16 +86,18 @@ export default function ProjectCard({ project }) {
           </div>
 
           {/* Project Blurb */}
-          <div className="p-6 flex-1 flex flex-col">
+          <div className="p-6 flex-1 flex flex-col min-h-0">
 
             {/* Project Title */}
             <h3 className="text-xl font-semibold text-white mb-2">{project.title}</h3>
 
             {/* Project Summary */}
-            <p className="text-gray-400 flex-1">{project.summary}</p>
+            <div className="min-h-0 flex-1 overflow-hidden">
+              <p className="text-gray-400 line-clamp-4 sm:line-clamp-5">{project.summary}</p>
+            </div>
 
             {/* Project Tags */}
-            <div className="flex gap-2 flex-wrap absolute bottom-6 left-6 w-full">
+            <div className="shrink-0 pt-4 flex gap-2 flex-wrap">
               {project.tags.map((tag, tagIndex) => (
                 <Tag key={tagIndex} name={tag} />
               ))}

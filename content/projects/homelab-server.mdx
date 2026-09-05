@@ -4,13 +4,34 @@ start: "Summer 2026"
 end: "Present"
 summary: "A self-hosted compute and storage server built from salvaged and second-hand hardware for roughly $300, running Proxmox VE over a ZFS RAIDZ1 pool with containerised services and zero-trust remote access."
 coverImage: "/images/homelab/cover.webp"
+layout: "feature"
+heroImage: "/images/homelab/cover.webp"
+heroAlt: "The homelab server stacked in its 3D printed micro rack, black drive sleds seated behind orange printed latches."
+tagline: "A Proxmox and ZFS server built from salvaged hardware for roughly $300."
+lede: >
+  The homelab sits beside my home router and handles file storage, photo
+  backup, documentation hosting, game servers and a general container
+  workload. Building around older and salvaged hardware rather than buying a
+  prebuilt NAS bought more performance per dollar — and full control over
+  both the physical design and the software stack.
+facts:
+  - label: "Compute"
+    value: "Dell OptiPlex 3050 Micro (i3-7100T), 16 GB DDR4"
+  - label: "Storage"
+    value: "3× 2 TB in a ZFS RAIDZ1 pool, checksummed and compressed"
+  - label: "Hypervisor"
+    value: "Proxmox VE, workloads split across LXC by trust boundary"
+  - label: "Retention"
+    value: "Sanoid snapshots hourly to monthly, weekly Vzdump backups"
+  - label: "Chassis"
+    value: "3D printed PETG micro rack, heat-set threaded inserts"
+  - label: "Remote access"
+    value: "Tailscale subnet router and a Cloudflare Tunnel — no inbound ports"
+  - label: "Build cost"
+    value: "≈$300"
 tags: [Linux, Docker, 3D Printing]
-rank: 6
+rank: 3
 ---
-
-# Homelab Server
-
-The homelab is a self-hosted compute and storage platform that sits beside my home router and handles file storage, photo backup, documentation hosting, game servers, and a general container workload. Rather than buying a prebuilt NAS, I built around older and salvaged hardware — more performance per dollar, and full control over both the physical design and the software stack.
 
 <div className="flex justify-center">
   <img

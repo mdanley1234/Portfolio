@@ -140,3 +140,115 @@ body {
   color: #ffffff;
   font-weight: 600;
 }
+
+/* -----------------------
+   Project page banner
+   ----------------------- */
+
+/* Darkened at both ends rather than one: the fixed header sits over the top of
+   the banner and the title over its foot, so both need protection whatever the
+   photograph does in between. The last stop is fully opaque so the image
+   dissolves into the page instead of ending on a visible seam. */
+.project-hero-scrim {
+  background:
+    /* Across: the copy column runs down the left, so the ground under it is
+       darkened while the right side stays open for the subject. */
+    linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.62) 0%,
+      rgba(0, 0, 0, 0.42) 35%,
+      rgba(0, 0, 0, 0.12) 65%,
+      rgba(0, 0, 0, 0) 85%
+    ),
+    /* Down. */
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.55) 0%,
+      rgba(0, 0, 0, 0.15) 18%,
+      rgba(0, 0, 0, 0.08) 38%,
+      rgba(0, 0, 0, 0.35) 58%,
+      rgba(0, 0, 0, 0.7) 78%,
+      rgba(0, 0, 0, 0.94) 92%,
+      #000000 100%
+    );
+}
+
+/* The page's one entrance: the banner copy settles in a short stagger. Nothing
+   below the fold animates on load, so this reads as the page arriving rather
+   than as an effect applied to every section. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-rise > * {
+  animation: hero-rise 0.75s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.hero-rise > *:nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+.hero-rise > *:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+.hero-rise > *:nth-child(4) {
+  animation-delay: 0.24s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise > * {
+    animation: none;
+  }
+}
+
+/* -----------------------
+   Mach diamond plume
+   ----------------------- */
+
+/* The clip lives on the wrapper rather than on the section, so the bottom row
+   is cut by this box's own edge wherever it is placed. The taper on the row
+   opacities already fades the stack out; the mask guarantees a clean dissolve
+   with no visible top edge whatever the row count does at a given width. */
+.mach-diamonds {
+  overflow: hidden;
+  mask-image: linear-gradient(to top, black 0%, black 45%, transparent 100%);
+  -webkit-mask-image: linear-gradient(
+    to top,
+    black 0%,
+    black 45%,
+    transparent 100%
+  );
+}
+
+/* Rows are authored bottom-first (index 0 = biggest and brightest); reversed
+   here so that row lands at the bottom of the stack. */
+.mach-diamonds-stack {
+  display: flex;
+  flex-direction: column-reverse;
+  transform: translateY(var(--mach-shift));
+}
+
+.mach-diamonds-row {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+/* The full stack (~310px) is tuned for the desktop footer's roomier padding.
+   Capped on a phone so the smallest, faintest rows get trimmed rather than the
+   biggest row crowding the content above it. The cap has to sit on the
+   column-reverse element: that is what puts main-start at the bottom, so the
+   overflow spills off the faint top instead of eating the bright base row. */
+@media (max-width: 640px) {
+  .mach-diamonds-stack {
+    max-height: 130px;
+    overflow: hidden;
+  }
+}

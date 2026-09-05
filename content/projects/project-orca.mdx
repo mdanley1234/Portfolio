@@ -4,21 +4,36 @@ start: "Fall 2025"
 end: "Spring 2026"
 summary: "A research-grade environmental emulation system that replicates real-time marine light conditions using custom PCBs, spectral sensing, and RS-485/LoRa communication"
 coverImage: "/images/orca/cover.webp"
+layout: "feature"
+heroImage: "/images/orca/both.webp"
+heroAlt: "The two ORCA modules side by side on a wood floor, each with its whip antenna raised — the chamber module on the left, the sensor module on the right."
+heroPosition: "68% 58%"
+tagline: "Environmental emulation that replicates real-time solar intensity inside a marine incubation vessel."
+lede: >
+  The Cassar lab at Duke needed the light inside an incubation vessel to
+  track the real sun — aboard an ocean research boat. ORCA does it with a
+  split architecture: an outdoor module reading spectral intensity, and a
+  chamber module driving high-current LEDs to match. As Electrical Systems
+  Engineer I lead the hardware end to end, from schematic through fabrication
+  and validation.
+facts:
+  - label: "Role"
+    value: "Electrical Systems Engineer — design, fabrication, validation"
+  - label: "Architecture"
+    value: "Outdoor sensor module and internal chamber module"
+  - label: "Sensing"
+    value: "AS7343 — 14 wavelengths across and beyond the visible spectrum"
+  - label: "Link"
+    value: "RS-485 over RJ45, plus LORA1262 for shipwide wireless"
+  - label: "Chamber board"
+    value: "Pi HAT form factor for a Raspberry Pi 3B, 24 V single input"
+  - label: "Sensor board"
+    value: "ESP32-C6, BQ25185 solar battery management, LC86GLA GPS"
+  - label: "Status"
+    value: "Prototype proven Fall 2025; research-grade unit in fabrication"
 tags: [PCB Design, Soldering, C++]
-rank: 1
+rank: 2
 ---
-
-# Project ORCA
-
-ORCA (Optical Replication & Control Apparatus) is a high-fidelity environmental emulation system designed to replicate real-time solar intensity within marine incubation vessels. As the Electrical Systems Engineer, I lead the end-to-end hardware lifecycle, including the design, fabrication, and validation of all control electronics. After a successful proof-of-concept phase in Fall 2025, the project is currently in active fabrication for a ruggedized, research-grade unit ready for offshore deployment.
-
-  <div className="flex justify-center">
-    <img
-      src="/images/orca/both.webp"
-      alt="Expanded Overview"
-      className="rounded-xl w-3/4"
-    />
-  </div>
 
 Accurately measuring nitrogen-fixing microorganism activity is essential for advancing our understanding of marine ecosystems and the impacts of climate change. FARACAS is a novel measurement technique; however, its accuracy hinges heavily on precise replication of natural light intensity. The Cassar lab at Duke University tasked our team with creating a system that can automatically modulate light intensity within their incubation vessel to match environmental conditions while aboard an ocean research boat. To best meet the needs of our client, our team identified a set of design goals that our solution should aim to achieve.
 

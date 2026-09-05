@@ -2,16 +2,66 @@ import React from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
+// A card narrower than MIN_CARD reads as a thumbnail; wider than MAX_CARD the
+// cover image starts to dominate the section. Everything between is reachable
+// by scaling, so the track picks the smallest number of cards that keeps each
+// one inside that band and then divides the width evenly between them.
+const MIN_CARD = 300;
+const MAX_CARD = 440;
+const MAX_PER_VIEW = 4;
+
+// The ceiling only has to hold a card back from its neighbours. A card with no
+// neighbours can take the whole track, which is how the phone case works, and
+// the track is under 630px wherever a second card would not fit — so this is a
+// backstop for the degenerate case of a single project, not a second design.
+const MAX_CARD_ALONE = 620;
+
+// Room between two cards. A lone card gets a narrower gutter: on a phone the
+// full track is the budget, and 28px of it spent on air the visitor never sees
+// (there is no neighbouring card to separate from) is 28px off the card.
+const GAP = 32;
+const GAP_SINGLE = 16;
+
+/**
+ * How many cards to show, and how wide each one ends up, for a track of
+ * `track` px. Returns the geometry the slides and the card itself are sized
+ * from — the caller feeds `card` to the card as its scale unit.
+ */
+function fit(track, slideCount) {
+  if (!track) return null;
+
+  // The most cards that still leaves each one legible, and the fewest that
+  // keeps each one under the ceiling. The second wins where they disagree:
+  // two 470px cards is a worse answer than three 300px ones.
+  const most = Math.floor((track + GAP) / (MIN_CARD + GAP));
+  const fewest = Math.ceil((track + GAP) / (MAX_CARD + GAP));
+  const perView = Math.min(
+    Math.max(fewest, 1),
+    Math.max(most, 1),
+    MAX_PER_VIEW,
+    slideCount
+  );
+
+  const gap = perView === 1 ? GAP_SINGLE : GAP;
+  // Slides are sized as a fraction of the track rather than in pixels, so the
+  // row always adds up to exactly the space available and the cards stay
+  // centred in it. The gutter is padding inside each slide.
+  const slide = track / perView;
+  const ceiling = perView === 1 ? MAX_CARD_ALONE : MAX_CARD;
+  return { perView, gap, card: Math.min(slide - gap, ceiling) };
+}
+
 /**
  * Builds carousel of cards using EmblaCarousel.
  *
- * @param cardWidth Width of one slide in px on a track wide enough for it.
- *   Narrower than that, a slide takes the full track instead, so a phone shows
- *   exactly one card. This is a width, not a transform: `scale()` does not
- *   change layout, so scaling a fixed-width slide down left the track wider
- *   than its container and pushed every card off to one side.
+ * Slides are measured, not fixed: the track is divided into one, two, three or
+ * four equal slots depending on how much width there is, and the card scales
+ * to whatever slot it lands in. `--card-w` carries that width into the card,
+ * which sizes its type, padding and cover image from it — so a phone card is
+ * the same design as a desktop card, drawn smaller, rather than a desktop card
+ * with its right half hanging off the screen.
  */
-const EmblaCarousel = ({ header, slides, options, cardWidth }) => {
+const EmblaCarousel = ({ header, slides, options }) => {
   const [canScrollPrev, setCanScrollPrev] = React.useState(false);
   const [canScrollNext, setCanScrollNext] = React.useState(false);
   const [selected, setSelected] = React.useState(0);
@@ -21,6 +71,7 @@ const EmblaCarousel = ({ header, slides, options, cardWidth }) => {
   // slides give five stops. Counting slides instead advertised a 7 the arrows
   // could never reach.
   const [snapCount, setSnapCount] = React.useState(0);
+  const [geometry, setGeometry] = React.useState(null);
 
   // Card behaviors
   const defaultOptions = {
@@ -35,6 +86,42 @@ const EmblaCarousel = ({ header, slides, options, cardWidth }) => {
     ...defaultOptions,
     ...options
   });
+
+  const viewportRef = React.useRef(null);
+  const slideCount = slides?.length ?? 0;
+
+  // Embla owns the viewport node through a callback ref; measuring it needs the
+  // same node, so both refs are set from one callback.
+  const setViewport = React.useCallback(
+    (node) => {
+      viewportRef.current = node;
+      emblaRef(node);
+    },
+    [emblaRef]
+  );
+
+  React.useLayoutEffect(() => {
+    const node = viewportRef.current;
+    if (!node) return;
+
+    const measure = () => {
+      const next = fit(node.clientWidth, slideCount);
+      if (!next) return;
+      setGeometry((prev) =>
+        prev &&
+        prev.perView === next.perView &&
+        prev.gap === next.gap &&
+        Math.abs(prev.card - next.card) < 0.5
+          ? prev
+          : next
+      );
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [slideCount]);
 
   const onSelect = React.useCallback(() => {
     if (!emblaApi) return;
@@ -60,7 +147,8 @@ const EmblaCarousel = ({ header, slides, options, cardWidth }) => {
   // out wide enough that Embla decides there is nothing to scroll. Remove this
   // and a production build renders the carousel stuck on slide 1 with the Next
   // arrow disabled. Re-measuring after the first paint — and again once
-  // webfonts have swapped — rebuilds the snaps against the real layout.
+  // webfonts have swapped, and on every change to how many cards are on
+  // screen — rebuilds the snaps against the real layout.
   React.useEffect(() => {
     if (!emblaApi) return;
     const reInit = () => emblaApi.reInit();
@@ -73,7 +161,7 @@ const EmblaCarousel = ({ header, slides, options, cardWidth }) => {
       cancelled = true;
       cancelAnimationFrame(raf);
     };
-  }, [emblaApi]);
+  }, [emblaApi, geometry?.perView]);
 
   const scrollPrev = React.useCallback(() => {
     if (emblaApi && canScrollPrev) emblaApi.scrollPrev();
@@ -91,21 +179,33 @@ const EmblaCarousel = ({ header, slides, options, cardWidth }) => {
     }`;
   const chevron = (enabled) => `w-5 h-5 ${enabled ? 'text-black' : 'text-white/40'}`;
 
+  const gutter = (geometry?.gap ?? GAP) / 2;
+
   return (
     <div className="py-2 overflow-hidden">
       {/* The heading gets the whole row. Sharing it with the controls meant
-          they landed on top of the second line once the title wrapped. */}
-      <h2 className="px-4 mb-2 text-3xl sm:text-4xl font-bold text-white text-left">
+          they landed on top of the second line once the title wrapped. It is
+          indented by the slide's own gutter so it starts on the same vertical
+          as the first card's left edge at every width. */}
+      <h2
+        className="mb-2 text-3xl sm:text-4xl font-bold text-white text-left"
+        style={{ paddingInline: `${gutter}px` }}
+      >
         {header}
       </h2>
 
-      <div className="rounded-lg" ref={emblaRef}>
+      <div className="rounded-lg" ref={setViewport}>
         <div className="flex">
           {slides.map((slide, index) => (
             <div
               key={index}
-              className="min-w-0 shrink-0 grow-0 px-4 py-6 sm:py-10"
-              style={{ width: `min(${cardWidth}px, 100%)` }}
+              className="flex min-w-0 shrink-0 grow-0 py-6 sm:py-10"
+              style={{
+                width: geometry ? `${100 / geometry.perView}%` : '100%',
+                paddingInline: `${gutter}px`,
+                // Everything inside the card is sized from this.
+                '--card-w': `${geometry?.card ?? MIN_CARD}px`
+              }}
             >
               {slide}
             </div>

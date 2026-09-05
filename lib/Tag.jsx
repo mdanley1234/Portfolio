@@ -172,9 +172,13 @@ export default function Tag({ name }) {
   const config = TAG_CONFIG[name] || DEFAULT_TAG;
   const Icon = config.icon;
 
+  // Sized in `em` rather than px so a tag scales with whatever it sits in —
+  // the project card sets its own font size from the width the carousel gave
+  // it. The ratios are calibrated to the previous fixed values, so a tag in a
+  // 16px context (the project banner, the projects index) is unchanged.
   return (
-    <span className={`inline-flex items-center gap-1.5 px-3 py-1 text-sm rounded-full border ${config.bgColor} ${config.textColor} ${config.borderColor}`}>
-      <Icon size={14} />
+    <span className={`inline-flex items-center gap-[0.429em] px-[0.857em] py-[0.286em] text-[0.875em] rounded-full border ${config.bgColor} ${config.textColor} ${config.borderColor}`}>
+      <Icon size="1em" className="shrink-0" />
       {name}
     </span>
   );

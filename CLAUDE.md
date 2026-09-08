@@ -31,13 +31,58 @@ All content lives as MDX files in `content/`:
 
 **Project frontmatter schema:**
 ```yaml
+# Read by lib/getProjects.tsx — feeds the homepage carousel and /projects
 title, start, end, summary, coverImage, tags (string[]), rank (sort order)
+
+# Read straight off matter() in app/projects/[slug]/page.tsx — feature layout only
+layout: "feature"   # opt-in. Without it the page renders heading-first, as before
+heroImage           # banner image; falls back to coverImage
+heroAlt
+heroPosition        # object-position for the banner crop, e.g. "68% 58%"
+heroScale           # scale() on the banner image; last resort, see below
+tagline             # one line under the banner title; falls back to summary
+lede                # opening paragraph, set above the rule that starts the article
+facts               # [{ label, value }] — becomes the Specifications table
 ```
+
+`rank` orders three things and they have to agree: the homepage carousel,
+`/projects`, and the "Next project" link at the foot of a detail page (which
+wraps from the last project back to the first).
+
+`summary`, `tagline` and `lede` are three different sentences about the same
+project and appear within one screen of each other on a feature page. Write
+them so they do not echo — the card summary sells it, the tagline names what it
+is, the lede opens the argument.
+
+`heroScale` zooms the banner and therefore crops differently at every viewport;
+it leaked a fragment of a CAD annotation into view on mobile once. Prefer
+cutting a dedicated hero crop into `public/images/` over reaching for it.
 
 **Experience frontmatter schema:**
 ```yaml
 company, position, start, end
 ```
+
+### Project detail pages
+
+`layout: "feature"` composes the page from three pieces around the MDX body:
+
+- `lib/ProjectHero.tsx` — full-bleed banner with the title over its foot, then
+  a status dot (`/present/i.test(end)`, the same convention
+  `ExperienceTimeline` uses), the dates, and the tags. `heroImage` is a
+  separate field from `coverImage` on purpose: a card cover is often a light
+  product shot that dies under the banner scrim. The scrim itself
+  (`.project-hero-scrim` in `app/globals.css`) darkens both ends, not one: the
+  fixed header sits over the top of the banner and the title over its foot, so
+  both need cover whatever the photograph does in between.
+- `lib/ProjectFacts.tsx` — the Specifications `<dl>`. Renders nothing when
+  `facts` is absent.
+- `lib/ProjectNextLink.tsx` — the cross-nav card at the foot. It sits on the
+  opaque `card-background` token, **not** a translucent wash: the Mach plume
+  rises behind it and shows straight through anything see-through.
+
+The MDX body of a feature project carries neither an H1 nor the hero image —
+both are page chrome now. Start the file at the first real section.
 
 ### Images
 
@@ -93,7 +138,72 @@ Registered in `mdx-components/` and injected at render time for project detail p
 ### Shared UI
 
 - Below `md` the header carries no section navigation at all. It collapses to the wordmark alone — plus the Back link on a project page — rather than to a hamburger. Deliberate, not a missing feature: both headers paint through a `-webkit-mask-image` that fades to transparent at their bottom edge, and because a mask applies to the whole subtree, any panel hung below the header renders invisible *and* drops out of hit testing.
+- `lib/carousel/EmblaCarousel.jsx` + `lib/ProjectCard.jsx` — the homepage
+  project carousel. The card has no fixed width. A `ResizeObserver` measures
+  the track and `fit()` picks the fewest cards that keep each one under
+  `MAX_CARD`, bounded by the most that keep each one over `MIN_CARD`, capped at
+  four — one card on a phone, two on a tablet, three on a laptop, four at
+  1920. Slides are sized as a **fraction** of the track (`100/perView`%), never
+  in pixels, so the row always adds up to exactly the width available; sizing
+  them in pixels is what used to leave a stray margin and push the cards
+  off-centre. The resulting slot width is handed to the card as `--card-w`,
+  and the card sets its own `font-size` from it and expresses everything else
+  — padding, type, tags, cover height, radius — against that. So the card is a
+  true scale of itself at any size rather than a fixed card that has to be
+  cropped to fit. The scale is anchored to the card as it was before it could
+  scale: at 379px wide it draws 16px type over a 320px cover, which is where
+  the `/23.7` divisor and the `0.845` cover ratio come from. Two things there
+  are load-bearing:
+  - The cover ratio is a share of the card's **width**, so its aspect — and
+    therefore how much of the photograph `object-cover` keeps — is identical at
+    every size. Give it a fixed pixel height and narrow cards silently crop
+    tighter than wide ones.
+  - The `reInit()` effect (rAF + `document.fonts.ready` + on every `perView`
+    change) is not redundant. Embla builds its snap list once at init, and in a
+    production build that measurement comes out wide enough that it decides
+    there is nothing to scroll — the carousel renders stuck on slide 1 with the
+    Next arrow disabled.
+
+  The counter's denominator is `scrollSnapList().length`, not the slide count:
+  Embla trims the snaps that would scroll past the end, so seven slides give
+  five stops at three-up.
+
+  The arrows moved below the track to give the heading its own row, which put
+  them under the experience section's `-mt-32` overlap. Both sections are
+  positioned and neither paints a background, so the overlap was invisible but
+  still won hit testing and the arrows went dead. `#projects` carries
+  `relative z-10` for that reason — do not remove it.
+- `lib/Tag.jsx` — sized in `em`, not px, so a tag scales with whatever sets its
+  font size (the project card does). The ratios are calibrated so a tag in a
+  16px context — the project banner, the `/projects` index — is pixel-identical
+  to the old fixed values.
+- `app/icon.svg` — the favicon, on Next's file convention, so no `<link>` tag
+  anywhere. One rounded square in the accent purple with the initial as a
+  single stroked path. Fontless on purpose (favicons render without webfonts,
+  so `font-family` is a coin flip) and free of anything under ~4px on the 64
+  grid, because the working size is a 16px tab.
 - `lib/ExperienceTimeline.jsx` — the experience section. Orders entries by an optional frontmatter `rank`, otherwise ongoing roles first then by `end` date descending (the order a resume uses); a role whose `end` is "Present" gets a filled timeline node. From `xl` entries alternate sides and the rail steps with them — offset `DELTA` right on a left-hand entry, `DELTA` left on a right-hand one, joined by a horizontal jog in the gap between the two, so each card gains `DELTA` over an even split. Below `xl` it collapses to a single left-rail column, because half a container is too narrow to read in. Plain React + framer-motion, no component library.
+
+### Mach diamond plume
+
+`lib/MachDiamonds.jsx` with `.mach-diamonds*` in `app/globals.css`. Six rows of
+SVG `<pattern>` diamonds, biggest and brightest at the base and tapering in
+size and opacity upward, in a purple ramp sampled off the hero's `DarkVeil`
+canvas so it reads as the same light source. Ported from the Duke LPD site.
+
+Two rules it was corrected into and should keep:
+
+- It goes **behind** what is already on the page and adds no height of its own.
+  On a project page that is `absolute inset-x-0 bottom-full` on the `<footer>`,
+  which puts the field's cut edge exactly on the footer's top border — anchored
+  to the footer rather than the article, whose height varies per project.
+  `<main>` carries `z-10` so the plume stays behind the content it reaches up
+  over. Never give a section extra padding to make room for it.
+- It is on every project page and deliberately **not** on the homepage.
+
+The mobile cap (`max-height` under 640px) has to sit on `.mach-diamonds-stack`,
+the `column-reverse` element: that is what puts main-start at the bottom, so the
+overflow trims the faint top rows instead of eating the bright base row.
 
 ### Key Libraries
 

@@ -161,12 +161,6 @@ export default async function ProjectPage({ params }: Props) {
         )}
 
         <div className={isFeature ? "max-w-4xl mx-auto px-6 pb-4" : ""}>
-          {isFeature && data.lede && (
-            <p className="text-pretty text-lg leading-relaxed text-white/85 md:text-2xl md:leading-relaxed">
-              {String(data.lede)}
-            </p>
-          )}
-
           {isFeature && <ProjectFacts facts={facts} />}
 
           <article

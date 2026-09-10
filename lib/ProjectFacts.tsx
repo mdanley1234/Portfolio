@@ -1,6 +1,6 @@
 /**
  * The numbers a project is judged on, pulled out of the prose and into one
- * scannable block under the lede. Frontmatter `facts` is a list of
+ * scannable block under the banner. Frontmatter `facts` is a list of
  * `{ label, value }` pairs; a project without the field renders nothing and
  * keeps its narrative as-is.
  */

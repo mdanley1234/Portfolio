@@ -49,11 +49,19 @@
   },
   "/images/homelab/cover.webp": {
     "width": 1400,
-    "height": 1868
+    "height": 1867
+  },
+  "/images/homelab/drives.webp": {
+    "width": 1600,
+    "height": 1200
   },
   "/images/homelab/rack.webp": {
     "width": 1600,
     "height": 2139
+  },
+  "/images/homelab/wiring.webp": {
+    "width": 1600,
+    "height": 1200
   },
   "/images/orca/Expand.webp": {
     "width": 1466,

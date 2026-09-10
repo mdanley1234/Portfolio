@@ -41,7 +41,6 @@ heroAlt
 heroPosition        # object-position for the banner crop, e.g. "68% 58%"
 heroScale           # scale() on the banner image; last resort, see below
 tagline             # one line under the banner title; falls back to summary
-lede                # opening paragraph, set above the rule that starts the article
 facts               # [{ label, value }] — becomes the Specifications table
 ```
 
@@ -49,10 +48,9 @@ facts               # [{ label, value }] — becomes the Specifications table
 `/projects`, and the "Next project" link at the foot of a detail page (which
 wraps from the last project back to the first).
 
-`summary`, `tagline` and `lede` are three different sentences about the same
-project and appear within one screen of each other on a feature page. Write
-them so they do not echo — the card summary sells it, the tagline names what it
-is, the lede opens the argument.
+`summary` and `tagline` are two different sentences about the same project and
+appear within one screen of each other on a feature page. Write them so they do
+not echo — the card summary sells it, the tagline names what it is.
 
 `heroScale` zooms the banner and therefore crops differently at every viewport;
 it leaked a fragment of a CAD annotation into view on mobile once. Prefer

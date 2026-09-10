@@ -2,18 +2,15 @@
 title: "Homelab Server"
 start: "Summer 2026"
 end: "Present"
-summary: "A self-hosted compute and storage server built from salvaged and second-hand hardware for roughly $300, running Proxmox VE over a ZFS RAIDZ1 pool with containerised services and zero-trust remote access."
+summary: "A self-hosted compute and storage server built from salvaged and second-hand hardware, running Proxmox VE over a ZFS RAIDZ1 pool with containerized services and zero-trust remote access."
 coverImage: "/images/homelab/cover.webp"
 layout: "feature"
 heroImage: "/images/homelab/cover.webp"
-heroAlt: "The homelab server stacked in its 3D printed micro rack, black drive sleds seated behind orange printed latches."
+heroAlt: "The homelab server on a deck table, three units stacked in its 3D printed micro rack behind orange printed latches."
+# A ~2:1 banner cannot hold an upright rack shot whole. Biased up so the crop
+# keeps the top plate and its cable run; the feet fall below the title instead.
+heroPosition: "center 25%"
 tagline: "A Proxmox and ZFS server built from salvaged hardware for roughly $300."
-lede: >
-  The homelab sits beside my home router and handles file storage, photo
-  backup, documentation hosting, game servers and a general container
-  workload. Building around older and salvaged hardware rather than buying a
-  prebuilt NAS bought more performance per dollar — and full control over
-  both the physical design and the software stack.
 facts:
   - label: "Compute"
     value: "Dell OptiPlex 3050 Micro (i3-7100T), 16 GB DDR4"
@@ -33,21 +30,21 @@ tags: [Linux, Docker, 3D Printing]
 rank: 3
 ---
 
-<div className="flex justify-center">
+{/* Front and back of the same rack, so they read as one pair rather than two
+    stops down the page. `w-1/2` is also what MdxImage reads to size the
+    request — a half-column image should not fetch a full-column source. */}
+<div className="flex items-start gap-4">
   <img
     src="/images/homelab/build.webp"
-    alt="The assembled homelab server in its 3D printed micro rack"
-    className="rounded-xl w-3/4"
+    alt="The assembled homelab server from the front, three units stacked in the 3D printed micro rack"
+    className="rounded-xl w-1/2 h-auto"
+  />
+  <img
+    src="/images/homelab/rack.webp"
+    alt="The same rack from the back, drive bays and cabling visible through the printed panels"
+    className="rounded-xl w-1/2 h-auto"
   />
 </div>
-
-{/* PHOTO SLOT — a wider shot of the rack in place beside the router.
-    Drop the file in public/images/homelab/ and uncomment:
-
-<div className="flex justify-center">
-  <img src="/images/homelab/YOUR_PHOTO.webp" alt="Describe the photo" className="rounded-xl w-3/4" />
-</div>
-*/}
 
 ## Hardware
 
@@ -66,21 +63,10 @@ Storage was the single largest line item. Drive prices are elevated right now on
 
 The chassis is a 3D printed micro rack (the NexGen3D micro rack system), printed in PETG and assembled with heat-set threaded inserts. Access to a printer and the reuse of previous-generation components held the total build to roughly **$300**.
 
-{/* PHOTO SLOT — printing or assembling the case; drive sled detail shots.
-    Consider a slideshow if you have several:
-
-<ImageSlideshow
-  images={[
-    { src: "/images/homelab/YOUR_PHOTO_1.webp", caption: "Printed chassis parts" },
-    { src: "/images/homelab/YOUR_PHOTO_2.webp", caption: "Drive sleds during assembly" }
-  ]}
-/>
-*/}
-
 <div className="flex justify-center">
   <img
-    src="/images/homelab/rack.webp"
-    alt="Drive bays and cabling inside the 3D printed rack"
+    src="/images/homelab/wiring.webp"
+    alt="The OptiPlex micro and the desktop PSU on the cabinet mid-build, SATA power and data runs fanned out between them"
     className="rounded-xl w-3/4"
   />
 </div>
@@ -88,6 +74,14 @@ The chassis is a 3D printed micro rack (the NexGen3D micro rack system), printed
 ## Storage and data integrity
 
 The three 2 TB drives form a **ZFS RAIDZ1** pool, giving single-drive fault tolerance alongside end-to-end checksumming and per-dataset compression tuned to each workload. Application data is bind-mounted from ZFS into the containers that use it, so snapshots and backups are managed centrally rather than per service.
+
+<div className="flex justify-center">
+  <img
+    src="/images/homelab/drives.webp"
+    alt="The three 2 TB drives stacked beside the boot SSD in a printed sled, before the sled went into the rack"
+    className="rounded-xl w-3/4"
+  />
+</div>
 
 Retention runs on two layers: Sanoid takes hourly-through-monthly snapshots of the pool, and weekly Vzdump jobs capture full container backups. ZED and smartd report over SMTP on pool degradation and SMART attribute trends, so a failing drive surfaces well before it drops out.
 
